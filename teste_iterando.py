@@ -16,6 +16,8 @@ with open('olt_8820_find_return.txt', 'r') as arquivo:
         
         # Verificar se existem números na linha
         if numeros:
+            if '2023' in numeros:
+                print(f'achei uma onu discando: {numeros}')
             if len(numeros) == 1:
                 numeros = f'PON {numeros}'.replace("'", '').replace('[', '').replace(']', '').strip()
                 # adiciona na lista a pon atual

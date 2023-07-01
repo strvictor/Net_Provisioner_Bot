@@ -92,7 +92,7 @@ Free slots in GPON Link 4:
 Discovered serial numbers
 ==============================================
 sernoID   Vendor  Serial Number   Model       Time Discovered
-
+1         ITBS    CFEBD229                    Jul 01 11:20:04 2023
 
 
 Free slots in GPON Link 5:
