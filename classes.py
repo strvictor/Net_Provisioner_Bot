@@ -1,4 +1,4 @@
-
+'''
 import telebot
 
 class Provisionamento:
@@ -19,14 +19,8 @@ class Provisionamento:
     def provisionamento(self, chat_id):
         mensagem = 'Informe o numero do contrato, por favor!'
 
-        
-
         id_usuario = chat_id # id do usuario
         self.bot.send_message(id_usuario, mensagem)
-        @self.bot.message_handler(func=lambda message: True)
-        def escuta_msg(mensagem):
-            print(mensagem)
-
 
 
     # função responsável pelo menu consulta
@@ -54,8 +48,31 @@ class Provisionamento:
             elif retorno_usuario == '/consulta':
                 self.consulta(id_usuario)      
 
+
+
         self.bot.infinity_polling()
 
 # Exemplo de uso da classe Provisionamento
 provisionamento1 = Provisionamento()
 provisionamento1.inicia_bot()
+'''
+
+import telebot
+
+bot = telebot.TeleBot('6351402549:AAH6Vccy0PKeSEuIbjS6aOcBvrw-YSQRHt8')
+
+@bot.message_handler(func=lambda message: True)
+def handle_message(message):
+    # Lógica de processamento da mensagem aqui
+    bot.send_message(message.chat.id, 'Resposta')
+
+updates = bot.get_updates()
+
+for update in updates:
+    # Processar as mensagens conforme necessário
+    message = update.message
+    print(message)
+    bot.send_message(message.chat.id, 'Resposta')
+
+    # Se atingir a condição desejada para parar de buscar atualizações
+    #break
