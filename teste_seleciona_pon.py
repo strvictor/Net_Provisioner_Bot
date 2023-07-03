@@ -1,16 +1,16 @@
 
 jamic = 'R'
 bujaru = 'P'
+vila_nova = 'G'
+
 cto_lista  = []
-while 1:
-    cto = input('Informe a cto: ').upper().replace(' ','').strip()
+def cto_pon(cto):
+
+    cto = str(cto).upper().replace(' ','').strip()
 
     cto_lista.append(cto)
-
-    if cto[0] == jamic or cto[0] == bujaru:
-
-        print('cto é da jamic', cto_lista[0])
-        
+    if cto[0] == jamic or cto[0] == bujaru or cto[0] == vila_nova:
+ 
         slot = ord(cto[1]) - 64 # se deixar 65 a letra 'A' fica 0
 
         pon = ord(cto[2]) - 64
@@ -27,13 +27,6 @@ while 1:
     cto_lista.clear()
 
 
-
-
-
-
-
-
-
-
-
+cto = 'pae1-8'
+cto_pon(cto)
 

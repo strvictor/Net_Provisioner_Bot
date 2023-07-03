@@ -34,7 +34,6 @@ class Provisionamento:
 
         self.bot.register_next_step_handler_by_chat_id(chat_id, captura_contrato)
 
-
     # função responsável pelo menu consulta
     def consulta(self, chat_id):
         mensagem = 'em construção, aguarde...'
