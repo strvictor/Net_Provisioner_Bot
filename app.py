@@ -1,4 +1,5 @@
 import telebot
+from voalle import validacontrato
 
 class Provisionamento:
     # função principal - iniciador
@@ -7,6 +8,7 @@ class Provisionamento:
         self.token = '6351402549:AAH6Vccy0PKeSEuIbjS6aOcBvrw-YSQRHt8'
         self.bot = telebot.TeleBot(self.token)
 
+
     # função responsável pelo menu 
     def menu(self, chat_id):
         mensagem = 'menu\n1_ /provisionamento\n2_ /consulta'
@@ -14,25 +16,23 @@ class Provisionamento:
         id_usuario = chat_id # id do usuario
         self.bot.send_message(id_usuario, mensagem)
 
+
     # função responsável pelo menu provisionamento
     def provisionamento(self, chat_id):
         mensagem = 'Informe o número do contrato, por favor!'
-
+        
         id_usuario = chat_id  # id do usuário
         self.bot.send_message(id_usuario, mensagem)
 
         # escuta a resposta do contrato
         @self.bot.message_handler(func=lambda message: True)
-        def valida_contrato(mensagem):
+        def captura_contrato(mensagem):
             contrato = mensagem.text
 
-            # Aqui você pode implementar a lógica de validação do contrato
-            if contrato == '12345':
-                self.bot.send_message(id_usuario, "Contrato válido!")
-            else:
-                self.bot.send_message(id_usuario, "Contrato inválido!")
+            mensagem_valicacao = validacontrato(contrato)
+            self.bot.send_message(id_usuario, mensagem_valicacao)
 
-        self.bot.register_next_step_handler_by_chat_id(chat_id, valida_contrato)
+        self.bot.register_next_step_handler_by_chat_id(chat_id, captura_contrato)
 
 
     # função responsável pelo menu consulta
@@ -62,9 +62,8 @@ class Provisionamento:
                 self.consulta(id_usuario)      
 
 
-
         self.bot.infinity_polling()
 
-# Exemplo de uso da classe Provisionamento
+# uso da classe Provisionamento
 provisionamento1 = Provisionamento()
 provisionamento1.inicia_bot()
