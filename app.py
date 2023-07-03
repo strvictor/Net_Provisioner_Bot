@@ -1,4 +1,3 @@
-'''
 import telebot
 
 class Provisionamento:
@@ -17,10 +16,23 @@ class Provisionamento:
 
     # função responsável pelo menu provisionamento
     def provisionamento(self, chat_id):
-        mensagem = 'Informe o numero do contrato, por favor!'
+        mensagem = 'Informe o número do contrato, por favor!'
 
-        id_usuario = chat_id # id do usuario
+        id_usuario = chat_id  # id do usuário
         self.bot.send_message(id_usuario, mensagem)
+
+        # escuta a resposta do contrato
+        @self.bot.message_handler(func=lambda message: True)
+        def valida_contrato(mensagem):
+            contrato = mensagem.text
+
+            # Aqui você pode implementar a lógica de validação do contrato
+            if contrato == '12345':
+                self.bot.send_message(id_usuario, "Contrato válido!")
+            else:
+                self.bot.send_message(id_usuario, "Contrato inválido!")
+
+        self.bot.register_next_step_handler_by_chat_id(chat_id, valida_contrato)
 
 
     # função responsável pelo menu consulta
@@ -31,14 +43,15 @@ class Provisionamento:
         self.bot.send_message(id_usuario, mensagem)       
 
 
-    # função responsável pro iniciar a escuta do bot
+    # função responsável por iniciar a escuta do bot
     def inicia_bot(self):
         @self.bot.message_handler(func=lambda message: True)
         def escuta_msg(mensagem):
             id_usuario = mensagem.chat.id
             retorno_usuario = mensagem.text
 
-            print(retorno_usuario)
+            print('ID USUARIO', id_usuario, '>', retorno_usuario)
+            
             if retorno_usuario == '/start' or retorno_usuario == '/menu':
                 self.menu(id_usuario)
 
@@ -55,24 +68,3 @@ class Provisionamento:
 # Exemplo de uso da classe Provisionamento
 provisionamento1 = Provisionamento()
 provisionamento1.inicia_bot()
-'''
-
-import telebot
-
-bot = telebot.TeleBot('6351402549:AAH6Vccy0PKeSEuIbjS6aOcBvrw-YSQRHt8')
-
-@bot.message_handler(func=lambda message: True)
-def handle_message(message):
-    # Lógica de processamento da mensagem aqui
-    bot.send_message(message.chat.id, 'Resposta')
-
-updates = bot.get_updates()
-
-for update in updates:
-    # Processar as mensagens conforme necessário
-    message = update.message
-    print(message)
-    bot.send_message(message.chat.id, 'Resposta')
-
-    # Se atingir a condição desejada para parar de buscar atualizações
-    #break
