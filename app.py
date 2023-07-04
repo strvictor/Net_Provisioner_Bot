@@ -1,5 +1,6 @@
 import telebot
-from voalle import validacontrato
+from voalle import validacontrato, consulta_cliente
+
 
 class Provisionamento:
     # função principal - iniciador
@@ -30,17 +31,25 @@ class Provisionamento:
             contrato = mensagem.text
 
             mensagem_valicacao = validacontrato(contrato)
-            self.bot.send_message(id_usuario, mensagem_valicacao)
+
+            # valida retorno falso pra chamar a função provisionamento novamente
+            if mensagem_valicacao == False:
+
+                mensagem = 'Opa, não aceitamos caracteres por aqui 😊\nDigite apenas números, por favor!'
+                self.bot.send_message(id_usuario, mensagem)
+                self.provisionamento(id_usuario)
+
+            else:
+                self.bot.send_message(id_usuario, mensagem_valicacao)
 
         self.bot.register_next_step_handler_by_chat_id(chat_id, captura_contrato)
 
     # função responsável pelo menu consulta
     def consulta(self, chat_id):
-        mensagem = 'em construção, aguarde...'
+        mensagem_validacao = consulta_cliente()
 
         id_usuario = chat_id # id do usuario
-        self.bot.send_message(id_usuario, mensagem)       
-
+        self.bot.send_message(id_usuario, mensagem_validacao)       
 
     # função responsável por iniciar a escuta do bot
     def inicia_bot(self):

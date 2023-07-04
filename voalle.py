@@ -14,8 +14,9 @@ def validacontrato(num_contrato):
         
          #CONSULTA A API DO VOALLE AQUI ##
     else:
-        # se for caracteres retorna essa msg
-        mensagem = 'Opa, só aceitamos o numero do contrato por aqui 😊\nDigite apenas números, por favor!'
-        return mensagem
+        # retorna falso, pra validar no arquivo app.py e chamar novamente a função
+        return False
            
 
+def consulta_cliente():
+    return 'Em andamento...'
