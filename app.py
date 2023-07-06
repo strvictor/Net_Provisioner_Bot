@@ -1,22 +1,15 @@
-import telebot
+import telebot, time
 from telebot import types
 from voalle import validacontrato, consulta_cliente
-import time
-
+from cto import valida_cto
 class Provisionamento:
-
-    # função principal - iniciador
     def __init__(self):
-        # token do bot
-        self.token = '6351402549:AAH6Vccy0PKeSEuIbjS6aOcBvrw-YSQRHt8'
+        self.token = '5935745695:AAHcP4dAquoEEg0pv9YOlj0HHLiofldVMY4'
         self.bot = telebot.TeleBot(self.token)
-        self.user_states = {}
 
-    # função responsável pelo menu
-    def menu(self, chat_id):
+    def menu_principal(self, chat_id):
         mensagem = 'Escolha uma opção:'
-
-        id_usuario = chat_id  # id do usuario
+        id_usuario = chat_id
 
         # Criando o layout do teclado inline
         teclado_inline = types.InlineKeyboardMarkup(row_width=1)
@@ -31,99 +24,8 @@ class Provisionamento:
         # Enviando a mensagem com o teclado inline
         self.bot.send_message(id_usuario, mensagem, reply_markup=teclado_inline)
 
-    # função responsável pelo menu provisionamento
-    def provisionamento(self, chat_id):
-        mensagem = '> Informe o número do contrato, por favor!'
 
-        id_usuario = chat_id  # id do usuário
-        self.bot.send_message(id_usuario, mensagem)
-
-        # escuta a resposta do contrato
-        @self.bot.message_handler(func=lambda message: True)
-        def captura_contrato(mensagem):
-            contrato = mensagem.text
-
-            mensagem_validacao = validacontrato(contrato)
-
-            # valida retorno falso pra chamar a função provisionamento novamente
-            if mensagem_validacao is False:
-                mensagem = 'Opa, não aceitamos caracteres por aqui 😊\nDigite apenas números, por favor!'
-                self.bot.send_message(id_usuario, mensagem)
-                self.provisionamento(id_usuario)
-
-            elif mensagem_validacao == 'contrato_bad':
-                self.show_retry_menu(id_usuario)
-
-            else:
-                self.bot.send_message(id_usuario, mensagem_validacao)
-
-        self.bot.register_next_step_handler_by_chat_id(chat_id, captura_contrato)
-
-    # função responsável pelo menu consulta
-    def consulta(self, chat_id):
-        mensagem_validacao = consulta_cliente()
-
-        id_usuario = chat_id  # id do usuario
-        self.bot.send_message(id_usuario, mensagem_validacao)
-
-    # função responsável por iniciar a escuta do bot
-    def inicia_bot(self):
-        @self.bot.message_handler(func=lambda message: True)
-        def escuta_msg(mensagem):
-            id_usuario = mensagem.chat.id
-            retorno_usuario = mensagem.text
-
-            print('ID USUARIO', id_usuario, '>', retorno_usuario)
-
-            if retorno_usuario == '/start':
-                self.menu(id_usuario)
-
-        @self.bot.callback_query_handler(func=lambda call: True)
-        def handle_inline_buttons(call):
-            if call.data == 'provisionamento':
-                user_id = call.from_user.id
-
-                # Verificar se o botão já foi clicado recentemente
-                if user_id in self.user_states and 'provisionamento' in self.user_states[user_id]:
-                    return
-
-                # Bloquear o clique no botão por 15 segundos
-                self.user_states[user_id] = {'provisionamento': True}
-                print(self.user_states)
-
-                # Executar a ação correspondente
-                self.provisionamento(call.message.chat.id)
-
-                # Agendar a liberação do clique após 15```
-
-                time.sleep(10)
-                del self.user_states[user_id]['provisionamento']
-                print(self.user_states)
-
-            elif call.data == 'consulta':
-                user_id = call.from_user.id
-
-                # Verificar se o botão já foi clicado recentemente
-                if user_id in self.user_states and 'consulta' in self.user_states[user_id]:
-                    return
-
-                # Bloquear o clique no botão por 15 segundos
-                self.user_states[user_id] = {'consulta': True}
-                print(self.user_states)
-
-                # Executar a ação correspondente
-                self.consulta(call.message.chat.id)
-
-                # Agendar a liberação do clique após 15 segundos
-                time.sleep(10)
-                if user_id in self.user_states:
-                    del self.user_states[user_id]['consulta']
-                print(self.user_states)
-
-        self.bot.infinity_polling()
-
-    # função para exibir o menu de tentar novamente
-    def show_retry_menu(self, chat_id):
+    def menu_nova_tentativa(self, chat_id):
         id_usuario = chat_id
 
         # Criando o layout do teclado inline
@@ -140,60 +42,139 @@ class Provisionamento:
         mensagem = "Não consegui localizar o contrato desse cliente 🙁\nO que você deseja fazer?"
         self.bot.send_message(id_usuario, mensagem, reply_markup=teclado_inline)
 
-    # função para lidar com o retorno dos botões do menu de tentar novamente
-    def handle_retry_menu(self, chat_id, button_data):
+
+
+
+    def menu_confirmacao(self, chat_id):
         id_usuario = chat_id
 
-        if button_data == 'voltar_menu':
-            self.menu(id_usuario)
-        elif button_data == 'tentar_novamente':
+        teclado_inline = types.InlineKeyboardMarkup(row_width=1)
+
+        correto = types.InlineKeyboardButton("Tudo certo!", callback_data='correto')
+        incorreto = types.InlineKeyboardButton("Tentar novamente", callback_data='incorreto')
+
+        teclado_inline.add(correto, incorreto)
+
+        mensagem = "Antes de continuar, por favor confirme as informações"
+        self.bot.send_message(id_usuario, mensagem, reply_markup=teclado_inline)
+
+
+
+    def provisionamento(self, chat_id):
+        mensagem = '> Informe o número do contrato, por favor!'
+        id_usuario = chat_id
+        self.bot.send_message(id_usuario, mensagem)
+
+        # escuta a resposta do contrato
+        @self.bot.message_handler(func=lambda message: True)
+        def captura_contrato(mensagem): 
+            contrato = mensagem.text
+
+            mensagem_validacao = validacontrato(contrato)
+
+            if mensagem_validacao is False:
+                mensagem = 'Opa, não aceitamos caracteres por aqui 😊\nDigite apenas números, por favor!'
+                self.bot.send_message(id_usuario, mensagem)
+                self.provisionamento(id_usuario)
+
+            elif mensagem_validacao == 'contrato não localizado':
+                self.menu_nova_tentativa(id_usuario)
+
+            else:
+                # se cair aqui significa que achou um contrato valido
+                self.bot.send_message(id_usuario, mensagem_validacao)
+                time.sleep(3)
+                self.menu_confirmacao(id_usuario)
+
+        self.bot.register_next_step_handler_by_chat_id(chat_id, captura_contrato)
+
+
+
+
+
+    def solicita_cto(self, chat_id):
+        mensagem = 'Informe a CTO que conectou o cliente:\n_Sugestão: AAA1-1_'
+        id_usuario = chat_id
+        self.bot.send_message(id_usuario, mensagem, parse_mode="Markdown")
+
+        @self.bot.message_handler(func=lambda message: True)
+        def captura_cto(cto):
+            cto = cto.text
+
+            cto_validacao = valida_cto(cto)
+
+            if cto_validacao == 'inicial_invalida':
+                self.bot.send_message(id_usuario, "CTO inválida!\n> Localidade não encontrada ")
+                time.sleep(1)
+                self.solicita_cto(id_usuario)
+
+            elif cto_validacao == 'tamanho_invalido':
+                self.bot.send_message(id_usuario, "CTO inválida!\n> CTO informada é grande demais")
+                time.sleep(1)
+                self.solicita_cto(id_usuario)
+
+            elif cto_validacao == 'letras_invalidas':
+                self.bot.send_message(id_usuario, "CTO inválida!\n> Caracteres não permitidos")
+                time.sleep(1)
+                self.solicita_cto(id_usuario)
+
+            elif cto_validacao == 'numero1_invalido':
+                self.bot.send_message(id_usuario, "CTO inválida!\n> Numero fora do range")
+                time.sleep(1)
+                self.solicita_cto(id_usuario)
+
+            elif cto_validacao == 'hifen_invalido':
+                self.bot.send_message(id_usuario, "CTO inválida!\n> Hífen não localizado")
+                time.sleep(1)
+                self.solicita_cto(id_usuario)
+
+            elif cto_validacao == 'numero2_invalido':
+                self.bot.send_message(id_usuario, "CTO inválida!\n>- Numero fora do range")
+                time.sleep(1)
+                self.solicita_cto(id_usuario)
+
+            else:
+                self.bot.send_message(id_usuario, cto_validacao)
+
+        self.bot.register_next_step_handler_by_chat_id(chat_id, captura_cto)
+
+
+
+
+
+
+    def consulta(self, chat_id):
+        mensagem = consulta_cliente()
+        id_usuario = chat_id
+        self.bot.send_message(id_usuario, mensagem)
+
+    def tratativa_dos_botoes(self, call):
+        id_usuario = call.message.chat.id
+
+        if call.data == 'provisionamento':
+            print('botão provisionamento chamado')
             self.provisionamento(id_usuario)
 
-    # função para lidar com as ações dos botões inline
-    def handle_inline_buttons(self, call):
-        if call.data == 'provisionamento':
-            user_id = call.from_user.id
-
-            # Verificar se o botão já foi clicado recentemente
-            if user_id in self.user_states and 'provisionamento' in self.user_states[user_id]:
-                return
-
-            # Bloquear o clique no botão por 15 segundos
-            self.user_states[user_id] = {'provisionamento': True}
-            print(self.user_states)
-
-            # Executar a ação correspondente
-            self.provisionamento(call.message.chat.id)
-
-            # Agendar a liberação do clique após 30 segundos
-            time.sleep(10)
-            del self.user_states[user_id]['provisionamento']
-            print(self.user_states)
-
         elif call.data == 'consulta':
-            user_id = call.from_user.id
+            print('botão consulta chamado')
+            self.consulta(id_usuario)
 
-            # Verificar se o botão já foi clicado recentemente
-            if user_id in self.user_states and 'consulta' in self.user_states[user_id]:
-                return
+        elif call.data == 'voltar_menu':
+            print('botão voltar menu chamado')
+            self.menu_principal(id_usuario)
 
-            # Bloquear o clique no botão por 15 segundos
-            self.user_states[user_id] = {'consulta': True}
-            print(self.user_states)
+        elif call.data == 'tentar_novamente':
+            print('botão tentar novamente chamado')
+            self.provisionamento(id_usuario)
 
-            # Executar a ação correspondente
-            self.consulta(call.message.chat.id)
+        elif call.data == 'correto':
+            print('botão tudo certo chamado')
+            self.solicita_cto(id_usuario)
 
-            # Agendar a liberação do clique após 30 segundos
-            time.sleep(10)
-            if user_id in self.user_states:
-                del self.user_states[user_id]['consulta']
-            print(self.user_states)
+        elif call.data == 'incorreto':
+            print('botão incorreto chamado')
+            self.provisionamento(id_usuario)            
 
-        elif call.data == 'voltar_menu' or call.data == 'tentar_novamente':
-            self.handle_retry_menu(call.message.chat.id, call.data)
-
-    # função responsável por iniciar a escuta do bot
     def inicia_bot(self):
         @self.bot.message_handler(func=lambda message: True)
         def escuta_msg(mensagem):
@@ -203,14 +184,14 @@ class Provisionamento:
             print('ID USUARIO', id_usuario, '>', retorno_usuario)
 
             if retorno_usuario == '/start':
-                self.menu(id_usuario)
+                self.menu_principal(id_usuario)
 
         @self.bot.callback_query_handler(func=lambda call: True)
-        def handle_inline_buttons(call):
-            self.handle_inline_buttons(call)
+        def escuta_botoes(call):
+            self.tratativa_dos_botoes(call)
 
         self.bot.infinity_polling()
 
-# uso da classe Provisionamento
+# Uso da classe Provisionamento
 provisionamento1 = Provisionamento()
 provisionamento1.inicia_bot()

@@ -3,7 +3,7 @@ verifica = []
 
 def validacontrato(num_contrato):
     valida_numero = str(num_contrato).isnumeric()
-    
+
     if valida_numero:
         #CONSULTA A API DO VOALLE AQUI ##
 
@@ -19,6 +19,7 @@ def validacontrato(num_contrato):
                 contrato = dado['dados']['contrato']
 
                 if num_contrato == contrato:
+                    
                     verifica.append(num_contrato)
                     return f"""
 Localizamos esse contrato:
@@ -34,7 +35,7 @@ Senha: {dado['dados']['senha']}
                                         
                     """
             if len(verifica) == 0:
-                return "contrato_bad"
+                return "contrato não localizado"
         
          #CONSULTA A API DO VOALLE AQUI ##
     else:
