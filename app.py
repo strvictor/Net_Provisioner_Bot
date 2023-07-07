@@ -1,12 +1,13 @@
 import telebot, time
 from telebot import types
 from voalle import validacontrato, consulta_cliente
-from cto import valida_cto, valida_porta
+from cto import valida_cto, valida_porta, pon_cto
 
 class Provisionamento():
     def __init__(self):
         self.token = '5935745695:AAHcP4dAquoEEg0pv9YOlj0HHLiofldVMY4'
         self.bot = telebot.TeleBot(self.token)
+        self.cto_validada = list()
 
 
     def menu_principal(self, chat_id):
@@ -81,7 +82,11 @@ class Provisionamento():
 
             else:
                 # se cair aqui significa que achou um contrato valido
-                self.bot.send_message(id_usuario, mensagem_validacao)
+                if mensagem_validacao:
+                    self.bot.send_message(id_usuario, mensagem_validacao)
+                else:
+                    self.bot.send_message(id_usuario, "Erro: Mensagem vazia ou inválida.")
+
                 time.sleep(3)
                 self.menu_confirmacao(id_usuario)
 
@@ -105,7 +110,7 @@ class Provisionamento():
                 self.solicita_cto(id_usuario)
 
             elif cto_validacao == 'tamanho_invalido':
-                self.bot.send_message(id_usuario, "CTO inválida!\n> CTO informada é grande demais")
+                self.bot.send_message(id_usuario, "CTO inválida!\n> CTO informada ta em tamanho fora do esperado")
                 time.sleep(1)
                 self.solicita_cto(id_usuario)
 
@@ -125,14 +130,17 @@ class Provisionamento():
                 self.solicita_cto(id_usuario)
 
             elif cto_validacao == 'numero2_invalido':
-                self.bot.send_message(id_usuario, "CTO inválida!\n>- Numero fora do range")
+                self.bot.send_message(id_usuario, "CTO inválida!\n> Numero fora do range")
                 time.sleep(1)
                 self.solicita_cto(id_usuario)
 
             else:
                 # se a cto for valida ele cai aqui
-                self.bot.send_message(id_usuario, cto_validacao)
-                time.sleep(3)
+                self.bot.send_message(id_usuario, f'CTO VÁLIDA {cto_validacao}')
+
+                #adiciona cto validada na lista
+                self.cto_validada.append(cto_validacao)
+                time.sleep(2)
                 self.solicita_porta_cto(id_usuario)
 
         self.bot.register_next_step_handler_by_chat_id(chat_id, captura_cto)
@@ -160,8 +168,18 @@ class Provisionamento():
                 self.solicita_porta_cto(id_usuario)
 
             else:
-                self.bot.send_message(id_usuario, f"Porta válida {porta_cto}")
-    
+                self.bot.send_message(id_usuario, f"PORTA VÁLIDA {porta_cto}")
+                time.sleep(2)
+
+                # pegando qual é a pon da cto informada
+                pon_consulta = pon_cto(self.cto_validada[0])
+
+                # enviando informções da pon valida
+                self.bot.send_message(id_usuario, f"Buscando na OLT...\nPON = {pon_consulta}")
+
+                # limpando a lista para uma nova consulta
+                self.cto_validada.clear()
+
         self.bot.register_next_step_handler_by_chat_id(chat_id, captura_porta)
 
 
@@ -212,7 +230,6 @@ class Provisionamento():
         def escuta_botoes(call):
             self.tratativa_dos_botoes(call)
 
-        self.bot.infinity_polling()
         self.bot.infinity_polling()
 
 # Uso da classe Provisionamento

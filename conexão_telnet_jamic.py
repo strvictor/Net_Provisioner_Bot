@@ -47,6 +47,13 @@ def buscapon(ip):
     inicio_filtro = linhas.index(f'intelbras-olt> {comando}')
     linhas = linhas[inicio_filtro:]
 
+    profile_cpe = {
+    "110Gb": "intelbras-110b",
+    "121AC": "intelbras-121ac",
+    "R1v2": "intelbras-defaul",
+    "110Gi": "intelbras-110",
+    "R1": "intelbras-r1"
+    }
 
     #print(linhas)
     # Percorrer as linhas
@@ -57,8 +64,19 @@ def buscapon(ip):
             id = linha_onu[0]
             vendor = linha_onu[1]
             serial_number = linha_onu[2]
+            model = linha_onu[3]
 
-            print(f'achei {id} onu discando: {vendor} | {serial_number}')
+            print(f'senor_id: {id}\nserial_number: {vendor} | {serial_number}\nmodel: {model}')
+
+            if model in profile_cpe:
+                print('me profile:', profile_cpe[model])
+                meprof = profile_cpe[model]
+
+            else:
+                print('me profile:', profile_cpe["R1v2"])
+                meprof = profile_cpe['R1v2']
+            print(' ')
+
         else:
             pass
             #print('não existe onu discando nessa pon')
@@ -92,9 +110,18 @@ def buscapon(ip):
 
     # percore o dicionario e exibe as informações
     for pon, posicao in dicionario.items():
+        
         print(f"Na {pon} tem o valor {posicao[0]} disponivel para o provisionamento")
+        pon = str(pon).split()
+        print(' ')
+        try:
+            print(f'onu set gpon {pon[1]} onu {posicao[0]} serial-number {vendor}{serial_number} meprof {meprof}')
+        except:
+            pass
 
 jamic = '10.9.250.6'
 alca = '172.31.0.21'
-
-buscapon(jamic)
+try:
+    buscapon(alca)
+except:
+    buscapon(alca)

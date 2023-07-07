@@ -7,7 +7,7 @@ def valida_cto(cto):
     if cto[0] not in inicial_cto_validas:
         return 'inicial_invalida'
     
-    if len(cto) > 7:
+    if len(cto) > 7 or len(cto) < 6:
         return 'tamanho_invalido'
 
     #letra1 = cto[0]  # r
@@ -42,7 +42,7 @@ def valida_cto(cto):
     except:
         pass
 
-    return f'CTO VALIDA {cto}'
+    return cto
 
 
 def valida_porta(porta):
@@ -58,3 +58,17 @@ def valida_porta(porta):
         
     else:
         return 'não é numero'
+
+
+def pon_cto(cto):
+
+    slot = ord(cto[1]) - 64 # se deixar 65 a letra 'A' fica 0
+
+    pon = ord(cto[2]) - 64
+
+    return pon
+    
+    #slot = ord(cto[1]) - 65 # se deixar 65 a letra 'A' fica 0
+    #pon = ord(cto[2]) - 65
+    #print(f'slot: {slot}\npon: {pon}')
+

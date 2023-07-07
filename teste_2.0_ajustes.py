@@ -9,91 +9,81 @@ intelbras-olt> onu show
 
 Free slots in GPON Link 1:
 =======================================
- 21   22   23   24   25   26   27   28
- 29   30   31   32   33   34   35   36
- 37   38   39   40   41   42   43   44
- 45   46   47   48   49   50   51   52
- 53   54   55   56   57   58   59   60
- 61   62   63   64   65   66   67   68
- 69   70   71   72   73   74   75   76
- 77   78   79   80   81   82   83   84
- 85   86   87   88   89   90   91   92
- 93   94   95   96   97   98   99  100
-101  102  103  104  105  106  107  108
-109  110  111  112  113  114  115  116
-117  118  119  120  121  122  123  124
-125  126  127  128
+ 41   42   43   44   45   46   47   48
+ 49   50   51   52   53   54   55   56
+ 57   58   59   60   61   62   63   64
+ 65   66   67   68   69   70   71   72
+ 73   74   75   76   77   78   79   80
+ 81   82   83   84   85   86   87   88
+ 89   90   91   92   93   94   95   96
+ 97   98   99  100  101  102  103  104
+105  106  107  108  109  110  111  112
+113  114  115  116  117  118  119  120
+121  122  123  124  125  126  127  128
 
 Discovered serial numbers
 ==============================================
 sernoID   Vendor  Serial Number   Model       Time Discovered
-1         ITBS    CFEBD229                    Jul 01 11:20:04 2023
-2         ITBS    CFEBD342                    Jul 01 11:20:04 2023
-3         ITBS    SDWE1235                    Jul 01 11:20:04 2022
-
-
-Free slots in GPON Link 2:
-=======================================
- 22   23   24   25   26   27   28   29
- 30   31   32   33   34   35   36   37
- 38   39   40   41   42   43   44   45
- 46   47   48   49   50   51   52   53
- 54   55   56   57   58   59   60   61
- 62   63   64   65   66   67   68   69
- 70   71   72   73   74   75   76   77
- 78   79   80   81   82   83   84   85
- 86   87   88   89   90   91   92   93
- 94   95   96   97   98   99  100  101
-102  103  104  105  106  107  108  109
-110  111  112  113  114  115  116  117
-118  119  120  121  122  123  124  125
-126  127  128
-
-Discovered serial numbers
-==============================================
-sernoID   Vendor  Serial Number   Model       Time Discovered
-1         ITBS    SDWE1255                    Jul 01 11:20:04 2022
-
-
-Free slots in GPON Link 3:
-=======================================
- 12   13   14   15   16   17   18   19
- 20   21   22   23   24   25   26   27
- 28   29   30   31   32   33   34   35
- 36   37   38   39   40   41   42   43
- 44   45   46   47   48   49   50   51
- 52   53   54   55   56   57   58   59
- 60   61   62   63   64   65   66   67
- 68   69   70   71   72   73   74   75
- 76   77   78   79   80   81   82   83
- 84   85   86   87   88   89   90   91
- 92   93   94   95   96   97   98   99
-100  101  102  103  104  105  106  107
-108  109  110  111  112  113  114  115
-116  117  118  119  120  121  122  123
-124  125  126  127  128
-
-Discovered serial numbers
-==============================================
-sernoID   Vendor  Serial Number   Model       Time Discovered
-
-Discovered serial numbers
+1         ITBS    CFEBD229        121AC       Jul 01 11:20:04 2023
+2         ITBS    CFEBD330        110Gb       Jul 01 11:20:04 2023
+3         ITBS    CFEBD319                    Jul 01 11:20:04 2023
+4         ITBS    SDWE1231        R1          Jul 01 11:20:04 2022
+5         ITBS    SDWE1652        R1v2        Jul 01 11:20:04 2022
 
 intelbras-olt>
 '''
 
 linhas = resultado.splitlines()
 
+modelos = """
+Modelos disponíveis:
+intelbras-110
+intelbras-110b
+intelbras-110g
+intelbras-121ac
+intelbras-121w
+intelbras-1420g
+intelbras-142ng
+intelbras-142nw
+intelbras-defaul
+
+===============
+110Gb  (intelbras-110b)
+121AC  (intelbras-121ac)
+R1v2   (intelbras-defaul)
+110Gi  (intelbras-110)
+R1     (intelbras-r1)
+"""
+
+profile_cpe = {
+    "110Gb": "intelbras-110b",
+    "121AC": "intelbras-121ac",
+    "R1v2": "intelbras-defaul",
+    "110Gi": "intelbras-110",
+    "R1": "intelbras-r1"
+} 
+
 # Percorrer as linhas
 for linha in linhas:
     if 'ITBS' in linha:
         linha_onu = linha.split()
 
+        print(linha_onu)
+
         id = linha_onu[0]
         vendor = linha_onu[1]
         serial_number = linha_onu[2]
+        model = linha_onu[3]
 
-        print(f'achei {id} onu discando: {vendor} | {serial_number}')
+        print(f'senor_id: {id}\nserial_number: {vendor} | {serial_number}\nmodel: {model}')
+
+        if model in profile_cpe:
+            print('me profile:', profile_cpe[model])
+
+        else:
+            print('me profile:', profile_cpe["R1v2"])
+        print(' ')
+
     else:
         pass
         #print('não existe onu discando nessa pon')
