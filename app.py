@@ -1,11 +1,13 @@
 import telebot, time
 from telebot import types
 from voalle import validacontrato, consulta_cliente
-from cto import valida_cto
-class Provisionamento:
+from cto import valida_cto, valida_porta
+
+class Provisionamento():
     def __init__(self):
         self.token = '5935745695:AAHcP4dAquoEEg0pv9YOlj0HHLiofldVMY4'
         self.bot = telebot.TeleBot(self.token)
+
 
     def menu_principal(self, chat_id):
         mensagem = 'Escolha uma opção:'
@@ -43,8 +45,6 @@ class Provisionamento:
         self.bot.send_message(id_usuario, mensagem, reply_markup=teclado_inline)
 
 
-
-
     def menu_confirmacao(self, chat_id):
         id_usuario = chat_id
 
@@ -57,7 +57,6 @@ class Provisionamento:
 
         mensagem = "Antes de continuar, por favor confirme as informações"
         self.bot.send_message(id_usuario, mensagem, reply_markup=teclado_inline)
-
 
 
     def provisionamento(self, chat_id):
@@ -87,9 +86,6 @@ class Provisionamento:
                 self.menu_confirmacao(id_usuario)
 
         self.bot.register_next_step_handler_by_chat_id(chat_id, captura_contrato)
-
-
-
 
 
     def solicita_cto(self, chat_id):
@@ -134,13 +130,39 @@ class Provisionamento:
                 self.solicita_cto(id_usuario)
 
             else:
+                # se a cto for valida ele cai aqui
                 self.bot.send_message(id_usuario, cto_validacao)
+                time.sleep(3)
+                self.solicita_porta_cto(id_usuario)
 
         self.bot.register_next_step_handler_by_chat_id(chat_id, captura_cto)
 
 
+    def solicita_porta_cto(self, chat_id):
+        mensagem = 'Informe a PORTA que conectou o cliente:\n_Sugestão: 1 à 16_'
+        id_usuario = chat_id
+        self.bot.send_message(id_usuario, mensagem, parse_mode="Markdown")
 
+        @self.bot.message_handler(func=lambda message: True)
+        def captura_porta(porta):
+            porta = porta.text
 
+            porta_cto = valida_porta(porta)
+
+            if porta_cto == 'não é numero':
+                self.bot.send_message(id_usuario, "Digite apenas numeros, por favor!")
+                time.sleep(1)
+                self.solicita_porta_cto(id_usuario)
+
+            elif porta_cto == 'porta invalida':
+                self.bot.send_message(id_usuario, "Digite apenas valores entre 1 e 16")
+                time.sleep(1)
+                self.solicita_porta_cto(id_usuario)
+
+            else:
+                self.bot.send_message(id_usuario, f"Porta válida {porta_cto}")
+    
+        self.bot.register_next_step_handler_by_chat_id(chat_id, captura_porta)
 
 
     def consulta(self, chat_id):
@@ -190,6 +212,7 @@ class Provisionamento:
         def escuta_botoes(call):
             self.tratativa_dos_botoes(call)
 
+        self.bot.infinity_polling()
         self.bot.infinity_polling()
 
 # Uso da classe Provisionamento

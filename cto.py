@@ -16,9 +16,12 @@ def valida_cto(cto):
     numero1 = cto[3]  # 1
     hifen = cto[4]  # -
     numero2 = cto[5]  # 1
+
     try:
         numero3 = cto[6]
-    except:
+        num_duplado = numero2 + numero3
+
+    except IndexError:
         pass
 
     if not letra2.isalpha() or not letra3.isalpha():
@@ -30,29 +33,28 @@ def valida_cto(cto):
     if hifen != "-":
         return 'hifen_invalido'
 
-    if not numero2.isdigit() or int(numero2) < 1 or int(numero2) > 16 and int(numero3) > 16:
+    if not numero2.isdigit() or int(numero2) < 1 or int(numero2) > 16:
         return 'numero2_invalido'
+    
+    try:
+        if not num_duplado.isdigit() or int(num_duplado) < 1 or int(num_duplado) > 16:
+            return 'numero2_invalido'
+    except:
+        pass
 
     return f'CTO VALIDA {cto}'
 
 
+def valida_porta(porta):
 
-"""
-range validos [['1-1 - 1-16'], ['2-1 - 2-3']]
+    if str(porta).isdigit():
+        porta_num = int(porta)
 
-
-
-primeirp numero varia de 1 a 2
-
-segundo numero varia de 1 a 16
-"""
-
-
-
-
-
-
-
-"""if __name__ == '__main__':
-    valida_cto('rac1   -  5')
-"""
+        if 1 <= porta_num <= 16:
+            return porta_num
+        
+        else:
+            return "porta invalida"
+        
+    else:
+        return 'não é numero'
