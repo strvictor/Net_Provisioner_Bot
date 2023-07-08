@@ -26,8 +26,6 @@ def buscapon(ip):
         tn.write(password.encode('ascii') + b"\n")
         time.sleep(1)  # Aguardar um segundo após enviar a senha
 
-    # Enviar o comando "onu show"
-
     comando = "onu show"
 
 
@@ -122,6 +120,6 @@ def buscapon(ip):
 jamic = '10.9.250.6'
 alca = '172.31.0.21'
 try:
-    buscapon(alca)
+    buscapon(jamic)
 except:
-    buscapon(alca)
+    buscapon(jamic)

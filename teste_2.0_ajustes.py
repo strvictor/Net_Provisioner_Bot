@@ -24,11 +24,9 @@ Free slots in GPON Link 1:
 Discovered serial numbers
 ==============================================
 sernoID   Vendor  Serial Number   Model       Time Discovered
-1         ITBS    CFEBD229        121AC       Jul 01 11:20:04 2023
-2         ITBS    CFEBD330        110Gb       Jul 01 11:20:04 2023
-3         ITBS    CFEBD319                    Jul 01 11:20:04 2023
-4         ITBS    SDWE1231        R1          Jul 01 11:20:04 2022
-5         ITBS    SDWE1652        R1v2        Jul 01 11:20:04 2022
+34        ITBS    CFEBD229        121AC       Jul 01 11:20:04 2023
+31        ITBS    CFEBD229        121AC       Jul 01 11:20:04 2023
+11        ITBS    CFEBD212        110Gi       Jul 01 11:20:04 2023
 
 intelbras-olt>
 '''
@@ -62,13 +60,13 @@ profile_cpe = {
     "110Gi": "intelbras-110",
     "R1": "intelbras-r1"
 } 
-
+onus_discando = []
 # Percorrer as linhas
 for linha in linhas:
     if 'ITBS' in linha:
         linha_onu = linha.split()
 
-        print(linha_onu)
+        onus_discando.append(linha_onu)
 
         id = linha_onu[0]
         vendor = linha_onu[1]
@@ -120,3 +118,4 @@ for pon, posicao in dicionario.items():
     print(f"Na {pon} tem o valor {posicao[0]} disponivel para o provisionamento")
 
 
+print(f'tem {len(onus_discando)} discando\n{onus_discando}')

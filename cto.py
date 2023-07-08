@@ -1,5 +1,5 @@
 
-inicial_cto_validas = ['R', 'P', 'G']
+inicial_cto_validas = ['R', 'P', 'G', 'V']
 
 def valida_cto(cto):
 
