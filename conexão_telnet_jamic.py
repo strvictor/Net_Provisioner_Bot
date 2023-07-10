@@ -123,7 +123,5 @@ def buscapon(ip):
 
 jamic = '10.9.250.6'
 alca = '172.31.0.21'
-try:
-    buscapon(jamic)
-except:
-    buscapon(jamic)
+
+buscapon(jamic)
