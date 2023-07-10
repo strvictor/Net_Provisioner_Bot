@@ -1,45 +1,67 @@
-import re
+import telnetlib, re, time
 
 modelos_de_ativacao = {
     "110Gb": "intelbras-110b",
     "121AC": "intelbras-121ac",
-    "R1v2": "intelbras-defaul",
+    "R1v2": "intelbras-r1",
     "110Gi": "intelbras-110",
     "R1": "intelbras-r1"
 } 
 
-def busca_onu_na_pon(ip_olt, pon):
+
+def busca_onu_na_pon(ponto_de_acesso, pon):
 
     onus_discando = []
     lista = []
     dicionario = {}
     chave_atual = None
+    
+    if ponto_de_acesso == 'alca':
+        ip = '172.31.0.21'
 
-    resultado = '''
-    intelbras-olt> onu show
+    elif ponto_de_acesso == 'jamic':
+        ip = '10.9.250.6'
 
-    Free slots in GPON Link 1:
-    =======================================
-    41   42   43   44   45   46   47   48
-    49   50   51   52   53   54   55   56
-    57   58   59   60   61   62   63   64
-    65   66   67   68   69   70   71   72
-    73   74   75   76   77   78   79   80
-    81   82   83   84   85   86   87   88
-    89   90   91   92   93   94   95   96
-    97   98   99  100  101  102  103  104
-    105  106  107  108  109  110  111  112
-    113  114  115  116  117  118  119  120
-    121  122  123  124  125  126  127  128
+    HOST = str(ip)  # Endereço do dispositivo Telnet
+    PORT = 23  # Porta Telnet padrão
 
-    Discovered serial numbers
-    ==============================================
-    sernoID   Vendor  Serial Number   Model       Time Discovered
-    11        ITBS    CFEBD231        110Gb       Jul 01 11:20:04 2023
-    intelbras-olt>
-    '''
+    # Obter nome de usuário e senha do usuário
+    username = 'admin'
+    password = 'admin'
+
+    # Criar objeto Telnet e conectar ao dispositivo
+    tn = telnetlib.Telnet(HOST, PORT)
+
+    # Fazer login
+    tn.read_until(b"olt8820plus login: ")
+    tn.write(username.encode('ascii') + b"\n")
+    if password:
+        tn.read_until(b"Password: ")
+        tn.write(password.encode('ascii') + b"\n")
+        time.sleep(1)  # Aguardar um segundo após enviar a senha
+
+    comando = f"onu show gpon {pon}"
+
+    tn.write(f"{comando}\n".encode('ascii'))
+
+    # Aguardar a resposta
+    time.sleep(1)
+
+    # Ler a resposta até encontrar o prompt novamente
+    resultado = tn.read_until(b"olt8820plus login:", timeout=5).decode('ascii')
+
+    # Fechar a conexão Telnet
+    tn.close()
 
     linhas = resultado.splitlines()
+
+    inicio_filtro = linhas.index(f'intelbras-olt> {comando}')
+    linhas = linhas[inicio_filtro:]
+
+    linhas = resultado.splitlines()
+
+
+ #######################################################################
 
     for linha in linhas:
         if 'ITBS' in linha:
@@ -76,13 +98,14 @@ def busca_onu_na_pon(ip_olt, pon):
 
     # percore o dicionario e exibe as informações
     for pon_, posicao in dicionario.items():
+
         # posição disponivel pra onu na pon
         posicao_disponivel_na_pon = posicao[0]
 
 
 
     if len(onus_discando) == 0:
-        return 'Não tem nenhuma onu discando na pon' 
+        return 'sem onu discando nessa pon' 
     
     elif len(onus_discando) == 1:
 
@@ -99,15 +122,15 @@ def busca_onu_na_pon(ip_olt, pon):
         else:
             modelo_permitido = modelos_de_ativacao['R1v2']  
 
-        return f'''Achei essa onu discando
-provisionamento preenchido
+#        return f'''
+#*PROVISIONAMENTO PREENCHIDO*
 
-{id_onu}
-{fabricante}
-{serial}
-{modelo}
-{modelo_permitido}
-'''
+#📌 *Índice:* 01
+#🔍 *Serial:* {fabricante}{serial}
+#💡 *Modelo:* {modelo}
+
+#'''    
+        return fabricante, serial, modelo, modelo_permitido, posicao_disponivel_na_pon, pon
 
     else:
         # tem mais de uma onu discando
@@ -147,8 +170,18 @@ provisionamento preenchido
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 def provisiona_olt(ip_olt, pon):
     pass
 
 
-print(busca_onu_na_pon('123', '4'))

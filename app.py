@@ -2,12 +2,15 @@ import telebot, time
 from telebot import types
 from voalle import validacontrato, consulta_cliente
 from cto import valida_cto, valida_porta, pon_cto
+from olt import busca_onu_na_pon
 
 class Provisionamento():
     def __init__(self):
         self.token = '5935745695:AAHcP4dAquoEEg0pv9YOlj0HHLiofldVMY4'
         self.bot = telebot.TeleBot(self.token)
         self.cto_validada = list()
+        self.ponto_de_acesso = list()
+        self.pppoe_cliente = list()
 
 
     def menu_principal(self, chat_id):
@@ -82,12 +85,13 @@ class Provisionamento():
 
             else:
                 # se cair aqui significa que achou um contrato valido
-                if mensagem_validacao:
-                    self.bot.send_message(id_usuario, mensagem_validacao)
-                else:
-                    self.bot.send_message(id_usuario, "Erro: Mensagem vazia ou inválida.")
+                self.bot.send_message(id_usuario, mensagem_validacao)
+                
+                self.ponto_de_acesso.append(mensagem_validacao.split('\n')[5].split(':')[1].strip())
 
-                time.sleep(3)
+                self.pppoe_cliente.append(mensagem_validacao.split('\n')[9].split(':')[1].strip())
+
+                time.sleep(1)
                 self.menu_confirmacao(id_usuario)
 
         self.bot.register_next_step_handler_by_chat_id(chat_id, captura_contrato)
@@ -140,7 +144,7 @@ class Provisionamento():
 
                 #adiciona cto validada na lista
                 self.cto_validada.append(cto_validacao)
-                time.sleep(2)
+                time.sleep(1)
                 self.solicita_porta_cto(id_usuario)
 
         self.bot.register_next_step_handler_by_chat_id(chat_id, captura_cto)
@@ -169,18 +173,62 @@ class Provisionamento():
 
             else:
                 self.bot.send_message(id_usuario, f"PORTA VÁLIDA {porta_cto}")
-                time.sleep(2)
+                time.sleep(1)
 
                 # pegando qual é a pon da cto informada
                 pon_consulta = pon_cto(self.cto_validada[0])
 
-                # enviando informções da pon valida
-                self.bot.send_message(id_usuario, f"Buscando na OLT...\nPON = {pon_consulta}")
+                # verifica se tem algum ponto de acesso na agulha
+                if len(self.ponto_de_acesso) == 0:
+                    self.bot.send_message(id_usuario, 'Digite o contrato do cliente para continuar')
+                    self.provisionamento(id_usuario)
 
+                else:
+                    #chama  afunção pra tratar os retornos da olt
+                    self.consulta_olt(id_usuario, self.ponto_de_acesso[0], pon_consulta)
+
+                
                 # limpando a lista para uma nova consulta
                 self.cto_validada.clear()
+                self.ponto_de_acesso.clear()
+                #self.pppoe_cliente.clear()
 
         self.bot.register_next_step_handler_by_chat_id(chat_id, captura_porta)
+
+
+
+
+    def consulta_olt(self, chat_id, ponto_de_acesso, pon):
+
+        id_usuario = chat_id
+        self.bot.send_message(id_usuario, f"Buscando na OLT...\nPON = {pon}")
+
+        try:
+            itbs, serial, modelo, modelo_permtido, posicao_na_pon, pon_atual = busca_onu_na_pon(ponto_de_acesso, pon)
+
+            retorno_final = f'''
+fabricante: {itbs}
+serial gpon: {serial}
+modelo: {modelo}
+modelo pra ativar: {modelo_permtido}
+posição disponivel pra ativar: {posicao_na_pon}
+pon do cliente: {pon_atual}
+
+> onu set gpon {pon_atual} onu {posicao_na_pon} serial-number {itbs}{serial} meprof {modelo_permtido}
+
+> bridge add gpon {pon_atual} onu {posicao_na_pon} downlink vlan 501 tagged eth 1
+
+>  onu description add gpon {pon_atual} onu {posicao_na_pon} text {self.pppoe_cliente[0]}
+'''
+
+        except:
+            retorno_final = busca_onu_na_pon(ponto_de_acesso, pon)
+
+        self.pppoe_cliente.clear()
+
+        self.bot.send_message(id_usuario, retorno_final, parse_mode="Markdown")
+
+
 
 
     def consulta(self, chat_id):

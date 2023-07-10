@@ -28,11 +28,11 @@
          "dados":{
             "contrato":"102030",
             "cliente":"cliente3",
-            "ponto de acesso":"alça-viaria",
-            "cidade":"acará",
+            "ponto de acesso":"alca",
+            "cidade":"acara",
             "bairro":"ponte",
             "ip":"10.1.0.50",
-            "pppoe":"teste.333",
+            "pppoe":"teste.ativacao.bot",
             "senha":"112233"
          }
       },

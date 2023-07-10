@@ -6,6 +6,10 @@ lista = []
 dicionario = {}
 chave_atual = None
 
+jamic = '10.9.250.6'
+alca = '172.31.0.21'
+
+
 def buscapon(ip):
 
     HOST = str(ip)  # Endereço do dispositivo Telnet

@@ -32,8 +32,8 @@ Bairro: {dado['dados']['bairro']}
 Ip: {dado['dados']['ip']}
 Pppoe: {dado['dados']['pppoe']}
 Senha: {dado['dados']['senha']}
-                                        
-                    """
+"""
+
             if len(verifica) == 0:
                 return "contrato não localizado"
         
