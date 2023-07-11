@@ -38,7 +38,7 @@ def busca_onu_na_pon(ponto_de_acesso, pon):
 
     linhas = resultado.splitlines()
 
-    if f'intelbras-olt> {comando}' not in  linhas:str
+    if f'intelbras-olt> {comando}' not in  linhas:
         print(f'{comando} não encontrado')
         busca_onu_na_pon(ponto_de_acesso, pon)
 
