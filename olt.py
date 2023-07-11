@@ -55,10 +55,10 @@ def busca_onu_na_pon(ponto_de_acesso, pon):
 
     linhas = resultado.splitlines()
 
+
     inicio_filtro = linhas.index(f'intelbras-olt> {comando}')
     linhas = linhas[inicio_filtro:]
 
-    linhas = resultado.splitlines()
 
 
  #######################################################################
@@ -174,14 +174,7 @@ def busca_onu_na_pon(ponto_de_acesso, pon):
 
 
 
-
-
-
-
-
-
-
-def provisiona_olt(ip_olt, pon):
+def provisiona_olt(ponto_de_acesso, pon):
     pass
 
 

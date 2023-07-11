@@ -49,6 +49,27 @@ class Provisionamento():
         self.bot.send_message(id_usuario, mensagem, reply_markup=teclado_inline)
 
 
+
+
+
+
+    def menu_confirmacao_olt(self, chat_id):
+        id_usuario = chat_id
+
+        teclado_inline = types.InlineKeyboardMarkup(row_width=1)
+
+        confirmar = types.InlineKeyboardButton("Tudo certo!", callback_data='tudo_certo_olt')
+        tentar_novamente = types.InlineKeyboardButton("Tentar Novamente", callback_data='tentar_novamente_cto')
+
+        teclado_inline.add(confirmar, tentar_novamente)
+        mensagem = "Antes de continuar, por favor confirme as informações"
+        self.bot.send_message(id_usuario, mensagem, reply_markup=teclado_inline)
+
+
+
+
+
+
     def menu_confirmacao(self, chat_id):
         id_usuario = chat_id
 
@@ -224,11 +245,15 @@ pon do cliente: {pon_atual}
         except:
             retorno_final = busca_onu_na_pon(ponto_de_acesso, pon)
 
-        self.pppoe_cliente.clear()
+            self.bot.send_message(id_usuario, retorno_final, parse_mode="Markdown")
+            self.menu_confirmacao_olt(id_usuario)
+
+
+
 
         self.bot.send_message(id_usuario, retorno_final, parse_mode="Markdown")
 
-
+        self.pppoe_cliente.clear()
 
 
     def consulta(self, chat_id):
@@ -261,7 +286,15 @@ pon do cliente: {pon_atual}
 
         elif call.data == 'incorreto':
             print('botão incorreto chamado')
-            self.provisionamento(id_usuario)            
+            self.provisionamento(id_usuario)
+
+        elif call.data == 'tudo_certo_olt':
+            print('botão tudo certo olt chamado') 
+
+        elif call.data == 'tentar_novamente_cto':
+            print('botão tentar novamente cto chamado')          
+            self.solicita_cto(id_usuario)
+
 
     def inicia_bot(self):
         @self.bot.message_handler(func=lambda message: True)

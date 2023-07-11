@@ -42,4 +42,4 @@ with open('olt_8820_find_return.txt', 'r') as arquivo:
 
     # percore o dicionario e exibe as informações
     for pon, posicao in dicionario.items():
-        print(f"Na {pon} tem o valor {posicao[0]} disponivel para o provisionamento opa")
+        print(f"Na {pon} tem o valor {posicao[0]} disponivel para o provisionamento")

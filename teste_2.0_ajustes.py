@@ -5,7 +5,7 @@ dicionario = {}
 chave_atual = None
 
 resultado = '''
-intelbras-olt> onu show
+intelbras-olt> onu show gpon 1
 
 Free slots in GPON Link 1:
 =======================================

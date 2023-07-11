@@ -32,7 +32,7 @@
             "cidade":"acara",
             "bairro":"ponte",
             "ip":"10.1.0.50",
-            "pppoe":"teste.ativacao.bot",
+            "pppoe":"primeira.ativacao.bot",
             "senha":"112233"
          }
       },
