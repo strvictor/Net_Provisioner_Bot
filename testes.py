@@ -3,6 +3,7 @@ import telnetlib, re, time
 modelos_de_ativacao = {
     "110Gb": "intelbras-110b",
     "121AC": "intelbras-121ac",
+    "120AC": "intelbras-121ac",
     "R1v2": "intelbras-r1",
     "110Gi": "intelbras-110",
     "R1": "intelbras-r1"
@@ -45,24 +46,34 @@ def busca_onu_na_pon(ponto_de_acesso, pon):
     resultado = tn.read_until(b"olt8820plus login:", timeout=5).decode('ascii')
 
     linhas = resultado.splitlines()
+    tn.close()
 
     if f'intelbras-olt> {comando}' not in  linhas:
-        print(f'{comando} não encontrado')
-        busca_onu_na_pon(ponto_de_acesso, pon)
+        #print(f'{comando} não encontrado')
+        
+        inicio_filtro = linhas.index(f'Free slots in GPON Link {pon}:')
+        filtrado = linhas[inicio_filtro:]
 
+        print(filtrado)
+
+
+        return formata_retorno(filtrado, pon, ponto_de_acesso)
+    
+        #chama_func = busca_onu_na_pon(ponto_de_acesso, pon)
+        #return chama_func
+         
     else:
 
         inicio_filtro = linhas.index(f'intelbras-olt> {comando}')
         filtrado = linhas[inicio_filtro:]
-
-        formatado = formata_retorno(filtrado, pon)
-        print(formatado)
-
-    tn.close()
+        print(filtrado)
+        return formata_retorno(filtrado, pon, ponto_de_acesso)
 
 
 
-def formata_retorno(linhas, pon):
+
+
+def formata_retorno(linhas, pon, ponto_de_acesso):
     onus_discando = []
     lista = []
     dicionario = {}
@@ -101,23 +112,28 @@ def formata_retorno(linhas, pon):
             # adiciona as posições à pon correspondente no dicionario
             dicionario[chave_atual].append(item)
 
+    temporario = list()
     # percore o dicionario e exibe as informações
     for pon_, posicao in dicionario.items():
 
         # posição disponivel pra onu na pon
         if posicao:
-            return f'posição: {posicao[0]}' 
+            #print(f'posição: {posicao[0]}')
+            temporario.append(posicao[0])
         else:
-            print('fui chamado')
-            busca_onu_na_pon('alca', pon)
+            #print('fui chamado')
+            return busca_onu_na_pon(ponto_de_acesso, pon)
+            
+    #print('exibe info chamada')
+    return exibe_info(onus_discando, temporario[0], pon)
 
-    exibe_info(onus_discando, posicao[0], pon)
+    
 
 
 def exibe_info(onus_discando, posicao, pon):
 
     if len(onus_discando) == 0:
-        print('sem onu discando nessa pon') 
+        return f'sem onu discando nessa pon {pon}'
     
     elif len(onus_discando) == 1:
 
@@ -132,11 +148,14 @@ def exibe_info(onus_discando, posicao, pon):
             modelo_permitido = modelos_de_ativacao[modelo]
 
         else:
-            modelo_permitido = modelos_de_ativacao['R1v2']  
+            modelo_permitido = modelos_de_ativacao['R1v2']
+            modelo = 'modelo não encontrado'  
     
         return fabricante, serial, modelo, modelo_permitido, posicao, pon
+    
 
-    else:
+
+""" else:
         # tem mais de uma onu discando
         for i, onu in enumerate(onus_discando):
 
@@ -170,8 +189,10 @@ def exibe_info(onus_discando, posicao, pon):
 {modelo}
 {modelo_permitido}
 '''
+"""
+retorno = busca_onu_na_pon('alca', '7')
 
-busca_onu_na_pon('alca', '2')
+print(retorno)
 
 
 

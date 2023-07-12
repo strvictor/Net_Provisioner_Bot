@@ -2,7 +2,7 @@ import telebot, time
 from telebot import types
 from voalle import validacontrato, consulta_cliente
 from cto import valida_cto, valida_porta, pon_cto
-from olt import busca_onu_na_pon
+from olt import busca_onu_na_pon, provisiona
 
 class Provisionamento():
     def __init__(self):
@@ -49,10 +49,6 @@ class Provisionamento():
         self.bot.send_message(id_usuario, mensagem, reply_markup=teclado_inline)
 
 
-
-
-
-
     def menu_confirmacao_olt(self, chat_id):
         id_usuario = chat_id
 
@@ -66,8 +62,18 @@ class Provisionamento():
         self.bot.send_message(id_usuario, mensagem, reply_markup=teclado_inline)
 
 
+    def menu_confirmacao_olt_onu_n_encontrada(self, chat_id):
+        id_usuario = chat_id
 
+        teclado_inline = types.InlineKeyboardMarkup(row_width=1)
 
+        tentar_novamente = types.InlineKeyboardButton("Tentar Novamente", callback_data='tentar_novamente_cto')
+        volta_menu = types.InlineKeyboardButton("Volta Menu", callback_data='volta_menu')
+
+        teclado_inline.add(tentar_novamente, volta_menu)
+
+        mensagem = "Não consegui localizar nenhuma ONU discando nessa pon 🙁\nO que você deseja fazer?"
+        self.bot.send_message(id_usuario, mensagem, reply_markup=teclado_inline)
 
 
     def menu_confirmacao(self, chat_id):
@@ -206,6 +212,7 @@ class Provisionamento():
 
                 else:
                     #chama  afunção pra tratar os retornos da olt
+                    print(self.ponto_de_acesso[0])
                     self.consulta_olt(id_usuario, self.ponto_de_acesso[0], pon_consulta)
 
                 
@@ -225,35 +232,42 @@ class Provisionamento():
         self.bot.send_message(id_usuario, f"Buscando na OLT...\nPON = {pon}")
 
         try:
-            itbs, serial, modelo, modelo_permtido, posicao_na_pon, pon_atual = busca_onu_na_pon(ponto_de_acesso, pon)
+            self.itbs, self.serial, self.modelo, self.modelo_permtido, self.posicao_na_pon, self.pon_atual, self.ponto_acesso = busca_onu_na_pon(ponto_de_acesso, pon)
 
             retorno_final = f'''
-fabricante: {itbs}
-serial gpon: {serial}
-modelo: {modelo}
-modelo pra ativar: {modelo_permtido}
-posição disponivel pra ativar: {posicao_na_pon}
-pon do cliente: {pon_atual}
+📌 *PROVISIONAMENTO PREENCHIDO* 📌
 
-> onu set gpon {pon_atual} onu {posicao_na_pon} serial-number {itbs}{serial} meprof {modelo_permtido}
+ℹ️ *ONU ENCONTRADA:* ℹ️
 
-> bridge add gpon {pon_atual} onu {posicao_na_pon} downlink vlan 501 tagged eth 1
+🔒 *Serial GPON:* {self.itbs}{self.serial}
+💡 *Modelo:* {self.modelo}
+''' 
+            self.bot.send_message(id_usuario, retorno_final, parse_mode="Markdown")
 
->  onu description add gpon {pon_atual} onu {posicao_na_pon} text {self.pppoe_cliente[0]}
-'''
+            time.sleep(2)
+            self.menu_confirmacao_olt(id_usuario)
 
         except:
             retorno_final = busca_onu_na_pon(ponto_de_acesso, pon)
 
-            self.bot.send_message(id_usuario, retorno_final, parse_mode="Markdown")
-            self.menu_confirmacao_olt(id_usuario)
-
-
-
-
-        self.bot.send_message(id_usuario, retorno_final, parse_mode="Markdown")
+            if retorno_final == False:
+                time.sleep(2)
+                self.menu_confirmacao_olt_onu_n_encontrada(id_usuario)
+        
 
         self.pppoe_cliente.clear()
+
+
+
+    def provisiona_onu(self, itbs, serial, modelo_permtido, posicao_na_pon, pon_atual, ponto_de_acesso, chat_id):
+        id_usuario = chat_id
+        gpon_sn = itbs + serial
+        modelo_profile = modelo_permtido
+        gpon = pon_atual
+        posi_disponivel = posicao_na_pon
+
+        provisiona(gpon, posi_disponivel, gpon_sn, modelo_profile, pppoe)
+
 
 
     def consulta(self, chat_id):
@@ -289,11 +303,16 @@ pon do cliente: {pon_atual}
             self.provisionamento(id_usuario)
 
         elif call.data == 'tudo_certo_olt':
-            print('botão tudo certo olt chamado') 
+            print('botão tudo certo olt chamado')
+
 
         elif call.data == 'tentar_novamente_cto':
             print('botão tentar novamente cto chamado')          
             self.solicita_cto(id_usuario)
+
+        elif call.data == 'volta_menu':
+            print('botão tentar novamente cto chamado')          
+            self.menu_principal(id_usuario)
 
 
     def inicia_bot(self):
