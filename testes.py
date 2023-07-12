@@ -1,5 +1,13 @@
 import telnetlib, re, time
 
+modelos_de_ativacao = {
+    "110Gb": "intelbras-110b",
+    "121AC": "intelbras-121ac",
+    "R1v2": "intelbras-r1",
+    "110Gi": "intelbras-110",
+    "R1": "intelbras-r1"
+} 
+
 def busca_onu_na_pon(ponto_de_acesso, pon):
 
     if ponto_de_acesso == 'alca':
@@ -47,14 +55,14 @@ def busca_onu_na_pon(ponto_de_acesso, pon):
         inicio_filtro = linhas.index(f'intelbras-olt> {comando}')
         filtrado = linhas[inicio_filtro:]
 
-        formatado = formata_retorno(filtrado)
+        formatado = formata_retorno(filtrado, pon)
         print(formatado)
 
     tn.close()
 
 
 
-def formata_retorno(linhas):
+def formata_retorno(linhas, pon):
     onus_discando = []
     lista = []
     dicionario = {}
@@ -98,12 +106,112 @@ def formata_retorno(linhas):
 
         # posição disponivel pra onu na pon
         if posicao:
-            return 'posição:', posicao[0] 
+            return f'posição: {posicao[0]}' 
         else:
             print('fui chamado')
-            busca_onu_na_pon('alca', '6')
+            busca_onu_na_pon('alca', pon)
 
-busca_onu_na_pon('alca', '6')
+    exibe_info(onus_discando, posicao[0], pon)
+
+
+def exibe_info(onus_discando, posicao, pon):
+
+    if len(onus_discando) == 0:
+        print('sem onu discando nessa pon') 
+    
+    elif len(onus_discando) == 1:
+
+        onus_discando = onus_discando[0]
+
+        id_onu = onus_discando[0]
+        fabricante = onus_discando[1]
+        serial = onus_discando[2]
+        modelo = onus_discando[3]
+
+        if modelo in modelos_de_ativacao:
+            modelo_permitido = modelos_de_ativacao[modelo]
+
+        else:
+            modelo_permitido = modelos_de_ativacao['R1v2']  
+    
+        return fabricante, serial, modelo, modelo_permitido, posicao, pon
+
+    else:
+        # tem mais de uma onu discando
+        for i, onu in enumerate(onus_discando):
+
+            print(f'{i + 1}_ escolha a sua onu {onu[1:3]}')
+            #return f'{i}_ escolha a onu {onu}'
+
+        escolha = int(input("> "))
+
+        # verifica se oq o cara escolheu ta certo
+        if escolha <= 0 or escolha > len(onus_discando):
+            return 'não existe esse indice'
+                                
+        
+        onus_discando = onus_discando[escolha - 1]
+
+        id_onu = onus_discando[0]
+        fabricante = onus_discando[1]
+        serial = onus_discando[2]
+        modelo = onus_discando[3]
+
+        if modelo in modelos_de_ativacao:
+            modelo_permitido = modelos_de_ativacao[modelo]  
+
+        else:
+            modelo_permitido = modelos_de_ativacao['R1v2'] 
+    
+        return f'''onu {escolha} selecionada
+{id_onu}
+{fabricante}
+{serial}
+{modelo}
+{modelo_permitido}
+'''
+
+busca_onu_na_pon('alca', '2')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
