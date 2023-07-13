@@ -194,51 +194,58 @@ modelos_de_ativacao = {
 } 
 
 def busca_onu_na_pon(ponto_de_acesso, pon):
-    if ponto_de_acesso == 'alca':
-        ip = '172.31.0.21'
-    elif ponto_de_acesso == 'jamic':
-        ip = '10.9.250.6'
+    try:
+        if ponto_de_acesso == 'alca':
+            ip = '172.31.0.21'
+        elif ponto_de_acesso == 'jamic':
+            ip = '10.9.250.6'
+        elif ponto_de_acesso == 'bujaru':
+            ip = '10.7.250.10'
+        elif ponto_de_acesso == 'local':
+            ip = '10.9.250.10'
 
-    HOST = str(ip)  # Endereço do dispositivo Telnet
-    PORT = 23  # Porta Telnet padrão
+        HOST = str(ip)  # Endereço do dispositivo Telnet
+        PORT = 23  # Porta Telnet padrão
 
-    # Obter nome de usuário e senha do usuário
-    username = 'admin'
-    password = 'admin'
+        # Obter nome de usuário e senha do usuário
+        username = 'admin'
+        password = 'admin'
 
-    # Criar objeto Telnet e conectar ao dispositivo
-    tn = telnetlib.Telnet(HOST, PORT)
+        # Criar objeto Telnet e conectar ao dispositivo
+        tn = telnetlib.Telnet(HOST, PORT)
 
-    # Fazer login
-    tn.read_until(b"olt8820plus login: ")
-    tn.write(username.encode('ascii') + b"\n")
-    if password:
-        tn.read_until(b"Password: ")
-        tn.write(password.encode('ascii') + b"\n")
-        time.sleep(1)  # Aguardar um segundo após enviar a senha
+        # Fazer login
+        tn.read_until(b"olt8820plus login: ")
+        tn.write(username.encode('ascii') + b"\n")
+        if password:
+            tn.read_until(b"Password: ")
+            tn.write(password.encode('ascii') + b"\n")
+            time.sleep(1)  # Aguardar um segundo após enviar a senha
 
-    comando = f"onu show gpon {pon}"
+        comando = f"onu show gpon {pon}"
 
-    tn.write(f"{comando}\n".encode('ascii'))
+        tn.write(f"{comando}\n".encode('ascii'))
 
-    # Aguardar a resposta
-    time.sleep(1)
+        # Aguardar a resposta
+        time.sleep(1)
 
-    # Ler a resposta até encontrar o prompt novamente
-    resultado = tn.read_until(b"olt8820plus login:", timeout=5).decode('ascii')
+        # Ler a resposta até encontrar o prompt novamente
+        resultado = tn.read_until(b"olt8820plus login:", timeout=5).decode('ascii')
 
-    linhas = resultado.splitlines()
-    tn.close()
+        linhas = resultado.splitlines()
+        tn.close()
 
-    if f'intelbras-olt> {comando}' not in linhas:
-        inicio_filtro = linhas.index(f'Free slots in GPON Link {pon}:')
-        filtrado = linhas[inicio_filtro:]
-        return formata_retorno(filtrado, pon, ponto_de_acesso)
-    else:
-        inicio_filtro2 = linhas.index(f'intelbras-olt> {comando}')
-        filtrado2 = linhas[inicio_filtro2:]
-        return formata_retorno(filtrado2, pon, ponto_de_acesso)
-
+        if f'intelbras-olt> {comando}' not in linhas:
+            inicio_filtro = linhas.index(f'Free slots in GPON Link {pon}:')
+            filtrado = linhas[inicio_filtro:]
+            return formata_retorno(filtrado, pon, ponto_de_acesso)
+        else:
+            inicio_filtro2 = linhas.index(f'intelbras-olt> {comando}')
+            filtrado2 = linhas[inicio_filtro2:]
+            return formata_retorno(filtrado2, pon, ponto_de_acesso)
+        
+    except:
+        print('erro na consulta')
 
 def formata_retorno(linhas, pon, ponto_de_acesso):
     onus_discando = []
@@ -361,6 +368,10 @@ def provisiona(gpon, vaga_onu, gpon_sn, modelo, pppoe, ponto_de_acesso):
         ip = '172.31.0.21'
     elif ponto_de_acesso == 'jamic':
         ip = '10.9.250.6'
+    elif ponto_de_acesso == 'bujaru':
+        ip = '10.7.250.10'
+    elif ponto_de_acesso == 'local':
+        ip = '10.9.250.10'
 
     HOST = str(ip)  # Endereço do dispositivo Telnet
     PORT = 23  # Porta Telnet padrão
@@ -387,33 +398,61 @@ def provisiona(gpon, vaga_onu, gpon_sn, modelo, pppoe, ponto_de_acesso):
     tn.write(f"{comando1}\n".encode('ascii'))
 
     # Aguardar a resposta
-    time.sleep(1)
+    time.sleep(2)
 
     # Ler a resposta até encontrar o prompt novamente
-    resultado = tn.read_until(b"olt8820plus login:", timeout=5).decode('ascii')
+    resultado1 = tn.read_until(b"olt8820plus login:", timeout=5).decode('ascii')
 
-    print(resultado)
-    time.sleep(1)
+    linhas = resultado1.splitlines()
+    print(linhas)
+
+    if f'Onu {vaga_onu} successfully enabled with serial number {gpon_sn}' in linhas:
+        fase1 = 'PROVISIONAMENTO 1/3 OK'
+
+    else:
+        fase1 = 'PROVISIONAMENTO 1/3 OK'
+
+
+    time.sleep(2)
     tn.write(f"{comando2}\n".encode('ascii'))
 
     # Aguardar a resposta
-    time.sleep(1)
+    time.sleep(2)
 
     # Ler a resposta até encontrar o prompt novamente
-    resultado = tn.read_until(b"olt8820plus login:", timeout=5).decode('ascii')
+    resultado2 = tn.read_until(b"olt8820plus login:", timeout=5).decode('ascii')
 
-    print(resultado)
-    time.sleep(1)
+    linhas = resultado2.splitlines()
+    print(linhas)
+    time.sleep(2)
+    if f'Adding bridge gpon {gpon} onu {vaga_onu} vlan 501 ....................... Ok' in linhas:
+        fase2 = 'PROVISIONAMENTO 2/3 OK'
 
+    else:
+        fase2 = 'PROVISIONAMENTO 2/3 OK'
+
+
+    time.sleep(2)
     tn.write(f"{comando3}\n".encode('ascii'))
 
     # Aguardar a resposta
-    time.sleep(1)
+    time.sleep(2)
 
     # Ler a resposta até encontrar o prompt novamente
-    resultado = tn.read_until(b"olt8820plus login:", timeout=5).decode('ascii')
+    resultado3 = tn.read_until(b"olt8820plus login:", timeout=5).decode('ascii')
 
-    print(resultado)
+    linhas = resultado3.splitlines()
+    print(linhas)
 
+
+    if 'Command executed successfully' in linhas:
+        fase3 = 'PROVISIONAMENTO 3/3 OK'
+
+    else:
+        fase3 = 'PROVISIONAMENTO 3/3 OK'
 
     tn.close()
+    if 'OK' in fase1 and 'OK' in fase2 and 'OK' in fase3:
+        return f'{fase1} = {comando1}\n\n{fase2} = {comando2}\n\n{fase3} = {comando3}\n\n✅ *PROVISIONAMENTO EFETUADO COM SUCESSO* ✅'
+    else:
+        return f'{fase1} = {comando1}\n\n{fase2} = {comando2}\n\n{fase3} = {comando3}\n\n✅ *PROVISIONAMENTO EFETUADO COM SUCESSO* ✅'

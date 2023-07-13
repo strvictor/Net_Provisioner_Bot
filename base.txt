@@ -16,11 +16,11 @@
          "dados":{
             "contrato":"123456",
             "cliente":"cliente2",
-            "ponto de acesso":"bujaru",
+            "ponto de acesso":"local",
             "cidade":"bujaru",
             "bairro":"vila-bjr",
             "ip":"10.1.0.0",
-            "pppoe":"teste.321",
+            "pppoe":"teste.provi.gbs",
             "senha":"112233"
          }
       },

@@ -224,8 +224,6 @@ class Provisionamento():
         self.bot.register_next_step_handler_by_chat_id(chat_id, captura_porta)
 
 
-
-
     def consulta_olt(self, chat_id, ponto_de_acesso, pon):
 
         id_usuario = chat_id
@@ -251,27 +249,30 @@ class Provisionamento():
             retorno_final = busca_onu_na_pon(ponto_de_acesso, pon)
 
             if retorno_final == False:
-                time.sleep(2)
+                time.sleep(1)
                 self.menu_confirmacao_olt_onu_n_encontrada(id_usuario)
         
 
-        self.pppoe_cliente.clear()
-
-
-
-    def provisiona_onu(self, itbs, serial, modelo_permtido, posicao_na_pon, pon_atual, ponto_de_acesso, chat_id):
+    def provisiona_onu(self, itbs, serial, modelo_permtido, posicao_na_pon, pon_atual, ponto_de_acesso, pppoe, chat_id):
         id_usuario = chat_id
         gpon_sn = itbs + serial
         modelo_profile = modelo_permtido
         gpon = pon_atual
         posi_disponivel = posicao_na_pon
+        usuario_pppoe = pppoe
+        pontode_acesso = ponto_de_acesso
 
-        provisiona(gpon, posi_disponivel, gpon_sn, modelo_profile, pppoe)
+        self.bot.send_message(id_usuario, '*INICIANDO O PROVISIONAMENTO...*', parse_mode="Markdown")
 
+        resultado = provisiona(gpon, posi_disponivel, gpon_sn, modelo_profile, usuario_pppoe, pontode_acesso)
+
+        self.bot.send_message(id_usuario, resultado, parse_mode="Markdown")
+
+        self.pppoe_cliente.clear()
 
 
     def consulta(self, chat_id):
-        mensagem = consulta_cliente()
+        mensagem = consulta_cliente() 
         id_usuario = chat_id
         self.bot.send_message(id_usuario, mensagem)
 
@@ -304,6 +305,8 @@ class Provisionamento():
 
         elif call.data == 'tudo_certo_olt':
             print('botão tudo certo olt chamado')
+            self.provisiona_onu(self.itbs, self.serial, self.modelo_permtido, self.posicao_na_pon, self.pon_atual, self.ponto_acesso, self.pppoe_cliente[0], id_usuario)
+
 
 
         elif call.data == 'tentar_novamente_cto':

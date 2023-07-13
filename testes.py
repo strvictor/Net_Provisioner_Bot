@@ -1,4 +1,4 @@
-import telnetlib, re, time
+'''import telnetlib, re, time
 
 modelos_de_ativacao = {
     "110Gb": "intelbras-110b",
@@ -182,69 +182,24 @@ def exibe_info(onus_discando, posicao, pon):
         else:
             modelo_permitido = modelos_de_ativacao['R1v2'] 
     
-        return f'''onu {escolha} selecionada
-{id_onu}
-{fabricante}
-{serial}
-{modelo}
-{modelo_permitido}
+        return f'''#onu {escolha} selecionada
+#{id_onu}
+#{fabricante}
+#{serial}
+#{modelo}
+#{modelo_permitido}
 '''
 """
 retorno = busca_onu_na_pon('alca', '7')
 
 print(retorno)
 
+'''
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+'''
 
 def busca_onu_na_pon(ponto_de_acesso):
     
@@ -312,5 +267,67 @@ def busca_onu_na_pon(ponto_de_acesso):
     # Fechar a conexão Telnet
     tn.close()
 
+'''
 
 
+
+resposta = '''
+onu set gpon 2 onu 22 serial-number ITBSCF461282 meprof intelbras-r1
+  _____ _   _ _______ ______ _      ____  _____             _____   
+ |_   _| \ | |__   __|  ____| |    |  _ \|  __ \     /\    / ____|  
+   | | |  \| |  | |  | |__  | |    | |_) | |__) |   /  \  | (___    
+   | | | . ` |  | |  |  __| | |    |  _ <|  _  /   / /\ \  \___ \   
+  _| |_| |\  |  | |  | |____| |____| |_) | | \ \  / ____ \ ____) |  
+ |_____|_| \_|  |_|  |______|______|____/|_|  \_\/_/    \_\_____/   
+
+           ____  _   _______ ___   ___ ___   ___  _
+          / __ \| | |__   __/ _ \ / _ \__ \ / _ \(_)
+         | |  | | |    | | | (_) | (_) | ) | | | |_
+         | |  | | |    | |  > _ < > _ < / /| | | | |
+         | |__| | |____| | | (_) | (_) / /_| |_| | |
+          \____/|______|_|  \___/ \___/____|\___/|_|
+
+
+Intelbras S.A.
+Industria de Telecomunicacao Eletronica Brasileira
+
+(!) 4 abnormals reboots happened, the first was in 2021-01-19 05:21
+
+(!) Warning, there are 37 active alarms
+
+< 2 onu 22 serial-number ITBSCF461282 meprof intelbras-r1
+
+Onu 22 successfully enabled with serial number ITBSCF461282
+intelbras-olt> bridge add gpon 2 onu 22 downlink vlan 501 tagged eth 1
+Adding bridge gpon 2 onu 22 vlan 501 ....................... Ok
+intelbras-olt>
+onu description add gpon 2 onu 22 text primeira.ativacao.bot
+Command executed successfully
+intelbras-olt>
+'''
+
+
+linhas = resposta.splitlines()
+
+#print(linhas)
+
+if 'Onu 22 successfully enabled with serial number ITBSCF461282' in linhas:
+    fase1 = 'PROVISIONAMENTO 1/3 OK'
+
+else:
+    fase1 = 'PROVISIONAMENTO 1/3 algo deu errado'
+
+if 'Adding bridge gpon 2 onu 22 vlan 501 ....................... Ok' in linhas:
+    fase2 = 'PROVISIONAMENTO 2/3 OK'
+
+else:
+    fase2 = 'PROVISIONAMENTO 2/3 algo deu errado'
+
+if 'Command executed successfully' in linhas:
+    fase3 = 'PROVISIONAMENTO 3/3 OK'
+
+else:
+    fase3 = 'PROVISIONAMENTO 3/3 algo deu errado'
+
+
+print(fase1, fase2, fase3)
