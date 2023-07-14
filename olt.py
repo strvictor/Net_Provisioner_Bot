@@ -244,8 +244,8 @@ def busca_onu_na_pon(ponto_de_acesso, pon):
             filtrado2 = linhas[inicio_filtro2:]
             return formata_retorno(filtrado2, pon, ponto_de_acesso)
         
-    except:
-        print('erro na consulta')
+    except Exception as e:
+        print('erro na consulta:', str(e))
 
 def formata_retorno(linhas, pon, ponto_de_acesso):
     onus_discando = []
@@ -467,5 +467,6 @@ def provisiona(gpon, vaga_onu, gpon_sn, modelo, pppoe, ponto_de_acesso):
 
 
     print(resultado_final)
+    resultado_final.clear()
     return f'*provisionamento efetuado*\n\n{encontrado1}\n{encontrado2}\n{encontrado3}'
   

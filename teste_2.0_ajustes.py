@@ -25,33 +25,13 @@ Discovered serial numbers
 ==============================================
 sernoID   Vendor  Serial Number   Model       Time Discovered
 34        ITBS    CFEBD229        121AC       Jul 01 11:20:04 2023
-31        ITBS    CFEBD229        121AC       Jul 01 11:20:04 2023
+31        ITBS    CFEBD228        Riv2        Jul 01 11:20:04 2023
 11        ITBS    CFEBD212        110Gi       Jul 01 11:20:04 2023
 
 intelbras-olt>
 '''
 
 linhas = resultado.splitlines()
-
-modelos = """
-Modelos disponíveis:
-intelbras-110
-intelbras-110b
-intelbras-110g
-intelbras-121ac
-intelbras-121w
-intelbras-1420g
-intelbras-142ng
-intelbras-142nw
-intelbras-defaul
-
-===============
-110Gb  (intelbras-110b)
-121AC  (intelbras-121ac)
-R1v2   (intelbras-defaul)
-110Gi  (intelbras-110)
-R1     (intelbras-r1)
-"""
 
 modelos_de_ativacao = {
     "110Gb": "intelbras-110b",
@@ -133,7 +113,7 @@ else:
     # tem mais de uma onu discando
     for i, onu in enumerate(onus_discando):
 
-        print(f'{i + 1}_ escolha a sua onu {onu[1:3]}')
+        print(f'{i + 1}_ escolha a sua onu {onu[2]}')
         #return f'{i}_ escolha a onu {onu}'
 
     escolha = int(input("> "))

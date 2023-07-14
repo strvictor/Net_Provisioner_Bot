@@ -215,7 +215,6 @@ class Provisionamento():
                     print(self.ponto_de_acesso[0])
                     self.consulta_olt(id_usuario, self.ponto_de_acesso[0], pon_consulta)
 
-                
                 # limpando a lista para uma nova consulta
                 self.cto_validada.clear()
                 self.ponto_de_acesso.clear()
@@ -225,14 +224,25 @@ class Provisionamento():
 
 
     def consulta_olt(self, chat_id, ponto_de_acesso, pon):
-
         id_usuario = chat_id
         self.bot.send_message(id_usuario, f"Buscando na OLT...\nPON = {pon}")
 
         try:
-            self.itbs, self.serial, self.modelo, self.modelo_permtido, self.posicao_na_pon, self.pon_atual, self.ponto_acesso = busca_onu_na_pon(ponto_de_acesso, pon)
+            print('chamei a função busca onu na pon')
+            retorno = busca_onu_na_pon(ponto_de_acesso, pon)
+            
+            if retorno == False:
+                print('cai no false')
+                
+                time.sleep(1)
+                self.menu_confirmacao_olt_onu_n_encontrada(id_usuario)
+                
+            else:
+                print('cai no else, com os paramentros')
+                
+                self.itbs, self.serial, self.modelo, self.modelo_permtido, self.posicao_na_pon, self.pon_atual, self.ponto_acesso = retorno
 
-            retorno_final = f'''
+                retorno_final = f'''
 📌 *PROVISIONAMENTO PREENCHIDO* 📌
 
 ℹ️ *ONU ENCONTRADA:* ℹ️
@@ -240,17 +250,19 @@ class Provisionamento():
 🔒 *Serial GPON:* {self.itbs}{self.serial}
 💡 *Modelo:* {self.modelo}
 ''' 
-            self.bot.send_message(id_usuario, retorno_final, parse_mode="Markdown")
+                self.bot.send_message(id_usuario, retorno_final, parse_mode="Markdown")
 
-            time.sleep(1)
-            self.menu_confirmacao_olt(id_usuario)
+                time.sleep(1)
+                self.menu_confirmacao_olt(id_usuario)
 
         except:
+            print('cai no except')
             retorno_final = busca_onu_na_pon(ponto_de_acesso, pon)
 
             if retorno_final == False:
                 time.sleep(1)
                 self.menu_confirmacao_olt_onu_n_encontrada(id_usuario)
+
         
 
     def provisiona_onu(self, itbs, serial, modelo_permtido, posicao_na_pon, pon_atual, ponto_de_acesso, pppoe, chat_id):
