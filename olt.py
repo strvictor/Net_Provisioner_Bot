@@ -361,7 +361,7 @@ def exibe_info(onus_discando, posicao, pon, ponto_de_acesso):
 '''
 """
 
-
+resultado_final = []
 
 def provisiona(gpon, vaga_onu, gpon_sn, modelo, pppoe, ponto_de_acesso):
     if ponto_de_acesso == 'alca':
@@ -398,61 +398,74 @@ def provisiona(gpon, vaga_onu, gpon_sn, modelo, pppoe, ponto_de_acesso):
     tn.write(f"{comando1}\n".encode('ascii'))
 
     # Aguardar a resposta
-    time.sleep(2)
+    time.sleep(0)
 
     # Ler a resposta até encontrar o prompt novamente
     resultado1 = tn.read_until(b"olt8820plus login:", timeout=5).decode('ascii')
-
-    linhas = resultado1.splitlines()
-    print(linhas)
-
-    if f'Onu {vaga_onu} successfully enabled with serial number {gpon_sn}' in linhas:
-        fase1 = 'PROVISIONAMENTO 1/3 OK'
-
-    else:
-        fase1 = 'PROVISIONAMENTO 1/3 OK'
+    resultado_final.append(resultado1)
 
 
-    time.sleep(2)
+    time.sleep(0)
     tn.write(f"{comando2}\n".encode('ascii'))
 
     # Aguardar a resposta
-    time.sleep(2)
+    time.sleep(0)
 
     # Ler a resposta até encontrar o prompt novamente
     resultado2 = tn.read_until(b"olt8820plus login:", timeout=5).decode('ascii')
-
-    linhas = resultado2.splitlines()
-    print(linhas)
-    time.sleep(2)
-    if f'Adding bridge gpon {gpon} onu {vaga_onu} vlan 501 ....................... Ok' in linhas:
-        fase2 = 'PROVISIONAMENTO 2/3 OK'
-
-    else:
-        fase2 = 'PROVISIONAMENTO 2/3 OK'
+    resultado_final.append(resultado2)
 
 
-    time.sleep(2)
+    time.sleep(0)
     tn.write(f"{comando3}\n".encode('ascii'))
 
     # Aguardar a resposta
-    time.sleep(2)
+    time.sleep(0)
 
     # Ler a resposta até encontrar o prompt novamente
     resultado3 = tn.read_until(b"olt8820plus login:", timeout=5).decode('ascii')
+    resultado_final.append(resultado3)
 
-    linhas = resultado3.splitlines()
-    print(linhas)
-
-
-    if 'Command executed successfully' in linhas:
-        fase3 = 'PROVISIONAMENTO 3/3 OK'
-
-    else:
-        fase3 = 'PROVISIONAMENTO 3/3 OK'
-
+    time.sleep(0)
     tn.close()
-    if 'OK' in fase1 and 'OK' in fase2 and 'OK' in fase3:
-        return f'{fase1} = {comando1}\n\n{fase2} = {comando2}\n\n{fase3} = {comando3}\n\n✅ *PROVISIONAMENTO EFETUADO COM SUCESSO* ✅'
+
+    encontrado1 = False
+    encontrado2 = False
+    encontrado3 = False
+
+    for valor in resultado_final:
+
+        if f'Onu {vaga_onu} successfully enabled with serial number {gpon_sn}' in valor:
+            encontrado1 = True
+
+        elif f'Adding bridge gpon {gpon} onu {vaga_onu} vlan 501 ........................ Ok' in valor:
+            encontrado2 = True
+
+        elif 'Command executed successfully' in valor:
+            encontrado3 = True
+
+
+    if not encontrado1:
+        print(f"Valor 1 Onu {vaga_onu} successfully enabled with serial number {gpon_sn} não encontrado.")
+
     else:
-        return f'{fase1} = {comando1}\n\n{fase2} = {comando2}\n\n{fase3} = {comando3}\n\n✅ *PROVISIONAMENTO EFETUADO COM SUCESSO* ✅'
+        print('comando 1 ok')
+
+    if not encontrado2:
+        print(f"Valor 2 Adding bridge gpon {gpon} onu {vaga_onu} vlan 501 ........................ Ok não encontrado.")
+
+    else:
+        print('comando 2 ok')
+
+    if not encontrado3:
+        print(f"Valor 3 Command executed successfully não encontrado.")
+
+    else:
+        print('comando 3 ok')
+
+
+
+
+    print(resultado_final)
+    return f'*provisionamento efetuado*\n\n{encontrado1}\n{encontrado2}\n{encontrado3}'
+  

@@ -242,7 +242,7 @@ class Provisionamento():
 ''' 
             self.bot.send_message(id_usuario, retorno_final, parse_mode="Markdown")
 
-            time.sleep(2)
+            time.sleep(1)
             self.menu_confirmacao_olt(id_usuario)
 
         except:
@@ -269,6 +269,10 @@ class Provisionamento():
         self.bot.send_message(id_usuario, resultado, parse_mode="Markdown")
 
         self.pppoe_cliente.clear()
+
+        print(self.pppoe_cliente, self.ponto_de_acesso, self.cto_validada)
+        time.sleep(2)
+        self.menu_principal(id_usuario)
 
 
     def consulta(self, chat_id):

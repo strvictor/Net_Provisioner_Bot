@@ -53,7 +53,7 @@ R1v2   (intelbras-defaul)
 R1     (intelbras-r1)
 """
 
-profile_cpe = {
+modelos_de_ativacao = {
     "110Gb": "intelbras-110b",
     "121AC": "intelbras-121ac",
     "R1v2": "intelbras-defaul",
@@ -65,26 +65,8 @@ onus_discando = []
 for linha in linhas:
     if 'ITBS' in linha:
         linha_onu = linha.split()
-
+        # adiciona na lista as onus discando
         onus_discando.append(linha_onu)
-
-        id = linha_onu[0]
-        vendor = linha_onu[1]
-        serial_number = linha_onu[2]
-        model = linha_onu[3]
-
-        print(f'senor_id: {id}\nserial_number: {vendor} | {serial_number}\nmodel: {model}')
-
-        if model in profile_cpe:
-            print('me profile:', profile_cpe[model])
-
-        else:
-            print('me profile:', profile_cpe["R1v2"])
-        print(' ')
-
-    else:
-        pass
-        #print('não existe onu discando nessa pon')
 
     # Encontrar os números em cada linha
     numeros = re.findall(r'\d+', linha)
@@ -113,9 +95,72 @@ for item in lista:
         # adiciona as posições à pon correspondente no dicionario
         dicionario[chave_atual].append(item)
 
+temporario = list()
 # percore o dicionario e exibe as informações
-for pon, posicao in dicionario.items():
-    print(f"Na {pon} tem o valor {posicao[0]} disponivel para o provisionamento")
+for pon_, posicao in dicionario.items():
+
+    # posição disponivel pra onu na pon
+    if posicao:
+        #print(f'posição: {posicao[0]}')
+        temporario.append(posicao[0])
 
 
-print(f'tem {len(onus_discando)} discando\n{onus_discando}')
+if len(onus_discando) == 0:
+    print('sem onu discando')
+    
+elif len(onus_discando) == 1:
+    onus_discando = onus_discando[0]
+    id_onu = onus_discando[0]
+    fabricante = onus_discando[1]
+    serial = onus_discando[2]
+    modelo = onus_discando[3]
+
+    if modelo in modelos_de_ativacao:
+        modelo_permitido = modelos_de_ativacao[modelo]
+    else:
+        modelo_permitido = modelos_de_ativacao['R1v2']
+        modelo = 'modelo não encontrado'
+
+    print(f'''onu selecionada
+    {id_onu}
+    {fabricante}
+    {serial}
+    {modelo}
+    {modelo_permitido}
+    ''')
+    
+else:
+    # tem mais de uma onu discando
+    for i, onu in enumerate(onus_discando):
+
+        print(f'{i + 1}_ escolha a sua onu {onu[1:3]}')
+        #return f'{i}_ escolha a onu {onu}'
+
+    escolha = int(input("> "))
+
+    # verifica se oq o cara escolheu ta certo
+    if escolha <= 0 or escolha > len(onus_discando):
+        print('não existe esse indice')
+
+    else:                
+
+        onus_discando = onus_discando[escolha - 1]
+
+        id_onu = onus_discando[0]
+        fabricante = onus_discando[1]
+        serial = onus_discando[2]
+        modelo = onus_discando[3]
+
+        if modelo in modelos_de_ativacao:
+            modelo_permitido = modelos_de_ativacao[modelo]  
+
+        else:
+            modelo_permitido = modelos_de_ativacao['R1v2'] 
+
+        print(f'''onu {escolha} selecionada
+{id_onu}
+{fabricante}
+{serial}
+{modelo}
+{modelo_permitido}
+''')
