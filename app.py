@@ -238,22 +238,55 @@ class Provisionamento():
                 self.menu_confirmacao_olt_onu_n_encontrada(id_usuario)
                 
             else:
-                print('cai no else, com os paramentros')
-                
-                self.itbs, self.serial, self.modelo, self.modelo_permtido, self.posicao_na_pon, self.pon_atual, self.ponto_acesso = retorno
+                try:
+                    print('cai no else, com os paramentros')
+                    
+                    self.itbs, self.serial, self.modelo, self.modelo_permtido, self.posicao_na_pon, self.pon_atual, self.ponto_acesso = retorno
 
-                retorno_final = f'''
+                    retorno_final = f'''
 📌 *PROVISIONAMENTO PREENCHIDO* 📌
 
 ℹ️ *ONU ENCONTRADA:* ℹ️
 
 🔒 *Serial GPON:* {self.itbs}{self.serial}
 💡 *Modelo:* {self.modelo}
-''' 
-                self.bot.send_message(id_usuario, retorno_final, parse_mode="Markdown")
+    ''' 
+                    self.bot.send_message(id_usuario, retorno_final, parse_mode="Markdown")
 
-                time.sleep(1)
-                self.menu_confirmacao_olt(id_usuario)
+                    time.sleep(1)
+                    self.menu_confirmacao_olt(id_usuario)
+                    
+                except Exception as e:
+                    
+                    onus_discando, posicao_na_pon, pon_atual, ponto_acesso, quantidade_onu = retorno
+                       
+                    print(f'erro foi: {str(e)}')
+                        
+                    print(onus_discando, posicao_na_pon, pon_atual, ponto_acesso, quantidade_onu)
+
+                    mensagem = f'''
+ℹ️ *Encontramos {quantidade_onu} ONU(s) disponíveis:* ℹ️
+'''
+
+                    for i, onu in enumerate(onus_discando):
+                        indice = i + 1
+                        fabricante = onu[1]
+                        serial = onu[2]
+                        modelo = onu[3]
+
+                        mensagem += f'''
+🆔 *ID:* 0{indice}
+🔒 *Serial GPON:* `{fabricante}{serial}`
+💡 *Modelo:* {modelo}
+
+'''                    
+                    self.bot.send_message(id_usuario, mensagem, parse_mode="Markdown")
+
+
+                    #print(mensagem)
+
+
+
 
         except:
             print('cai no except')

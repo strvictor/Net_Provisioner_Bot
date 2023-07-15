@@ -33,114 +33,131 @@ intelbras-olt>
 
 linhas = resultado.splitlines()
 
-modelos_de_ativacao = {
-    "110Gb": "intelbras-110b",
-    "121AC": "intelbras-121ac",
-    "R1v2": "intelbras-defaul",
-    "110Gi": "intelbras-110",
-    "R1": "intelbras-r1"
-} 
-onus_discando = []
-# Percorrer as linhas
-for linha in linhas:
-    if 'ITBS' in linha:
-        linha_onu = linha.split()
-        # adiciona na lista as onus discando
-        onus_discando.append(linha_onu)
+def teste(linhas):
+    modelos_de_ativacao = {
+        "110Gb": "intelbras-110b",
+        "121AC": "intelbras-121ac",
+        "R1v2": "intelbras-defaul",
+        "110Gi": "intelbras-110",
+        "R1": "intelbras-r1"
+    } 
+    onus_discando = []
+    # Percorrer as linhas
+    for linha in linhas:
+        if 'ITBS' in linha:
+            linha_onu = linha.split()
+            # adiciona na lista as onus discando
+            onus_discando.append(linha_onu)
 
-    # Encontrar os números em cada linha
-    numeros = re.findall(r'\d+', linha)
-    # Verificar se existem números na linha
-    if numeros:
-        if len(numeros) == 1:
-            numeros = f'PON {numeros}'.replace("'", '').replace('[', '').replace(']', '').strip()
-            # adiciona na lista a pon atual
-            lista.append(numeros)
+        # Encontrar os números em cada linha
+        numeros = re.findall(r'\d+', linha)
+        # Verificar se existem números na linha
+        if numeros:
+            if len(numeros) == 1:
+                numeros = f'PON {numeros}'.replace("'", '').replace('[', '').replace(']', '').strip()
+                # adiciona na lista a pon atual
+                lista.append(numeros)
+
+            else:
+                for numero in numeros:
+                    # adiciona na lista as posições disponiveis de todas as pons
+                    lista.append(numero)
+
+    #converte para dicionario (facilita pegar os valores)
+    for item in lista:
+
+        #verifica se começa com pon (que é o divisor)
+        if item.startswith("PON"):
+            chave_atual = item
+            #cria a chave com a pon correspondente
+            dicionario[chave_atual] = []
 
         else:
-            for numero in numeros:
-                # adiciona na lista as posições disponiveis de todas as pons
-                lista.append(numero)
+            # adiciona as posições à pon correspondente no dicionario
+            dicionario[chave_atual].append(item)
 
-#converte para dicionario (facilita pegar os valores)
-for item in lista:
+    temporario = list()
+    # percore o dicionario e exibe as informações
+    for pon_, posicao in dicionario.items():
 
-    #verifica se começa com pon (que é o divisor)
-    if item.startswith("PON"):
-        chave_atual = item
-        #cria a chave com a pon correspondente
-        dicionario[chave_atual] = []
-
-    else:
-        # adiciona as posições à pon correspondente no dicionario
-        dicionario[chave_atual].append(item)
-
-temporario = list()
-# percore o dicionario e exibe as informações
-for pon_, posicao in dicionario.items():
-
-    # posição disponivel pra onu na pon
-    if posicao:
-        #print(f'posição: {posicao[0]}')
-        temporario.append(posicao[0])
+        # posição disponivel pra onu na pon
+        if posicao:
+            #print(f'posição: {posicao[0]}')
+            temporario.append(posicao[0])
 
 
-if len(onus_discando) == 0:
-    print('sem onu discando')
-    
-elif len(onus_discando) == 1:
-    onus_discando = onus_discando[0]
-    id_onu = onus_discando[0]
-    fabricante = onus_discando[1]
-    serial = onus_discando[2]
-    modelo = onus_discando[3]
-
-    if modelo in modelos_de_ativacao:
-        modelo_permitido = modelos_de_ativacao[modelo]
-    else:
-        modelo_permitido = modelos_de_ativacao['R1v2']
-        modelo = 'modelo não encontrado'
-
-    print(f'''onu selecionada
-    {id_onu}
-    {fabricante}
-    {serial}
-    {modelo}
-    {modelo_permitido}
-    ''')
-    
-else:
-    # tem mais de uma onu discando
-    for i, onu in enumerate(onus_discando):
-
-        print(f'{i + 1}_ escolha a sua onu {onu[2]}')
-        #return f'{i}_ escolha a onu {onu}'
-
-    escolha = int(input("> "))
-
-    # verifica se oq o cara escolheu ta certo
-    if escolha <= 0 or escolha > len(onus_discando):
-        print('não existe esse indice')
-
-    else:                
-
-        onus_discando = onus_discando[escolha - 1]
-
+    if len(onus_discando) == 0:
+        return  'sem onu discando'
+        
+    elif len(onus_discando) == 1:
+        onus_discando = onus_discando[0]
         id_onu = onus_discando[0]
         fabricante = onus_discando[1]
         serial = onus_discando[2]
         modelo = onus_discando[3]
 
         if modelo in modelos_de_ativacao:
-            modelo_permitido = modelos_de_ativacao[modelo]  
-
+            modelo_permitido = modelos_de_ativacao[modelo]
         else:
-            modelo_permitido = modelos_de_ativacao['R1v2'] 
+            modelo_permitido = modelos_de_ativacao['R1v2']
+            modelo = 'modelo não encontrado'
 
-        print(f'''onu {escolha} selecionada
-{id_onu}
-{fabricante}
-{serial}
-{modelo}
-{modelo_permitido}
-''')
+        return f'''onu selecionada
+        {id_onu}
+        {fabricante}
+        {serial}
+        {modelo}
+        {modelo_permitido}
+        '''
+        
+    else:
+        opcoes = list()
+        # tem mais de uma onu discando
+        #print(onus_discando)
+        for onu in onus_discando:
+            modelo = onu[3]
+
+            if modelo in modelos_de_ativacao:
+                modelo_permitido = modelos_de_ativacao[modelo]  
+                onu.append(modelo_permitido)
+                
+            else:
+                modelo_permitido = modelos_de_ativacao['R1v2']
+                onu.append(modelo_permitido) 
+                
+                
+        print(onus_discando)
+
+        
+
+        escolha = int(input("> "))
+
+        # verifica se oq o cara escolheu ta certo
+        if escolha <= 0 or escolha > len(onus_discando):
+            print('não existe esse indice')
+
+        else:                
+
+            onus_discando = onus_discando[escolha - 1]
+
+            id_onu = onus_discando[0]
+            fabricante = onus_discando[1]
+            serial = onus_discando[2]
+            modelo = onus_discando[3]
+
+            if modelo in modelos_de_ativacao:
+                modelo_permitido = modelos_de_ativacao[modelo]  
+
+            else:
+                modelo_permitido = modelos_de_ativacao['R1v2'] 
+
+            print(f'''onu {escolha} selecionada
+    {id_onu}
+    {fabricante}
+    {serial}
+    {modelo}
+    {modelo_permitido}
+    ''')
+
+
+teste(linhas)
