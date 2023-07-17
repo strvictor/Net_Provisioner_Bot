@@ -267,7 +267,6 @@ class Provisionamento():
                     mensagem = f'''
 ℹ️ *Encontramos {quantidade_onu} ONU(s) disponíveis:* ℹ️
 '''
-
                     for i, onu in enumerate(onus_discando):
                         indice = i + 1
                         fabricante = onu[1]
@@ -292,7 +291,6 @@ class Provisionamento():
                 self.menu_confirmacao_olt_onu_n_encontrada(id_usuario)
                 
                 
-
     def trata_mais_de_uma_onu(self, onus_discando, posicao_na_pon, pon_atual, ponto_acesso, chat_id):
         id_usuario = chat_id
         mensagem = 'Copie o *Serial GPON* da _ONU_ que quer provisionar e cole aqui:'
@@ -324,9 +322,6 @@ class Provisionamento():
                     self.pon_atual = pon_atual
                     self.ponto_acesso = ponto_acesso
                     
-                    
-                    
-                
                     retorno_final = f'''
 📌 *PROVISIONAMENTO PREENCHIDO* 📌
 
@@ -338,17 +333,12 @@ class Provisionamento():
                     self.bot.send_message(id_usuario, retorno_final, parse_mode="Markdown")
                     time.sleep(1)
                     self.menu_confirmacao_olt(id_usuario)
-                    
-                    
-                
+                     
             if achei is False:
                 
                 self.bot.send_message(id_usuario, 'Não encontrei esse gpon, verifique novamente, por favor')
             
                 self.trata_mais_de_uma_onu(onus_discando, posicao_na_pon, pon_atual, ponto_acesso, chat_id)
-             
-
-            
             
         self.bot.register_next_step_handler_by_chat_id(chat_id, captura_gpon)
     
@@ -381,6 +371,7 @@ class Provisionamento():
         id_usuario = chat_id
         self.bot.send_message(id_usuario, mensagem)
 
+
     def tratativa_dos_botoes(self, call):
         id_usuario = call.message.chat.id
 
@@ -411,8 +402,6 @@ class Provisionamento():
         elif call.data == 'tudo_certo_olt':
             print('botão tudo certo olt chamado')
             self.provisiona_onu(self.itbs, self.serial, self.modelo_permtido, self.posicao_na_pon, self.pon_atual, self.ponto_acesso, self.pppoe_cliente[0], id_usuario)
-
-
 
         elif call.data == 'tentar_novamente_cto':
             print('botão tentar novamente cto chamado')          

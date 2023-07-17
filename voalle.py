@@ -45,4 +45,3 @@ Senha: {dado['dados']['senha']}
 
 def consulta_cliente():
     return '> Em andamento...'
-

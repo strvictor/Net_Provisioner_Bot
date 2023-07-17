@@ -1,4 +1,3 @@
-
 inicial_cto_validas = ['R', 'P', 'G', 'V', 'L']
 
 def valida_cto(cto):

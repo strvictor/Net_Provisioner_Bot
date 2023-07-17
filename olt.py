@@ -199,7 +199,6 @@ def provisiona(gpon, vaga_onu, gpon_sn, modelo, pppoe, ponto_de_acesso):
     resultado1 = tn.read_until(b"olt8820plus login:", timeout=5).decode('ascii')
     resultado_final.append(resultado1)
 
-
     time.sleep(0)
     tn.write(f"{comando2}\n".encode('ascii'))
 
@@ -209,7 +208,6 @@ def provisiona(gpon, vaga_onu, gpon_sn, modelo, pppoe, ponto_de_acesso):
     # Ler a resposta até encontrar o prompt novamente
     resultado2 = tn.read_until(b"olt8820plus login:", timeout=5).decode('ascii')
     resultado_final.append(resultado2)
-
 
     time.sleep(0)
     tn.write(f"{comando3}\n".encode('ascii'))
@@ -239,7 +237,6 @@ def provisiona(gpon, vaga_onu, gpon_sn, modelo, pppoe, ponto_de_acesso):
         elif 'Command executed successfully' in valor:
             encontrado3 = True
 
-
     if not encontrado1:
         print(f"Valor 1 Onu {vaga_onu} successfully enabled with serial number {gpon_sn} não encontrado.")
 
@@ -258,7 +255,6 @@ def provisiona(gpon, vaga_onu, gpon_sn, modelo, pppoe, ponto_de_acesso):
     else:
         print('comando 3 ok')
 
-
     print(resultado_final)
     resultado_final.clear()
     
@@ -272,6 +268,5 @@ O usuário *{pppoe}* foi provisionado com sucesso.
 
 🎉 Parabéns! Seu usuário foi ativado com sucesso! 👍
 '''
-
     return f'{retorno_final}\n\n{encontrado1}\n{encontrado2}\n{encontrado3}'
   
