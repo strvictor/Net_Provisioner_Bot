@@ -1,0 +1,21 @@
+intelbras-olt> onu status gpon 1 onu 10 details
+GPON 1
+
+     Serial                OMCI Config     ONU         ONU         OLT         OLT        Distance          GPON              Uptime                 Power          Bias       Temperature  LAN Port  LAN Port
+ONU  Number    OperStatus   Status       Rx Power    Tx Power    Rx Power    Tx Power       (km)          ONU Status       ddd:hh:mm:ss    Auto   Voltage (V)   Current (mA)       (C)       Status     Speed
+=== ========= =========== ============= =========== =========== =========== =========== =========== ==================== ================ ====== ============= ============== ============= ======== ===========
+10  2CEA0325  Active      OK            -18.21 dBm  2.68 dBm    -20.46 dBm  4.97 dBm    0.516                            0:5:21:18        yes    3.3           11.628         48.5          1        13
+intelbras-olt>
+
+
+
+
+['', 
+'intelbras-olt> onu status gpon 1 onu 10 details', 
+'GPON 1', 
+'', 
+'     Serial                OMCI Config     ONU         ONU         OLT         OLT        Distance 
+         GPON              Uptime                 Power          Bias       Temperature', 
+'ONU  Number    OperStatus   Status       Rx Power    Tx Power    Rx Power    Tx Power       (km)          ONU Status       ddd:hh:mm:ss    Auto   Voltage (V)   Current (mA)       (C)',
+ 
+'=== ========= =========== ============= =========== =========== =========== =========== =========== ==================== ================ ====== ============= ============== =============', '10  2CEA0325  Active      OK            -18.21 dBm  2.68 dBm    -20.76 dBm  4.96 dBm    0.516                            0:5:13:50        yes    3.3           11.628         48.5', 'intelbras-olt>', '']

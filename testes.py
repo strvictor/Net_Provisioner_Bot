@@ -270,7 +270,7 @@ def busca_onu_na_pon(ponto_de_acesso):
 '''
 
 
-
+'''
 lista = ['\r\nonu set gpon 7 onu 1 serial-number ITBSCFC03303 meprof intelbras-121ac\r\n  _____ _   _ _______ ______ _      ____  _____             _____\r\n |_   _| \\ | |__   __|  ____| |    |  _ \\|  __ \\     /\\    / ____|\r\n   | | |  \\| |  | |  | |__  | |    | |_) | |__) |   /  \\  | (___\r\n   | | | . ` |  | |  |  __| | |    |  _ <|  _ <   /   / /\\ \\  \\___ \\ \r\n  _| |_| |\\  |  | |  | |____| |____| |_) | | \\ \\  / ____ \\ ____) |\r\n |_____|_| \\_|  |_|  |______|______|____/|_|  \\_\\/_/    \\_\\_____/\r\n\r\n           ____  _   _______ ___   ___ ___   ___  _\r\n          / __ \\| | |__   __/ _ \\ / _ \\__ \\ / _ \\(_)\r\n         | |  | | |    | | | (_) | (_) | ) |  | | |_\r\n         | |  | | |    | |  > _ < > _ < / /| | | | |\r\n         | |__| | |____| | | (_) | (_) / /_| |_| | |\r\n          \\____/|______|_|  \\___/ \\___/____|\\___/|_|\r\n\r\n\r\nIntelbras S.A.\r\nIndustria de Telecomunicacao Eletronica Brasileira\r\n\r\n\x1b[1;31m(!) 4 abnormals reboots happened, the first was in 2021-01-19 05:21\x1b[0m\r\n\r\n\x1b[93m(!) Warning, there are 36 active alarms\x1b[0m\r\n\r\nintelbras-olt> onu set gpon 7 onu 1 serial-number ITBSCFC03303 meprof intelbr\r< 7 onu 1 serial-number ITBSCFC03303 meprof intelbra                         \x08\x08\x08\x08\x08\x08\x08\x08\x08\x08\x08\x08\x08\x08\x08\x08\x08\x08\x08\x08\x08\x08\x08\x08s-121ac\r\nOnu 1 successfully enabled with serial number ITBSCFC03303\r\nintelbras-olt> ', 'bridge add gpon 7 onu 1 downlink vlan 501 tagged eth 1\r\nAdding bridge gpon 7 onu 1 vlan 501 ........................ Ok\r\nintelbras-olt> ', 'onu description add gpon 7 onu 1 text primeira.ativacao.bot\r\nCommand executed successfully\r\nintelbras-olt> ']
 
 valor1 = 'Onu 1 successfully enabled with serial number ITBSCFC03303'
@@ -287,4 +287,71 @@ for item in lista:
  
 
 
+'''
+'''
+import telebot
+from telebot import types
 
+# Substitua 'SEU_TOKEN' pelo token do seu bot
+bot = telebot.TeleBot('5935745695:AAHcP4dAquoEEg0pv9YOlj0HHLiofldVMY4')
+
+# Função para criar o teclado com os botões
+def create_keyboard():
+    keyboard = types.ReplyKeyboardMarkup(one_time_keyboard=True, resize_keyboard=True)
+    
+    # Botão de texto
+    text_button = types.KeyboardButton(text="Clique aqui para enviar um texto")
+    
+    # Botão de solicitação de número de telefone
+    phone_button = types.KeyboardButton(text="Compartilhar número de telefone", request_contact=True)
+    
+    # Botão de solicitação de contato
+    contact_button = types.KeyboardButton(text="Compartilhar contato", request_contact=True)
+    
+    # Adiciona os botões ao teclado
+    keyboard.add(text_button, phone_button, contact_button)
+    
+    return keyboard
+
+# Função para responder à mensagem do usuário
+@bot.message_handler(func=lambda message: True)
+def handle_message(message):
+    bot.send_message(message.chat.id, "Clique em um dos botões abaixo:", reply_markup=create_keyboard())
+
+# Função para capturar o texto enviado pelo usuário
+@bot.message_handler(func=lambda message: message.text == "Clique aqui para enviar um texto")
+def handle_text(message):
+    bot.send_message(message.chat.id, "Você clicou no botão de texto!")
+
+# Função para capturar o número de telefone enviado pelo usuário
+@bot.message_handler(content_types=['contact'])
+def handle_contact(message):
+    bot.send_message(message.chat.id, f"Você compartilhou o número de telefone: {message.contact.phone_number}")
+
+# Função para capturar o contato enviado pelo usuário
+@bot.message_handler(content_types=['contact'])
+def handle_contact(message):
+    contact_name = message.contact.first_name
+    contact_phone = message.contact.phone_number
+    bot.send_message(message.chat.id, f"Você compartilhou o contato: {contact_name}, {contact_phone}")
+
+# Iniciar o bot
+bot.polling()
+'''
+
+retorno = """
+intelbras-olt> onu status gpon 1 onu 10 details
+GPON 1
+
+     Serial                OMCI Config     ONU         ONU         OLT         OLT        Distance          GPON              Uptime                 Power          Bias       Temperature
+ONU  Number    OperStatus   Status       Rx Power    Tx Power    Rx Power    Tx Power       (km)          ONU Status       ddd:hh:mm:ss    Auto   Voltage (V)   Current (mA)       (C)
+=== ========= =========== ============= =========== =========== =========== =========== =========== ==================== ================ ====== ============= ============== =============
+10  2CEA0325  Active      OK            -18.21 dBm  2.68 dBm    -20.76 dBm  4.96 dBm    0.516                            0:5:13:50        yes    3.3           11.628         48.5
+intelbras-olt>
+"""
+linhas = retorno.splitlines()
+
+resultado_das_inf = linhas[-2].split()
+
+
+print(resultado_das_inf)

@@ -261,5 +261,17 @@ def provisiona(gpon, vaga_onu, gpon_sn, modelo, pppoe, ponto_de_acesso):
 
     print(resultado_final)
     resultado_final.clear()
-    return f'*provisionamento efetuado*\n\n{encontrado1}\n{encontrado2}\n{encontrado3}'
+    
+    retorno_final = f'''
+✅ *TUDO CERTO!* ✅
+    
+O usuário *{pppoe}* foi provisionado com sucesso.
+*Serial GPON:* ´{gpon_sn}´
+*Pon:* ´{gpon}´
+*Posição:* ´{vaga_onu}´   
+
+🎉 Parabéns! Seu usuário foi ativado com sucesso! 👍
+'''
+
+    return f'{retorno_final}\n\n{encontrado1}\n{encontrado2}\n{encontrado3}'
   

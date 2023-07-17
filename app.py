@@ -278,15 +278,10 @@ class Provisionamento():
 🆔 *ID:* 0{indice}
 🔒 *Serial GPON:* `{fabricante}{serial}`
 💡 *Modelo:* {modelo}
-
 '''                    
                     self.bot.send_message(id_usuario, mensagem, parse_mode="Markdown")
 
-
-                    #print(mensagem)
-
-
-
+                    self.trata_mais_de_uma_onu(onus_discando, posicao_na_pon, pon_atual, ponto_acesso, id_usuario)
 
         except:
             print('cai no except')
@@ -295,7 +290,68 @@ class Provisionamento():
             if retorno_final == False:
                 time.sleep(1)
                 self.menu_confirmacao_olt_onu_n_encontrada(id_usuario)
+                
+                
 
+    def trata_mais_de_uma_onu(self, onus_discando, posicao_na_pon, pon_atual, ponto_acesso, chat_id):
+        id_usuario = chat_id
+        mensagem = 'Copie o *Serial GPON* da _ONU_ que quer provisionar e cole aqui:'
+        
+        self.bot.send_message(id_usuario, mensagem, parse_mode="Markdown")
+        
+        self.itbs = None
+        self.serial = None
+        self.modelo_permtido = None
+        self.posicao_na_pon = None
+        self.pon_atual = None
+        self.ponto_acesso = None    
+        
+        @self.bot.message_handler(func=lambda message: True)
+        def captura_gpon(mensagem): 
+            achei = False
+            mensagem = mensagem.text
+
+            for gpon  in onus_discando:
+                gpon_sn = gpon[1] + gpon[2]
+                modelo = gpon[3]
+                
+                if mensagem == gpon_sn:
+                    achei = True
+                    self.itbs = gpon[1]
+                    self.serial = gpon[2]
+                    self.modelo_permtido = gpon[-1]
+                    self.posicao_na_pon = posicao_na_pon
+                    self.pon_atual = pon_atual
+                    self.ponto_acesso = ponto_acesso
+                    
+                    
+                    
+                
+                    retorno_final = f'''
+📌 *PROVISIONAMENTO PREENCHIDO* 📌
+
+ℹ️ *ONU SELECIONADA:* ℹ️
+
+🔒 *Serial GPON:* {gpon_sn}
+💡 *Modelo:* {modelo}
+''' 
+                    self.bot.send_message(id_usuario, retorno_final, parse_mode="Markdown")
+                    time.sleep(1)
+                    self.menu_confirmacao_olt(id_usuario)
+                    
+                    
+                
+            if achei is False:
+                
+                self.bot.send_message(id_usuario, 'Não encontrei esse gpon, verifique novamente, por favor')
+            
+                self.trata_mais_de_uma_onu(onus_discando, posicao_na_pon, pon_atual, ponto_acesso, chat_id)
+             
+
+            
+            
+        self.bot.register_next_step_handler_by_chat_id(chat_id, captura_gpon)
+    
         
 
     def provisiona_onu(self, itbs, serial, modelo_permtido, posicao_na_pon, pon_atual, ponto_de_acesso, pppoe, chat_id):
