@@ -43,5 +43,4 @@ Senha: {dado['dados']['senha']}
         return False
            
 
-def consulta_cliente():
-    return '> Em andamento...'
+

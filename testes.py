@@ -1,203 +1,3 @@
-'''import telnetlib, re, time
-
-modelos_de_ativacao = {
-    "110Gb": "intelbras-110b",
-    "121AC": "intelbras-121ac",
-    "120AC": "intelbras-121ac",
-    "R1v2": "intelbras-r1",
-    "110Gi": "intelbras-110",
-    "R1": "intelbras-r1"
-} 
-
-def busca_onu_na_pon(ponto_de_acesso, pon):
-
-    if ponto_de_acesso == 'alca':
-        ip = '172.31.0.21'
-
-    elif ponto_de_acesso == 'jamic':
-        ip = '10.9.250.6'
-
-    HOST = str(ip)  # Endereço do dispositivo Telnet
-    PORT = 23  # Porta Telnet padrão
-
-    # Obter nome de usuário e senha do usuário
-    username = 'admin'
-    password = 'admin'
-
-    # Criar objeto Telnet e conectar ao dispositivo
-    tn = telnetlib.Telnet(HOST, PORT)
-
-    # Fazer login
-    tn.read_until(b"olt8820plus login: ")
-    tn.write(username.encode('ascii') + b"\n")
-    if password:
-        tn.read_until(b"Password: ")
-        tn.write(password.encode('ascii') + b"\n")
-        time.sleep(1)  # Aguardar um segundo após enviar a senha
-
-    comando = f"onu show gpon {pon}"
-
-    tn.write(f"{comando}\n".encode('ascii'))
-
-    # Aguardar a resposta
-    time.sleep(1)
-
-    # Ler a resposta até encontrar o prompt novamente
-    resultado = tn.read_until(b"olt8820plus login:", timeout=5).decode('ascii')
-
-    linhas = resultado.splitlines()
-    tn.close()
-
-    if f'intelbras-olt> {comando}' not in  linhas:
-        #print(f'{comando} não encontrado')
-        
-        inicio_filtro = linhas.index(f'Free slots in GPON Link {pon}:')
-        filtrado = linhas[inicio_filtro:]
-
-        print(filtrado)
-
-
-        return formata_retorno(filtrado, pon, ponto_de_acesso)
-    
-        #chama_func = busca_onu_na_pon(ponto_de_acesso, pon)
-        #return chama_func
-         
-    else:
-
-        inicio_filtro = linhas.index(f'intelbras-olt> {comando}')
-        filtrado = linhas[inicio_filtro:]
-        print(filtrado)
-        return formata_retorno(filtrado, pon, ponto_de_acesso)
-
-
-
-
-
-def formata_retorno(linhas, pon, ponto_de_acesso):
-    onus_discando = []
-    lista = []
-    dicionario = {}
-    chave_atual = None
-
-    for linha in linhas:
-        if 'ITBS' in linha:
-            linha_onu = linha.split()
-            # adiciona na lista as onus discando
-            onus_discando.append(linha_onu)
-
-        # Encontrar os números em cada linha
-        numeros = re.findall(r'\d+', linha)
-        # Verificar se existem números na linha
-        if numeros:
-            if len(numeros) == 1:
-                numeros = f'PON {numeros}'.replace("'", '').replace('[', '').replace(']', '').strip()
-                # adiciona na lista a pon atual
-                lista.append(numeros)
-
-            else:
-                for numero in numeros:
-                    # adiciona na lista as posições disponiveis de todas as pons
-                    lista.append(numero)
-
-    #converte para dicionario (facilita pegar os valores)
-    for item in lista:
-
-        #verifica se começa com pon (que é o divisor)
-        if item.startswith("PON"):
-            chave_atual = item
-            #cria a chave com a pon correspondente
-            dicionario[chave_atual] = []
-
-        else:
-            # adiciona as posições à pon correspondente no dicionario
-            dicionario[chave_atual].append(item)
-
-    temporario = list()
-    # percore o dicionario e exibe as informações
-    for pon_, posicao in dicionario.items():
-
-        # posição disponivel pra onu na pon
-        if posicao:
-            #print(f'posição: {posicao[0]}')
-            temporario.append(posicao[0])
-        else:
-            #print('fui chamado')
-            return busca_onu_na_pon(ponto_de_acesso, pon)
-            
-    #print('exibe info chamada')
-    return exibe_info(onus_discando, temporario[0], pon)
-
-    
-
-
-def exibe_info(onus_discando, posicao, pon):
-
-    if len(onus_discando) == 0:
-        return f'sem onu discando nessa pon {pon}'
-    
-    elif len(onus_discando) == 1:
-
-        onus_discando = onus_discando[0]
-
-        id_onu = onus_discando[0]
-        fabricante = onus_discando[1]
-        serial = onus_discando[2]
-        modelo = onus_discando[3]
-
-        if modelo in modelos_de_ativacao:
-            modelo_permitido = modelos_de_ativacao[modelo]
-
-        else:
-            modelo_permitido = modelos_de_ativacao['R1v2']
-            modelo = 'modelo não encontrado'  
-    
-        return fabricante, serial, modelo, modelo_permitido, posicao, pon
-    
-
-
-""" else:
-        # tem mais de uma onu discando
-        for i, onu in enumerate(onus_discando):
-
-            print(f'{i + 1}_ escolha a sua onu {onu[1:3]}')
-            #return f'{i}_ escolha a onu {onu}'
-
-        escolha = int(input("> "))
-
-        # verifica se oq o cara escolheu ta certo
-        if escolha <= 0 or escolha > len(onus_discando):
-            return 'não existe esse indice'
-                                
-        
-        onus_discando = onus_discando[escolha - 1]
-
-        id_onu = onus_discando[0]
-        fabricante = onus_discando[1]
-        serial = onus_discando[2]
-        modelo = onus_discando[3]
-
-        if modelo in modelos_de_ativacao:
-            modelo_permitido = modelos_de_ativacao[modelo]  
-
-        else:
-            modelo_permitido = modelos_de_ativacao['R1v2'] 
-    
-        return f'''#onu {escolha} selecionada
-#{id_onu}
-#{fabricante}
-#{serial}
-#{modelo}
-#{modelo_permitido}
-'''
-"""
-retorno = busca_onu_na_pon('alca', '7')
-
-print(retorno)
-
-'''
-
-
-
 
 '''
 
@@ -337,21 +137,99 @@ def handle_contact(message):
 
 # Iniciar o bot
 bot.polling()
+
+17 colunas
 '''
 
 retorno = """
-intelbras-olt> onu status gpon 1 onu 10 details
+intelbras-olt> onu status gpon 1 onu 1 details
 GPON 1
 
-     Serial                OMCI Config     ONU         ONU         OLT         OLT        Distance          GPON              Uptime                 Power          Bias       Temperature
-ONU  Number    OperStatus   Status       Rx Power    Tx Power    Rx Power    Tx Power       (km)          ONU Status       ddd:hh:mm:ss    Auto   Voltage (V)   Current (mA)       (C)
-=== ========= =========== ============= =========== =========== =========== =========== =========== ==================== ================ ====== ============= ============== =============
-10  2CEA0325  Active      OK            -18.21 dBm  2.68 dBm    -20.76 dBm  4.96 dBm    0.516                            0:5:13:50        yes    3.3           11.628         48.5
+     Serial                OMCI Config     ONU         ONU         OLT         OLT        Distance          GPON              Uptime                 Power          Bias       Temperature  LAN Port  LAN Port
+ONU  Number    OperStatus   Status       Rx Power    Tx Power    Rx Power    Tx Power       (km)          ONU Status       ddd:hh:mm:ss    Auto   Voltage (V)   Current (mA)       (C)       Status     Speed
+=== ========= =========== ============= =========== =========== =========== =========== =========== ==================== ================ ====== ============= ============== ============= ======== ===========
+1   327278B9  Active      OK            -17.96 dBm  2.44 dBm    -20.75 dBm  5.23 dBm    0.427                            12:15:46:2        no     3.36          11.424         64.6          1        13
 intelbras-olt>
 """
 linhas = retorno.splitlines()
 
 resultado_das_inf = linhas[-2].split()
 
+# remove o dbm
+for item in resultado_das_inf:
+    if item == 'dBm':
+        resultado_das_inf.remove(item)
 
-print(resultado_das_inf)
+
+
+
+
+import telnetlib, time
+
+
+HOST = str('172.31.0.21')  # Endereço do dispositivo Telnet
+PORT = 23  # Porta Telnet padrão
+
+# Obter nome de usuário e senha do usuário
+username = 'admin'
+password = 'admin'
+
+# Criar objeto Telnet e conectar ao dispositivo
+tn = telnetlib.Telnet(HOST, PORT)
+
+# Fazer login
+tn.read_until(b"olt8820plus login: ")
+tn.write(username.encode('ascii') + b"\n")
+if password:
+    tn.read_until(b"Password: ")
+    tn.write(password.encode('ascii') + b"\n")
+    time.sleep(1)  # Aguardar um segundo após enviar a senha
+
+comando = f"onu status gpon 2 onu 7 details"
+
+tn.write(f"{comando}\n".encode('ascii'))
+
+# Aguardar a resposta
+time.sleep(1)
+
+# Ler a resposta até encontrar o prompt novamente
+resultado = tn.read_until(b"olt8820plus login:", timeout=5).decode('ascii')
+
+linhas = resultado.splitlines()[-2].split()
+
+if linhas[2] != 'Active':
+    print("onu", linhas[2])
+    
+else:
+    
+    for item in linhas:
+        if item == 'dBm':
+            linhas.remove(item)
+            
+    print(linhas)
+    onu = linhas[0]
+    serial_gpon = linhas[1]
+    status = linhas[2]
+    omci_config_status = linhas[3]
+    rx_onu = linhas[4]
+    tx_onu = linhas[5]
+    rx_olt = linhas[6]
+    tx_olt = linhas[7]
+    distancia = float(linhas[8])
+    up_time = linhas[9].split(':')
+
+
+    formatado = f'''
+    ONU: {onu}
+    GPON: {serial_gpon}
+    STATUS: {status}
+    STATUS OMCI: {omci_config_status}
+    RX ONU: {rx_onu} dBm 
+    TX ONU: {tx_onu} dBm
+    RX OLT: {rx_olt} dBm
+    TX OLT: {tx_olt} dBm
+    DISTÂNCIA OLT --> ONU: {distancia * 1000:.0f} Mt
+    TEMPO LIGADA: {up_time[0]} Dias, {up_time[1]} Horas, {up_time[2]} Minutos, {up_time[3]} Segundos
+    '''
+    print(formatado)
+

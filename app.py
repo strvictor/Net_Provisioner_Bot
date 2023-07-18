@@ -1,8 +1,8 @@
 import telebot, time
 from telebot import types
-from voalle import validacontrato, consulta_cliente
+from voalle import validacontrato
 from cto import valida_cto, valida_porta, pon_cto
-from olt import busca_onu_na_pon, provisiona
+from olt import busca_onu_na_pon, provisiona, consulta_gpon
 
 class Provisionamento():
     def __init__(self):
@@ -21,8 +21,8 @@ class Provisionamento():
         teclado_inline = types.InlineKeyboardMarkup(row_width=1)
 
         # Criando os botões
-        provisionar = types.InlineKeyboardButton("Provisionar Cliente", callback_data='provisionamento')
-        consulta = types.InlineKeyboardButton("Consultar Cliente", callback_data='consulta')
+        provisionar = types.InlineKeyboardButton("Provisionar ONU", callback_data='provisionamento')
+        consulta = types.InlineKeyboardButton("Consultar ONU", callback_data='consulta')
 
         # Adicionando os botões ao teclado inline
         teclado_inline.add(provisionar, consulta)
@@ -343,7 +343,6 @@ class Provisionamento():
         self.bot.register_next_step_handler_by_chat_id(chat_id, captura_gpon)
     
         
-
     def provisiona_onu(self, itbs, serial, modelo_permtido, posicao_na_pon, pon_atual, ponto_de_acesso, pppoe, chat_id):
         id_usuario = chat_id
         gpon_sn = itbs + serial
@@ -367,9 +366,29 @@ class Provisionamento():
 
 
     def consulta(self, chat_id):
-        mensagem = consulta_cliente() 
         id_usuario = chat_id
-        self.bot.send_message(id_usuario, mensagem)
+        self.bot.send_message(id_usuario, "Digite os ultimos 8 números do *GPON-SN* da _ONU_", parse_mode="Markdown")
+        
+        @self.bot.message_handler(func=lambda message: True)
+        def captura_gpon_consulta(mensagem): 
+            mensagem = mensagem.text
+        
+            retorno = consulta_gpon(mensagem) 
+            
+            if retorno == 'tamanho inválido':
+                self.bot.send_message(id_usuario, "Tamanho inválido 😕\nO serial gpon contém 8 caracteres alfanuméricos", parse_mode="Markdown")
+                time.sleep(1)
+                self.consulta(id_usuario)
+                
+            elif retorno == 'alfanumericos false':
+                self.bot.send_message(id_usuario, "Caracteres inválidos 😕\nDigite somente letras e números", parse_mode="Markdown")
+                time.sleep(1)
+                self.consulta(id_usuario)
+            
+            else:
+                self.bot.send_message(id_usuario, retorno, parse_mode="Markdown")
+        
+        self.bot.register_next_step_handler_by_chat_id(chat_id, captura_gpon_consulta)
 
 
     def tratativa_dos_botoes(self, call):

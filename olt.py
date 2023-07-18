@@ -13,6 +13,16 @@ modelos_de_ativacao = {
     "padrao": "intelbras-default"
 } 
 
+opcoes_velocidade = {
+    "00": "Desativada",
+    "21": "10 Mbps Half-Duplex",
+    "11": "10 Mbps Full-Duplex",
+    "22": "100 Mbps Half-Duplex",
+    "12": "100 Mbps Full-Duplex",
+    "23": "1 Gbps Half-Duplex",
+    "13": "1 Gbps Full-Duplex"
+}
+
 def busca_onu_na_pon(ponto_de_acesso, pon):
     try:
         if ponto_de_acesso == 'alca':
@@ -262,11 +272,127 @@ def provisiona(gpon, vaga_onu, gpon_sn, modelo, pppoe, ponto_de_acesso):
 ✅ *TUDO CERTO!* ✅
     
 O usuário *{pppoe}* foi provisionado com sucesso.
-*Serial GPON:* ´{gpon_sn}´
-*Pon:* ´{gpon}´
-*Posição:* ´{vaga_onu}´   
+*Serial GPON:* `{gpon_sn}`
+*Pon:* `{gpon}`
+*Posição:* `{vaga_onu}` 
 
 🎉 Parabéns! Seu usuário foi ativado com sucesso! 👍
 '''
     return f'{retorno_final}\n\n{encontrado1}\n{encontrado2}\n{encontrado3}'
   
+  
+def consulta_gpon(gpon):
+    gpon = gpon.upper()
+    alfanumericos = gpon.isalnum()
+    
+    if len(gpon) != 8:
+        return 'tamanho inválido'
+    
+    elif alfanumericos is False:
+        return 'alfanumericos false'
+    
+    else:
+        HOST = str('172.31.0.21')  # Endereço do dispositivo Telnet
+        PORT = 23  # Porta Telnet padrão
+
+        # Obter nome de usuário e senha do usuário
+        username = 'admin'
+        password = 'admin'
+
+        # Criar objeto Telnet e conectar ao dispositivo
+        tn = telnetlib.Telnet(HOST, PORT)
+
+        # Fazer login
+        tn.read_until(b"olt8820plus login: ")
+        tn.write(username.encode('ascii') + b"\n")
+        if password:
+            tn.read_until(b"Password: ")
+            tn.write(password.encode('ascii') + b"\n")
+            time.sleep(1)  # Aguardar um segundo após enviar a senha
+
+        comando = f"onu find fsan {gpon}"
+
+        tn.write(f"{comando}\n".encode('ascii'))
+
+        # Aguardar a resposta
+        time.sleep(1)
+
+        # Ler a resposta até encontrar o prompt novamente
+        resultado = tn.read_until(b"olt8820plus login:", timeout=5).decode('ascii')
+
+        linhas = resultado.splitlines()[-2].split()
+        print(linhas)
+        
+        #achou o serial
+        if 'gpon' in linhas[0]:
+            slot = linhas[1]
+            onu = linhas[3]
+            modelo = linhas[-1]
+            
+            comando2 = f"onu status gpon {slot} onu {onu} details"
+
+            tn.write(f"{comando2}\n".encode('ascii'))
+        
+            resultado2 = tn.read_until(b"olt8820plus login:", timeout=5).decode('ascii')
+            linhas2 = resultado2.splitlines()[-2].split()
+            #onu ativada
+            if 'Active' in linhas2[2]:
+            
+                for item in linhas2:
+                    if item == 'dBm':
+                        linhas2.remove(item)
+                        
+                print(linhas2)
+                onu = linhas2[0]
+                serial_gpon = linhas2[1]
+                status = linhas2[2]
+                omci_config_status = linhas2[3]
+                rx_onu = linhas2[4]
+                tx_onu = linhas2[5]
+                rx_olt = linhas2[6]
+                tx_olt = linhas2[7]
+                distancia = float(linhas2[8])
+                up_time = linhas2[9].split(':')
+                temperatura = linhas2[-3]
+                status_porta_lan = linhas2[-2]
+                modulacao_porta_lan = linhas2[-1]
+
+                if status_porta_lan == '1':
+                    porta_lan = 'Ativa'
+                    
+                elif status_porta_lan == '2':
+                    porta_lan = 'Desativada'
+                else:
+                    porta_lan = '-'
+                    
+                if modulacao_porta_lan in opcoes_velocidade:
+                    modulacao = opcoes_velocidade[modulacao_porta_lan]
+                else:
+                    modulacao = '-'
+                
+                formatado = f'''
+ℹ️ INFORMAÇÕES DA ONU ℹ️
+
+🔒 *POSIÇÃO NA PON:* {onu}
+🔒 *GPON:* ITBS{serial_gpon}
+🔒 *STATUS:* {status}
+🔒 *STATUS OMCI:* {omci_config_status}
+🔊 *RX ONU:* {rx_onu} dBm 
+🔊 *TX ONU:* {tx_onu} dBm
+🔊 *RX OLT:* {rx_olt} dBm
+🔊 *TX OLT:* {tx_olt} dBm
+🔒 *DISTÂNCIA OLT - ONU:* {distancia * 1000:.0f} Mt
+🕒 *TEMPO LIGADA:* {up_time[0]} Dia(s), {up_time[1]} Hora(s), {up_time[2]} Minuto(s), {up_time[3]} Segundo(s)
+🌡️  *TEMPERATURA:* {temperatura} C°
+🔌 *PORTA LAN ONU:* {porta_lan}
+🔌 *MODULAÇÃO PORTA LAN:* {modulacao}
+'''
+                return formatado
+            
+            elif 'Inactive' in linhas2[2]:
+                return 'ONU Inativa'
+            
+            else:
+                return 'ONU bloqueada'
+        else:
+            return 'gpon não localizado'
