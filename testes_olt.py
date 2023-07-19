@@ -19,8 +19,10 @@ if password:
     tn.write(password.encode('ascii') + b"\n")
     time.sleep(1)  # Aguardar um segundo após enviar a senha
 
-serial_gpon = input('Digite o serial Gpon: ')
-comando = f"onu find fsan {serial_gpon}"
+
+comando = f"onu delete gpon 1 onu 6"
+comando2 = 'yes'
+comando3 = 'no'
 
 tn.write(f"{comando}\n".encode('ascii'))
 
@@ -29,7 +31,45 @@ time.sleep(1)
 
 # Ler a resposta até encontrar o prompt novamente
 resultado = tn.read_until(b"olt8820plus login:", timeout=5).decode('ascii')
+print(resultado)
+
+tn.write(f"{comando2}\n".encode('ascii'))
+
+# Aguardar a resposta
+time.sleep(1)
+
+# Ler a resposta até encontrar o prompt novamente
+resultado = tn.read_until(b"olt8820plus login:", timeout=5).decode('ascii')
+
+#linhas = resultado.splitlines()[-2].split()
+print(resultado)
 
 
-linhas = resultado.splitlines()[-2].split()
-print(linhas)
+
+
+
+tn.write(f"{comando3}\n".encode('ascii'))
+
+# Aguardar a resposta
+time.sleep(1)
+
+# Ler a resposta até encontrar o prompt novamente
+resultado = tn.read_until(b"olt8820plus login:", timeout=5).decode('ascii')
+
+print(resultado)
+
+
+
+
+
+
+
+tn.write(f"{comando2}\n".encode('ascii'))
+
+# Aguardar a resposta
+time.sleep(1)
+
+# Ler a resposta até encontrar o prompt novamente
+resultado = tn.read_until(b"olt8820plus login:", timeout=5).decode('ascii')
+
+print(resultado)
