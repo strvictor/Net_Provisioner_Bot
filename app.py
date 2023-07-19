@@ -22,10 +22,11 @@ class Provisionamento():
 
         # Criando os botões
         provisionar = types.InlineKeyboardButton("Provisionar ONU", callback_data='provisionamento')
+        desprovisionar = types.InlineKeyboardButton("Desprovisionar ONU", callback_data='desprovisionar')
         consulta = types.InlineKeyboardButton("Consultar ONU", callback_data='consulta')
 
         # Adicionando os botões ao teclado inline
-        teclado_inline.add(provisionar, consulta)
+        teclado_inline.add(provisionar, desprovisionar, consulta)
 
         # Enviando a mensagem com o teclado inline
         self.bot.send_message(id_usuario, mensagem, reply_markup=teclado_inline)
@@ -257,7 +258,6 @@ class Provisionamento():
                     self.menu_confirmacao_olt(id_usuario)
                     
                 except Exception as e:
-                    
                     onus_discando, posicao_na_pon, pon_atual, ponto_acesso, quantidade_onu = retorno
                        
                     print(f'erro foi: {str(e)}')
@@ -365,31 +365,69 @@ class Provisionamento():
         self.menu_principal(id_usuario)
 
 
-    def consulta(self, chat_id):
+    def pega_ponto_de_acesso(self, chat_id):
+        id_usuario = chat_id
+        msg_informativa = '''
+*Pontos de Acesso permitidos:*
+1º  `alca`
+2º  `jamic`
+3º  `bujaru`
+'''
+        self.bot.send_message(id_usuario, "Digite o *Ponto de Acesso* que queres fazer a consulta", parse_mode="Markdown")
+        self.bot.send_message(id_usuario, msg_informativa, parse_mode="Markdown")
+        
+        @self.bot.message_handler(func=lambda message: True)
+        def captura_localidade(mensagem): 
+            mensagem = mensagem.text.lower()
+            permitidos = ['alca', 'jamic', 'bujaru']
+            
+            if mensagem in permitidos:
+                self.bot.send_message(id_usuario, f"✅ Ponto de acesso *{mensagem}* permitido!", parse_mode="Markdown")
+                time.sleep(1)
+                self.consulta(id_usuario, mensagem)
+                 
+            else:
+                self.bot.send_message(id_usuario, "❌ Ponto de acesso não permitido", parse_mode="Markdown")
+                time.sleep(1)
+                self.pega_ponto_de_acesso(id_usuario)
+            
+        self.bot.register_next_step_handler_by_chat_id(chat_id, captura_localidade)
+        
+
+    def consulta(self, chat_id, ponto_de_acesso):
         id_usuario = chat_id
         self.bot.send_message(id_usuario, "Digite os ultimos 8 números do *GPON-SN* da _ONU_", parse_mode="Markdown")
         
         @self.bot.message_handler(func=lambda message: True)
         def captura_gpon_consulta(mensagem): 
             mensagem = mensagem.text
-        
-            retorno = consulta_gpon(mensagem) 
+            
+            retorno = consulta_gpon(mensagem, ponto_de_acesso) 
             
             if retorno == 'tamanho inválido':
                 self.bot.send_message(id_usuario, "Tamanho inválido 😕\nO serial gpon contém 8 caracteres alfanuméricos", parse_mode="Markdown")
                 time.sleep(1)
-                self.consulta(id_usuario)
+                self.consulta(id_usuario, ponto_de_acesso)
                 
             elif retorno == 'alfanumericos false':
                 self.bot.send_message(id_usuario, "Caracteres inválidos 😕\nDigite somente letras e números", parse_mode="Markdown")
                 time.sleep(1)
-                self.consulta(id_usuario)
+                self.consulta(id_usuario, ponto_de_acesso)
             
             else:
                 self.bot.send_message(id_usuario, retorno, parse_mode="Markdown")
-        
+                time.sleep(0.7)
+                self.bot.send_message(id_usuario, '✅ *Consulta finalizada* ✅', parse_mode="Markdown")
+                time.sleep(1.5)
+                self.menu_principal(id_usuario)
+                
         self.bot.register_next_step_handler_by_chat_id(chat_id, captura_gpon_consulta)
 
+
+    def desprovisionamento(self, chat_id):
+        id_usuario = chat_id
+        self.bot.send_message(id_usuario, '> Em andamento...', parse_mode="Markdown")
+        
 
     def tratativa_dos_botoes(self, call):
         id_usuario = call.message.chat.id
@@ -397,10 +435,14 @@ class Provisionamento():
         if call.data == 'provisionamento':
             print('botão provisionamento chamado')
             self.provisionamento(id_usuario)
+            
+        elif call.data == 'desprovisionar':
+            print('botão desprovisionar chamado')
+            self.desprovisionamento(id_usuario)
 
         elif call.data == 'consulta':
             print('botão consulta chamado')
-            self.consulta(id_usuario)
+            self.pega_ponto_de_acesso(id_usuario)
 
         elif call.data == 'voltar_menu':
             print('botão voltar menu chamado')

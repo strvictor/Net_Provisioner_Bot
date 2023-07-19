@@ -281,7 +281,9 @@ O usuário *{pppoe}* foi provisionado com sucesso.
     return f'{retorno_final}\n\n{encontrado1}\n{encontrado2}\n{encontrado3}'
   
   
-def consulta_gpon(gpon):
+def consulta_gpon(gpon, ponto_de_acesso):
+    print('consultando olt', gpon, ponto_de_acesso)
+    
     gpon = gpon.upper()
     alfanumericos = gpon.isalnum()
     
@@ -292,7 +294,14 @@ def consulta_gpon(gpon):
         return 'alfanumericos false'
     
     else:
-        HOST = str('172.31.0.21')  # Endereço do dispositivo Telnet
+        if ponto_de_acesso == 'alca':
+            ip = '172.31.0.21'
+        elif ponto_de_acesso == 'jamic':
+            ip = '10.9.250.6'
+        elif ponto_de_acesso == 'bujaru':
+            ip = '10.7.250.10'
+            
+        HOST = str(ip)  # Endereço do dispositivo Telnet
         PORT = 23  # Porta Telnet padrão
 
         # Obter nome de usuário e senha do usuário
@@ -337,6 +346,7 @@ def consulta_gpon(gpon):
             linhas2 = resultado2.splitlines()[-2].split()
             #onu ativada
             if 'Active' in linhas2[2]:
+                tn.close()
             
                 for item in linhas2:
                     if item == 'dBm':
@@ -373,8 +383,9 @@ def consulta_gpon(gpon):
                 formatado = f'''
 ℹ️ INFORMAÇÕES DA ONU ℹ️
 
-🔒 *POSIÇÃO NA PON:* {onu}
+🔒 *POSIÇÃO NA OLT:* {slot}/{onu}
 🔒 *GPON:* ITBS{serial_gpon}
+🔒 *MODELO:* {modelo}
 🔒 *STATUS:* {status}
 🔒 *STATUS OMCI:* {omci_config_status}
 🔊 *RX ONU:* {rx_onu} dBm 
@@ -390,9 +401,58 @@ def consulta_gpon(gpon):
                 return formatado
             
             elif 'Inactive' in linhas2[2]:
-                return 'ONU Inativa'
-            
+                tn.close()
+                
+                status_gpon = linhas2[9]
+                # verifica se teve o status da queda
+                if len(status_gpon) > 0 and status_gpon != '-':
+                    if 'LOSI' in status_gpon:
+                        descricao_alarme = "Recepção de Sinal Óptico Perdido."
+                        
+                    elif 'DGI' in status_gpon:
+                        descricao_alarme = "ONU possívelmente desligada."
+                    
+                    elif 'DFI' in status_gpon:
+                        descricao_alarme = "Poblemas na ONU, possivel defeito de fábrica."
+                    
+                    elif 'LOAMI' in status_gpon:
+                        descricao_alarme = "Problemas na comunicação com a OLT"
+                        
+                    elif 'LOFI' in status_gpon:
+                        descricao_alarme = "Perca de sincronia com a OLT"
+                        
+                    else:
+                      descricao_alarme = ''
+                        
+                    serial_gpon = linhas2[1]
+                    status = linhas2[2]
+                    formatado = f'''
+ℹ️ INFORMAÇÕES DA ONU ℹ️
+
+🔒 *POSIÇÃO NA OLT:* {slot}/{onu}
+🔒 *GPON:* ITBS{serial_gpon}
+🔒 *MODELO:* {modelo}
+🔒 *STATUS:* {status}
+🔒 *CAUSA:* {status_gpon}
+🔒 *DESCRIÇÃO:* {descricao_alarme}
+'''
+                    return formatado
+                
+                else:
+                    serial_gpon = linhas2[1]
+                    status = linhas2[2]
+                    formatado = f'''
+ℹ️ INFORMAÇÕES DA ONU ℹ️
+
+🔒 *POSIÇÃO NA OLT:* {slot}/{onu}
+🔒 *GPON:* ITBS{serial_gpon}
+🔒 *MODELO:* {modelo}
+🔒 *STATUS:* {status}
+'''                
+                    return formatado
             else:
+                tn.close()
                 return 'ONU bloqueada'
         else:
-            return 'gpon não localizado'
+            tn.close()
+            return f'Infelizmente não consegui localizar esse *GPON-SN* {gpon} na OLT *{ponto_de_acesso}* 😕'

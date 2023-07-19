@@ -54,7 +54,6 @@ def valida_porta(porta):
         
         else:
             return "porta invalida"
-        
     else:
         return 'não é numero'
 
@@ -62,9 +61,7 @@ def valida_porta(porta):
 def pon_cto(cto):
 
     slot = ord(cto[1]) - 64 # se deixar 65 a letra 'A' fica 0
-
     pon = ord(cto[2]) - 64
-
     return pon
     
     #slot = ord(cto[1]) - 65 # se deixar 65 a letra 'A' fica 0
