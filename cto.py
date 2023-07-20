@@ -68,3 +68,4 @@ def pon_cto(cto):
     #pon = ord(cto[2]) - 65
     #print(f'slot: {slot}\npon: {pon}')
 
+

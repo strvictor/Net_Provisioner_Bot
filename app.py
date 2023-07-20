@@ -2,7 +2,7 @@ import telebot, time
 from telebot import types
 from voalle import validacontrato
 from cto import valida_cto, valida_porta, pon_cto
-from olt import busca_onu_na_pon, provisiona, consulta_gpon
+from olt import busca_onu_na_pon, provisiona, consulta_gpon, desprovisiona_gpon, desprovisiona_efetivo
 
 class Provisionamento():
     def __init__(self):
@@ -11,6 +11,7 @@ class Provisionamento():
         self.cto_validada = list()
         self.ponto_de_acesso = list()
         self.pppoe_cliente = list()
+        self.desprovisiona_parametros = list()
 
 
     def menu_principal(self, chat_id):
@@ -89,6 +90,21 @@ class Provisionamento():
 
         mensagem = "Antes de continuar, por favor confirme as informações"
         self.bot.send_message(id_usuario, mensagem, reply_markup=teclado_inline)
+        
+        
+    def menu_confirma_desprovisionamento(self, chat_id):
+        id_usuario = chat_id
+        
+        teclado_inline = types.InlineKeyboardMarkup(row_width=1)
+        
+        confirma = types.InlineKeyboardButton("Sim!", callback_data='desprovisiona-olt')
+        tentar_novamente = types.InlineKeyboardButton("Buscar Outra!", callback_data='tenta-novamente-consulta')
+        menu = types.InlineKeyboardButton("Menu", callback_data='volta_menu')
+        
+        teclado_inline.add(confirma, tentar_novamente, menu)
+        
+        mensagem = "Deseja desprovisionar essa ONU?"
+        self.bot.send_message(id_usuario, mensagem, reply_markup=teclado_inline)    
 
 
     def provisionamento(self, chat_id):
@@ -363,8 +379,9 @@ class Provisionamento():
         print(self.pppoe_cliente, self.ponto_de_acesso, self.cto_validada)
         time.sleep(2)
         self.menu_principal(id_usuario)
+        
 
-
+    # pra consultar a onu
     def pega_ponto_de_acesso(self, chat_id):
         id_usuario = chat_id
         msg_informativa = '''
@@ -383,17 +400,17 @@ class Provisionamento():
             
             if mensagem in permitidos:
                 self.bot.send_message(id_usuario, f"✅ Ponto de acesso *{mensagem}* permitido!", parse_mode="Markdown")
-                time.sleep(1)
+                time.sleep(0.7)
                 self.consulta(id_usuario, mensagem)
                  
             else:
                 self.bot.send_message(id_usuario, "❌ Ponto de acesso não permitido", parse_mode="Markdown")
-                time.sleep(1)
+                time.sleep(0.7)
                 self.pega_ponto_de_acesso(id_usuario)
             
         self.bot.register_next_step_handler_by_chat_id(chat_id, captura_localidade)
         
-
+    # consulta onu
     def consulta(self, chat_id, ponto_de_acesso):
         id_usuario = chat_id
         self.bot.send_message(id_usuario, "Digite os ultimos 8 números do *GPON-SN* da _ONU_", parse_mode="Markdown")
@@ -401,6 +418,8 @@ class Provisionamento():
         @self.bot.message_handler(func=lambda message: True)
         def captura_gpon_consulta(mensagem): 
             mensagem = mensagem.text
+            
+            self.bot.send_message(id_usuario, "Buscando ONU...\nPor favor, aguarde!", parse_mode="Markdown")
             
             retorno = consulta_gpon(mensagem, ponto_de_acesso) 
             
@@ -416,18 +435,114 @@ class Provisionamento():
             
             else:
                 self.bot.send_message(id_usuario, retorno, parse_mode="Markdown")
-                time.sleep(0.7)
-                self.bot.send_message(id_usuario, '✅ *Consulta finalizada* ✅', parse_mode="Markdown")
-                time.sleep(1.5)
+                #time.sleep(0.7)
+                #self.bot.send_message(id_usuario, '✅ *Consulta finalizada* ✅', parse_mode="Markdown")
+                time.sleep(1)
                 self.menu_principal(id_usuario)
                 
         self.bot.register_next_step_handler_by_chat_id(chat_id, captura_gpon_consulta)
 
 
-    def desprovisionamento(self, chat_id):
+    # pra desprovisionar a onu
+    def pega_ponto_de_acesso2(self, chat_id):
         id_usuario = chat_id
-        self.bot.send_message(id_usuario, '> Em andamento...', parse_mode="Markdown")
+        msg_informativa = '''
+*Pontos de Acesso permitidos:*
+1º  `alca`
+2º  `jamic`
+3º  `bujaru`
+'''
+        self.bot.send_message(id_usuario, "Digite o *Ponto de Acesso* para buscar ONU", parse_mode="Markdown")
+        self.bot.send_message(id_usuario, msg_informativa, parse_mode="Markdown")
+
+        @self.bot.message_handler(func=lambda message: True)
+        def captura_localidade2(mensagem): 
+            mensagem = mensagem.text.lower()
+            permitidos = ['alca', 'jamic', 'bujaru']
+
+            if mensagem in permitidos:
+                self.bot.send_message(id_usuario, f"✅ Ponto de acesso *{mensagem}* permitido!", parse_mode="Markdown")
+                time.sleep(0.7)
+                self.consulta2(id_usuario, mensagem)
+                
+            else:
+                self.bot.send_message(id_usuario, "❌ Ponto de acesso não permitido", parse_mode="Markdown")
+                time.sleep(0.7)
+                self.pega_ponto_de_acesso2(id_usuario)
+
+        self.bot.register_next_step_handler_by_chat_id(chat_id, captura_localidade2)
+
+
+    def consulta2(self, chat_id, ponto_de_acesso):
+        id_usuario = chat_id
+        self.bot.send_message(id_usuario, "Digite os ultimos 8 números do *GPON-SN* da _ONU_", parse_mode="Markdown")
         
+        @self.bot.message_handler(func=lambda message: True)
+        def captura_gpon_consulta2(mensagem): 
+            mensagem = mensagem.text
+            
+            self.bot.send_message(id_usuario, "Buscando ONU...\nPor favor, aguarde!", parse_mode="Markdown")
+            
+            retorno = desprovisiona_gpon(mensagem, ponto_de_acesso) 
+            
+            if retorno == 'tamanho inválido':
+                self.bot.send_message(id_usuario, "Tamanho inválido 😕\nO serial gpon contém 8 caracteres alfanuméricos", parse_mode="Markdown")
+                time.sleep(1)
+                self.consulta2(id_usuario, ponto_de_acesso)
+                
+            elif retorno == 'alfanumericos false':
+                self.bot.send_message(id_usuario, "Caracteres inválidos 😕\nDigite somente letras e números", parse_mode="Markdown")
+                time.sleep(1)
+                self.consulta2(id_usuario, ponto_de_acesso)
+            
+            else:
+                if type(retorno) is list:
+                    print('é uma lista', retorno)
+                    
+                    mensagem_form = f'''
+ℹ️ INFORMAÇÕES DO GPON-SN ℹ️
+
+🔍 *GPON-SN:* ITBS{retorno[4]}
+🔍 *Modelo:* {retorno[-2]}
+🔍 *Ativo na PON:* {retorno[1]}
+🔍 *Posição:* {retorno[3]}
+'''                 
+                    pon_desprovisiona = retorno[1]
+                    posicao_onu_desprovisiona = retorno[3]
+                    ponto_de_acesso_desprovisiona = retorno[-1]
+                    
+                    self.desprovisiona_parametros.clear()
+                    self.desprovisiona_parametros.append(pon_desprovisiona)
+                    self.desprovisiona_parametros.append(posicao_onu_desprovisiona)
+                    self.desprovisiona_parametros.append(ponto_de_acesso_desprovisiona)
+                    
+                    print('listaaaaaaaaaa', self.desprovisiona_parametros)
+                    
+                    self.bot.send_message(id_usuario, mensagem_form, parse_mode="Markdown")
+                    time.sleep(0.7)
+                    self.menu_confirma_desprovisionamento(id_usuario)
+                    
+                else:
+                    print('retorno não é uma lista')
+                    
+                    self.bot.send_message(id_usuario, retorno, parse_mode="Markdown")
+                    #self.bot.send_message(id_usuario, '✅ *Consulta finalizada* ✅', parse_mode="Markdown")
+                    time.sleep(1.5)
+                    self.menu_principal(id_usuario)
+                
+        self.bot.register_next_step_handler_by_chat_id(chat_id, captura_gpon_consulta2)
+
+
+    def trata_desprovisionamento(self, pon, onu, ponto_de_acesso, id_usuario):
+        
+        self.bot.send_message(id_usuario, '*INICIANDO O DESPROVISIONAMENTO...*', parse_mode="Markdown")
+        
+        desprovisiona = desprovisiona_efetivo(pon, onu, ponto_de_acesso)
+        
+        self.bot.send_message(id_usuario, desprovisiona, parse_mode="Markdown")
+        time.sleep(1)
+        self.menu_principal(id_usuario)       
+    
 
     def tratativa_dos_botoes(self, call):
         id_usuario = call.message.chat.id
@@ -438,7 +553,7 @@ class Provisionamento():
             
         elif call.data == 'desprovisionar':
             print('botão desprovisionar chamado')
-            self.desprovisionamento(id_usuario)
+            self.pega_ponto_de_acesso2(id_usuario)
 
         elif call.data == 'consulta':
             print('botão consulta chamado')
@@ -469,9 +584,19 @@ class Provisionamento():
             self.solicita_cto(id_usuario)
 
         elif call.data == 'volta_menu':
-            print('botão tentar novamente cto chamado')          
+            print('botão tentar novamente cto chamado')
+            self.desprovisiona_parametros.clear()         
             self.menu_principal(id_usuario)
 
+        elif call.data == 'desprovisiona-olt':
+            print('botão desprovisionar chamado')
+            self.trata_desprovisionamento(self.desprovisiona_parametros[0], self.desprovisiona_parametros[1], self.desprovisiona_parametros[2], id_usuario)
+            
+        elif call.data == 'tenta-novamente-consulta':
+            print('botão tenta novamente desprovi. chamado')
+            self.desprovisiona_parametros.clear()
+            self.pega_ponto_de_acesso2(id_usuario)
+            
 
     def inicia_bot(self):
         @self.bot.message_handler(func=lambda message: True)
@@ -493,3 +618,4 @@ class Provisionamento():
 # Uso da classe Provisionamento
 provisionamento1 = Provisionamento()
 provisionamento1.inicia_bot()
+

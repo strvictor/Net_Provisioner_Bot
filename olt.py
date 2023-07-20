@@ -383,20 +383,23 @@ def consulta_gpon(gpon, ponto_de_acesso):
                 formatado = f'''
 ℹ️ INFORMAÇÕES DA ONU ℹ️
 
-🔒 *POSIÇÃO NA OLT:* {slot}/{onu}
-🔒 *GPON:* ITBS{serial_gpon}
-🔒 *MODELO:* {modelo}
-🔒 *STATUS:* {status}
-🔒 *STATUS OMCI:* {omci_config_status}
-🔊 *RX ONU:* {rx_onu} dBm 
-🔊 *TX ONU:* {tx_onu} dBm
-🔊 *RX OLT:* {rx_olt} dBm
-🔊 *TX OLT:* {tx_olt} dBm
-🔒 *DISTÂNCIA OLT - ONU:* {distancia * 1000:.0f} Mt
-🕒 *TEMPO LIGADA:* {up_time[0]} Dia(s), {up_time[1]} Hora(s), {up_time[2]} Minuto(s), {up_time[3]} Segundo(s)
-🌡️  *TEMPERATURA:* {temperatura} C°
-🔌 *PORTA LAN ONU:* {porta_lan}
-🔌 *MODULAÇÃO PORTA LAN:* {modulacao}
+⚙ *Posição na OLT:* {slot}/{onu}
+⚙ *GPON-SN:* ITBS{serial_gpon}
+⚙ *Modelo:* {modelo}
+🔒 *Status:* {status}
+🔒 *Status OMCI:* {omci_config_status}
+
+📶 *Rx ONU:* {rx_onu} dBm 
+📶 *Tx ONU:* {tx_onu} dBm
+📶 *Rx OLT:* {rx_olt} dBm
+📶 *Tx OLT:* {tx_olt} dBm
+
+🔒 *Distância da OLT:* {distancia * 1000:.0f} Mt
+🕒 *Tempo Ligada:* {up_time[0]} Dia(s), {up_time[1]} Hora(s), {up_time[2]} Minuto(s), {up_time[3]} Segundo(s)
+🌡️  *Temperatura:* {temperatura} C°
+
+🔌 *Porta LAN ONU:* {porta_lan}
+🔌 *Modulação Porta LAN:* {modulacao}
 '''
                 return formatado
             
@@ -456,3 +459,141 @@ def consulta_gpon(gpon, ponto_de_acesso):
         else:
             tn.close()
             return f'Infelizmente não consegui localizar esse *GPON-SN* {gpon} na OLT *{ponto_de_acesso}* 😕'
+
+
+
+
+
+def desprovisiona_gpon(gpon, ponto_de_acesso):
+    print('consultando olt pra desprovisionar', gpon, ponto_de_acesso)
+    
+    gpon = gpon.upper()
+    alfanumericos = gpon.isalnum()
+    
+    if len(gpon) != 8:
+        return 'tamanho inválido'
+    
+    elif alfanumericos is False:
+        return 'alfanumericos false'
+    
+    else:
+        if ponto_de_acesso == 'alca':
+            ip = '172.31.0.21'
+        elif ponto_de_acesso == 'jamic':
+            ip = '10.9.250.6'
+        elif ponto_de_acesso == 'bujaru':
+            ip = '10.7.250.10'
+            
+        HOST = str(ip)  # Endereço do dispositivo Telnet
+        PORT = 23  # Porta Telnet padrão
+
+        # Obter nome de usuário e senha do usuário
+        username = 'admin'
+        password = 'admin'
+
+        # Criar objeto Telnet e conectar ao dispositivo
+        tn = telnetlib.Telnet(HOST, PORT)
+
+        # Fazer login
+        tn.read_until(b"olt8820plus login: ")
+        tn.write(username.encode('ascii') + b"\n")
+        if password:
+            tn.read_until(b"Password: ")
+            tn.write(password.encode('ascii') + b"\n")
+            time.sleep(1)  # Aguardar um segundo após enviar a senha
+
+        comando = f"onu find fsan {gpon}"
+
+        tn.write(f"{comando}\n".encode('ascii'))
+
+        # Aguardar a resposta
+        time.sleep(1)
+
+        # Ler a resposta até encontrar o prompt novamente
+        resultado = tn.read_until(b"olt8820plus login:", timeout=5).decode('ascii')
+
+        linhas = resultado.splitlines()[-2].split()
+        print(linhas)
+
+        tn.close()
+        #achou o serial
+        if 'gpon' in linhas[0]:
+            linhas.append(ponto_de_acesso)
+            return linhas
+
+        else:
+            tn.close()
+            return '*GPON-SN não encontrado* 😕'
+        
+        
+def desprovisiona_efetivo(pon, onu, ponto_de_acesso):
+    if ponto_de_acesso == 'alca':
+        ip = '172.31.0.21'
+    elif ponto_de_acesso == 'jamic':
+        ip = '10.9.250.6'
+    elif ponto_de_acesso == 'bujaru':
+        ip = '10.7.250.10'
+        
+    HOST = str(ip)  # Endereço do dispositivo Telnet
+    PORT = 23  # Porta Telnet padrão
+
+    # Obter nome de usuário e senha do usuário
+    username = 'admin'
+    password = 'admin'
+
+    # Criar objeto Telnet e conectar ao dispositivo
+    tn = telnetlib.Telnet(HOST, PORT)
+
+    # Fazer login
+    tn.read_until(b"olt8820plus login: ")
+    tn.write(username.encode('ascii') + b"\n")
+    if password:
+        tn.read_until(b"Password: ")
+        tn.write(password.encode('ascii') + b"\n")
+        time.sleep(1)  # Aguardar um segundo após enviar a senha
+        
+    comando_exclusao = f"onu delete gpon {pon} onu {onu}"
+    comando_yes = 'yes'
+    comando_no = 'no'
+    
+    # INICIA ENVIOS DE COMANDO PARA DESPROVISIONAR
+    tn.write(f"{comando_exclusao}\n".encode('ascii'))
+
+    resultado2 = tn.read_until(b"olt8820plus login:", timeout=5).decode('ascii')
+    #linhas2 = resultado2.splitlines()[-2].split()
+    print(resultado2)
+    
+    #comando yes
+    tn.write(f"{comando_yes}\n".encode('ascii'))
+    
+    resultado2 = tn.read_until(b"olt8820plus login:", timeout=5).decode('ascii')
+    print(resultado2)
+    
+    #comando no
+    tn.write(f"{comando_no}\n".encode('ascii'))
+    
+    resultado2 = tn.read_until(b"olt8820plus login:", timeout=5).decode('ascii')
+    print(resultado2)
+    
+    #comando yes
+    tn.write(f"{comando_yes}\n".encode('ascii'))
+    
+    resultado2 = tn.read_until(b"olt8820plus login:", timeout=5).decode('ascii')
+    
+    linha = resultado2.splitlines()[-2]
+    
+    tn.close()
+    # verifica se o retorno final bate com sucesso
+    if f'deleting ONU at gpon {pon} onu {onu}' in linha:
+        
+        retorno_final = f"""
+✅ *TUDO CERTO!* ✅
+
+🎉 _ONU_ excluída com sucesso 🎉
+"""
+        
+        print(retorno_final)
+        return retorno_final
+        
+    else:
+        return f'Ocorreu um erro ao excluir a ONU'
