@@ -372,11 +372,13 @@ def consulta_gpon(gpon, ponto_de_acesso):
                     
                 elif status_porta_lan == '2':
                     porta_lan = 'Desativada'
+                    
                 else:
                     porta_lan = '-'
                     
                 if modulacao_porta_lan in opcoes_velocidade:
                     modulacao = opcoes_velocidade[modulacao_porta_lan]
+                    
                 else:
                     modulacao = '-'
                 
@@ -458,10 +460,7 @@ def consulta_gpon(gpon, ponto_de_acesso):
                 return 'ONU bloqueada'
         else:
             tn.close()
-            return f'Infelizmente não consegui localizar esse *GPON-SN* {gpon} na OLT *{ponto_de_acesso}* 😕'
-
-
-
+            return f'Infelizmente não consegui localizar esse GPON-SN *{gpon}* na OLT *{ponto_de_acesso}* 😕'
 
 
 def desprovisiona_gpon(gpon, ponto_de_acesso):
@@ -589,7 +588,10 @@ def desprovisiona_efetivo(pon, onu, ponto_de_acesso):
         retorno_final = f"""
 ✅ *TUDO CERTO!* ✅
 
-🎉 _ONU_ excluída com sucesso 🎉
+*Posição liberada:* `{onu}`
+*Pon:* `{pon}`
+
+🎉 ONU excluída com sucesso! 👍
 """
         
         print(retorno_final)

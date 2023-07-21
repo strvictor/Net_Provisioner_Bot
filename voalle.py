@@ -19,7 +19,7 @@ def validacontrato(num_contrato):
                 contrato = dado['dados']['contrato']
 
                 if num_contrato == contrato:
-                    
+                    verifica.clear()
                     verifica.append(num_contrato)
                     return f"""
 Localizamos esse contrato:

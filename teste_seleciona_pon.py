@@ -12,4 +12,4 @@ def cto_pon(cto):
     #print(f'slot: {slot}\npon: {pon}')
 
 
-cto_pon('PAA-1')
+cto_pon('PAB-1')

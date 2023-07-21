@@ -140,7 +140,7 @@ bot.polling()
 
 17 colunas
 '''
-
+'''
 retorno = """
 intelbras-olt> onu status gpon 1 onu 1 details
 GPON 1
@@ -219,17 +219,17 @@ else:
     up_time = linhas[9].split(':')
 
 
-    formatado = f'''
-    ONU: {onu}
-    GPON: {serial_gpon}
-    STATUS: {status}
-    STATUS OMCI: {omci_config_status}
-    RX ONU: {rx_onu} dBm 
-    TX ONU: {tx_onu} dBm
-    RX OLT: {rx_olt} dBm
-    TX OLT: {tx_olt} dBm
-    DISTÂNCIA OLT --> ONU: {distancia * 1000:.0f} Mt
-    TEMPO LIGADA: {up_time[0]} Dias, {up_time[1]} Horas, {up_time[2]} Minutos, {up_time[3]} Segundos
-    '''
-    print(formatado)
+    # formatado = f'''
+    #ONU: {onu}
+    #GPON: {serial_gpon}
+    #STATUS: {status}
+    #STATUS OMCI: {omci_config_status}
+    #RX ONU: {rx_onu} dBm 
+    #TX ONU: {tx_onu} dBm
+    #RX OLT: {rx_olt} dBm
+   # TX OLT: {tx_olt} dBm
+  #  DISTÂNCIA OLT --> ONU: {distancia * 1000:.0f} Mt
+   # TEMPO LIGADA: {up_time[0]} Dias, {up_time[1]} Horas, {up_time[2]} Minutos, {up_time[3]} Segundos
+    #'''
+    #print(formatado)
 
