@@ -3,6 +3,7 @@ from telebot import types
 from voalle import validacontrato
 from cto import valida_cto, valida_porta, pon_cto
 from olt import busca_onu_na_pon, provisiona, consulta_gpon, desprovisiona_gpon, desprovisiona_efetivo
+from autenticacao import apresentacao, verifica_nome, cadastro_no_Mysql, consulta_id, timeout
 
 class Provisionamento():
     def __init__(self):
@@ -13,6 +14,135 @@ class Provisionamento():
         self.pppoe_cliente = list()
         self.desprovisiona_parametros = list()
 
+    def apresentacao_inicial(self, chat_id, username=None):
+        id_usuario = chat_id
+        msg = apresentacao(username)
+        self.bot.send_message(id_usuario, msg, parse_mode="Markdown")
+        
+        self.criarconta(id_usuario)
+        
+        
+    def verifica_se_ja_tem_cadastro(self, chat_id):
+        consulta = consulta_id(chat_id)
+        
+        if consulta == 'usuario ainda não tem cadastro':
+            self.apresentacao_inicial(chat_id)
+            
+        else:
+            self.bot.send_message(chat_id, 'Parece que ja tem um cadastro vinculado a esse dispositivo', parse_mode="Markdown")
+            time_out = timeout(chat_id)
+            
+            print(time_out)
+            if time_out == 'timeout':
+                # solicitar novamente a senha
+                pass
+            else:
+                # seguir com o fluxo
+                pass
+        
+    def criarconta(self, chat_id):
+        id_usuario = chat_id
+        
+        self.bot.send_message(id_usuario, 'Qual o seu *nome completo?*', parse_mode="Markdown")
+        
+        @self.bot.message_handler(func=lambda message: True)
+        def captura_nome(mensagem):
+            nome_informado = str(mensagem.text).upper()
+
+            resp_nome = verifica_nome(nome_informado)
+            
+            if resp_nome == 'nome não encontrado':
+                self.bot.send_message(id_usuario, 'Nome informado não existe em nossa base', parse_mode="Markdown")
+                
+            else:
+                nome, usuario, email, permissao = resp_nome
+                print(nome, usuario, email, permissao, sep='\n')
+                
+                self.bot.send_message(id_usuario, f'{nome}\n{usuario}\n{email}\n{permissao}', parse_mode="Markdown")
+                
+                
+                self.bot.send_message(id_usuario, 'Qual o seu *usuario de login* do erp voalle?', parse_mode="Markdown")
+                
+                @self.bot.message_handler(func=lambda message: True)
+                def captura_usuario(mensagem):
+                    usuario_informado = str(mensagem.text).lower()
+                    
+                    if usuario_informado == usuario:
+                        self.bot.send_message(id_usuario, 'Usuario correto!', parse_mode="Markdown")
+                        
+                        self.bot.send_message(id_usuario, 'Qual o seu *email cadastrado* no erp voalle?', parse_mode="Markdown")
+                        
+                        
+                        @self.bot.message_handler(func=lambda message: True)
+                        def captura_email(mensagem):
+                            email_informado = mensagem.text
+                        
+                            if email_informado == email:
+                                self.bot.send_message(id_usuario, 'Email correto!', parse_mode="Markdown")
+                                
+                                self.bot.send_message(id_usuario, 'Crie uma senha de acesso ao bot, por favor\ntamnaho min: *6 caracteres*', parse_mode="Markdown")
+                                
+                                
+                                @self.bot.message_handler(func=lambda message: True)
+                                def captura_senha1(mensagem):
+                                    senha1 = mensagem.text
+                                    
+                                    if len(senha1) >= 6:
+                                        self.bot.send_message(id_usuario, '*Senha armazenada!*\nconfirme novamente a senha.', parse_mode="Markdown")
+                                        
+                                        @self.bot.message_handler(func=lambda message: True)
+                                        def captura_senha2(mensagem):
+                                            senha2 = mensagem.text
+                                            username = mensagem.chat.username
+
+                                            if senha1 == senha2:
+                                                self.bot.send_message(id_usuario, '*cadastro efetuado*, armazenando as informações', parse_mode="Markdown")
+                                                print(id_usuario)
+                                                cadastro = cadastro_no_Mysql(id_usuario, username, nome, usuario, email, senha1, permissao)
+                                                
+                                                self.bot.send_message(id_usuario, cadastro, parse_mode="Markdown")
+                                                
+                                                
+                                                
+                                            else:
+                                                self.bot.send_message(id_usuario, '*Senhas não conferem!*', parse_mode="Markdown")
+                                                self.criarconta(id_usuario)
+                                            
+                                        self.bot.register_next_step_handler_by_chat_id(chat_id, captura_senha2)
+                                        
+                                        
+                                        
+                                    else:
+                                        self.bot.send_message(id_usuario, '*Senha muito curta!*', parse_mode="Markdown")
+                                        self.criarconta(id_usuario)
+                                                                                
+                                                                               
+                                self.bot.register_next_step_handler_by_chat_id(chat_id, captura_senha1)
+                                
+
+                                
+                                
+                            else:
+                                self.bot.send_message(id_usuario, 'Email incorreto!', parse_mode="Markdown")
+                                self.criarconta(id_usuario)
+                                
+                        
+                        
+                        self.bot.register_next_step_handler_by_chat_id(chat_id, captura_email)
+                        
+                        
+                    else:
+                        self.bot.send_message(id_usuario, 'Usuario incorreto!', parse_mode="Markdown")
+                        self.criarconta(id_usuario)
+                
+                
+                self.bot.register_next_step_handler_by_chat_id(chat_id, captura_usuario)
+        
+
+        self.bot.register_next_step_handler_by_chat_id(chat_id, captura_nome)
+        
+            
+        
 
     def menu_principal(self, chat_id):
         mensagem = 'Escolha uma opção:'
@@ -602,12 +732,13 @@ class Provisionamento():
         @self.bot.message_handler(func=lambda message: True)
         def escuta_msg(mensagem):
             id_usuario = mensagem.chat.id
+            username = mensagem.chat.username
             retorno_usuario = mensagem.text
 
             print('ID USUARIO', id_usuario, '>', retorno_usuario)
 
             if retorno_usuario == '/start':
-                self.menu_principal(id_usuario)
+                self.verifica_se_ja_tem_cadastro(id_usuario)
 
         @self.bot.callback_query_handler(func=lambda call: True)
         def escuta_botoes(call):
