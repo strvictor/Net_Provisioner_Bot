@@ -10,10 +10,7 @@ Seja bem-vindo ao *bot*
     '''
     return msg_apresentacao
 
-
-
 def verifica_nome(nome_informado):
-
     usuarios = []
     try:
         # Estabelece a conexão com o banco de dados PostgreSQL
@@ -74,10 +71,7 @@ def verifica_nome(nome_informado):
     return 'nome não encontrado'
 
 
-
-
 def cadastro_no_Mysql(id_usuario_telegram, usuario_telegram, nome_completo, usuario, email, senha, permissao,):
-
     # Conectando ao banco de dados
     conexao = mysql.connector.connect(
         host="localhost",
@@ -112,11 +106,6 @@ def cadastro_no_Mysql(id_usuario_telegram, usuario_telegram, nome_completo, usua
     return f'✅ Usuário _{usuario_telegram}_ *Cadastrado com sucesso* ✅'
 
 
-
-
-
-
-
 def consulta_id(id_usuario):
     config = {
     'user': 'root',
@@ -143,13 +132,11 @@ def consulta_id(id_usuario):
             
             return 'usuario ja cadastrado'
         
-        
     # Fechando o cursor e a conexão
     cursor.close()
     conexao.close()
     
     return 'usuario ainda não tem cadastro'
-
 
 
 def consulta_permissao(id_usuario):
@@ -170,7 +157,6 @@ def consulta_permissao(id_usuario):
     # Exemplo de execução de uma consulta SELECT
     cursor.execute(f"SELECT permissao FROM usuarios_cadastrados WHERE id_usuario_telegram = {id_usuario}")
 
-
     # Recuperando os resultados da consulta
     resultados = cursor.fetchall()
 
@@ -184,12 +170,6 @@ def consulta_permissao(id_usuario):
     conexao.close()
     
     return permissao
-    
-
-    
-
-
-
 
 
 def timeout(id_usuario):
@@ -220,13 +200,11 @@ def timeout(id_usuario):
 
         ultimo_login = list(resultado)[0]
         
-        
         # Converter as strings para objetos datetime
         data1 = datetime.strptime(ultimo_login, '%d/%m/%Y %H:%M:%S')
         data2 = datetime.strptime(data_e_hora_atual, '%d/%m/%Y %H:%M:%S')
         
         timeout = (data2 - data1).days
-        
         
     # Fechando o cursor e a conexão
     cursor.close()
@@ -238,8 +216,6 @@ def timeout(id_usuario):
     else:
         return 'ok'
         
-
-
 
 def valida_senha(id_usuario):
     config = {
@@ -276,8 +252,6 @@ def valida_senha(id_usuario):
     return senha_cadastrada
 
 
-
-
 def atualiza_timeout(id_usuario):
     config = {
         'user': 'root',
@@ -304,8 +278,3 @@ def atualiza_timeout(id_usuario):
 
     # Fechando o cursor
     cursor.close()
-
-
-
-
-

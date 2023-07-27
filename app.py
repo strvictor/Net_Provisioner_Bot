@@ -25,7 +25,6 @@ class Provisionamento():
         
     def verifica_se_ja_tem_cadastro(self, chat_id, username):
         consulta = consulta_id(chat_id)
-        
         if consulta == 'usuario ainda não tem cadastro':
             self.apresentacao_inicial(chat_id, username)
             
@@ -33,12 +32,10 @@ class Provisionamento():
             self.bot.send_message(chat_id, 'Parece que ja tem um cadastro vinculado a esse dispositivo', parse_mode="Markdown")
             self.verifica_time_out(chat_id)
             
-            
     
     def verifica_time_out(self, chat_id):
         time_out = timeout(chat_id)
         print('TIMEOUT: ', time_out)
-        
         if time_out == 'timeout':
             # solicitar novamente a senha
             self.verifica_senha(chat_id)
@@ -48,7 +45,6 @@ class Provisionamento():
             self.menu_principal(chat_id)
             
 
-    
     def verifica_time_out_botoes(self, chat_id, funcao_redirecionamento, *args, **kwargs):
         time_out = timeout(chat_id)
         print('TIMEOUT: ', time_out)
@@ -56,7 +52,6 @@ class Provisionamento():
         if time_out == 'timeout':
             # solicitar novamente a senha
             print('cai no timeout: ')
-            
             self.verifica_senha(chat_id)
 
         else:
@@ -84,7 +79,6 @@ class Provisionamento():
                 atualiza_timeout(id_usuario)
                 self.menu_principal(id_usuario)
                 
-                
             else:
                 self.bot.send_message(id_usuario, '*Senha incorreta!*', parse_mode="Markdown")
                 self.verifica_senha(id_usuario)
@@ -111,7 +105,6 @@ class Provisionamento():
                 nome, usuario, email, permissao = resp_nome
                 print(nome, usuario, email, permissao, sep='\n')
                 
-                
                 self.bot.send_message(id_usuario, 'Qual o seu *usuario de login* do erp voalle?', parse_mode="Markdown")
                 
                 @self.bot.message_handler(func=lambda message: True)
@@ -123,7 +116,6 @@ class Provisionamento():
                         
                         self.bot.send_message(id_usuario, 'Qual o seu *email cadastrado* no erp voalle?', parse_mode="Markdown")
                         
-                        
                         @self.bot.message_handler(func=lambda message: True)
                         def captura_email(mensagem):
                             email_informado = mensagem.text
@@ -132,7 +124,6 @@ class Provisionamento():
                                 self.bot.send_message(id_usuario, 'Email correto!', parse_mode="Markdown")
                                 
                                 self.bot.send_message(id_usuario, 'Crie uma senha de acesso ao bot, por favor\ntamnaho min: *6 caracteres*', parse_mode="Markdown")
-                                
                                 
                                 @self.bot.message_handler(func=lambda message: True)
                                 def captura_senha1(mensagem):
@@ -160,8 +151,7 @@ class Provisionamento():
                                     
                                     else:
                                         self.bot.send_message(id_usuario, '*Senha muito curta!*', parse_mode="Markdown")
-                                        self.criarconta(id_usuario)
-                                                                                
+                                        self.criarconta(id_usuario)                                 
                                                                                
                                 self.bot.register_next_step_handler_by_chat_id(chat_id, captura_senha1)
 
@@ -169,22 +159,17 @@ class Provisionamento():
                                 self.bot.send_message(id_usuario, 'Email incorreto!', parse_mode="Markdown")
                                 self.criarconta(id_usuario)
                                 
-                        
                         self.bot.register_next_step_handler_by_chat_id(chat_id, captura_email)
-                        
-                        
+                                               
                     else:
                         self.bot.send_message(id_usuario, 'Usuario incorreto!', parse_mode="Markdown")
                         self.criarconta(id_usuario)
-                
-                
+            
                 self.bot.register_next_step_handler_by_chat_id(chat_id, captura_usuario)
-        
-
+            
         self.bot.register_next_step_handler_by_chat_id(chat_id, captura_nome)
         
-            
-        
+
     def menu_principal(self, chat_id):
         mensagem = 'Escolha uma opção:'
         id_usuario = chat_id
@@ -655,7 +640,6 @@ class Provisionamento():
             self.bot.send_message(chat_id, 'Você não tem permissão pra ultilizar essa funcionalidade 😕')
 
 
-
     def consulta2(self, chat_id, ponto_de_acesso):
         id_usuario = chat_id
         self.bot.send_message(id_usuario, "Digite os ultimos 8 números do *GPON-SN* da _ONU_", parse_mode="Markdown")
@@ -730,80 +714,57 @@ class Provisionamento():
     def tratativa_dos_botoes(self, call):
         id_usuario = call.message.chat.id
 
-
         if call.data == 'provisionamento':
             print('botão provisionamento chamado')
             self.verifica_time_out_botoes(id_usuario, self.provisionamento, id_usuario)
-
             
         elif call.data == 'desprovisionar':
             print('botão desprovisionar chamado')
             self.verifica_time_out_botoes(id_usuario, self.pega_ponto_de_acesso2, id_usuario)
             
-            
         elif call.data == 'consulta':
             print('botão consulta chamado')
             self.verifica_time_out_botoes(id_usuario, self.pega_ponto_de_acesso, id_usuario)
             
-            
         elif call.data == 'voltar_menu':
             print('botão voltar menu chamado')
             self.verifica_time_out_botoes(id_usuario, self.menu_principal, id_usuario)
-            
         
         elif call.data == 'tentar_novamente':
             print('botão tentar novamente chamado')
-            self.verifica_time_out_botoes(id_usuario, self.provisionamento, id_usuario)
-            
-            
+            self.verifica_time_out_botoes(id_usuario, self.provisionamento, id_usuario)     
 
         elif call.data == 'correto':
             print('botão tudo certo chamado')
-            self.verifica_time_out_botoes(id_usuario, self.solicita_cto, id_usuario)
-            
-            
+            self.verifica_time_out_botoes(id_usuario, self.solicita_cto, id_usuario)            
 
         elif call.data == 'incorreto':
             print('botão incorreto chamado')
             self.verifica_time_out_botoes(id_usuario, self.provisionamento, id_usuario)
             
-            
-            
-
         elif call.data == 'tudo_certo_olt':
             print('botão tudo certo olt chamado')
             self.verifica_time_out_botoes(id_usuario, self.provisiona_onu, self.itbs, self.serial, self.modelo_permtido, self.posicao_na_pon, self.pon_atual, self.ponto_acesso, self.pppoe_cliente[0], id_usuario)
-            
-            
-            
 
         elif call.data == 'tentar_novamente_cto':
             print('botão tentar novamente cto chamado')
             self.verifica_time_out_botoes(id_usuario, self.solicita_cto, id_usuario)
-                      
-            
 
         elif call.data == 'volta_menu':
             print('botão tentar novamente cto chamado')
             self.desprovisiona_parametros.clear()
             self.verifica_time_out_botoes(id_usuario, self.menu_principal, id_usuario)
-                    
-            
 
         elif call.data == 'desprovisiona-olt':
             print('botão desprovisionar chamado')
             self.verifica_time_out_botoes(id_usuario, self.trata_desprovisionamento, self.desprovisiona_parametros[0], self.desprovisiona_parametros[1], self.desprovisiona_parametros[2], id_usuario)
-            
-            
-            
+
         elif call.data == 'tenta-novamente-consulta':
             print('botão tenta novamente desprovi. chamado')
             self.desprovisiona_parametros.clear()
             self.verifica_time_out_botoes(id_usuario, self.pega_ponto_de_acesso2, id_usuario)
             
             
-            
-
     def inicia_bot(self):
         @self.bot.message_handler(func=lambda message: True)
         def escuta_msg(mensagem):
@@ -819,8 +780,7 @@ class Provisionamento():
             else:
                 print('verificando timeout...')
                 self.verifica_time_out(id_usuario)
-                
-
+            
         @self.bot.callback_query_handler(func=lambda call: True)
         def escuta_botoes(call):
             self.tratativa_dos_botoes(call)
@@ -830,4 +790,3 @@ class Provisionamento():
 # Uso da classe Provisionamento
 provisionamento1 = Provisionamento()
 provisionamento1.inicia_bot()
-
