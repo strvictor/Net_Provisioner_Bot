@@ -6,8 +6,16 @@ from datetime import datetime
 def apresentacao(usuario):
     msg_apresentacao = f'''
 Olá {usuario},
-Seja bem-vindo ao *bot*
-    '''
+
+Seja bem-vindo(a) ao nosso bot de provisionamento, desprovisionamento e consulta na OLT!
+
+Estamos animados em apresentar a você uma ferramenta poderosa para simplificar e agilizar suas operações na OLT. Com o nosso bot, você terá o controle total sobre o provisionamento de serviços, o desligamento de recursos e a obtenção de informações cruciais diretamente da OLT.
+
+Atenciosamente,
+A equipe do bot de provisionamento, desprovisionamento e consulta na OLT.
+
+-mensagem de apresentação gerada aleatoria
+'''
     return msg_apresentacao
 
 def verifica_nome(nome_informado):
