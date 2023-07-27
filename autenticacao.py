@@ -109,7 +109,7 @@ def cadastro_no_Mysql(id_usuario_telegram, usuario_telegram, nome_completo, usua
     cursor.close()
     conexao.close()
     
-    return '*Cadastrado no BD com sucesso*'
+    return f'✅ Usuário _{usuario_telegram}_ *Cadastrado com sucesso* ✅'
 
 
 
@@ -149,6 +149,45 @@ def consulta_id(id_usuario):
     conexao.close()
     
     return 'usuario ainda não tem cadastro'
+
+
+
+def consulta_permissao(id_usuario):
+    
+    config = {
+    'user': 'root',
+    'password': 'Str12345!@',
+    'host': 'localhost',
+    'database': 'dados_usuarios',
+}
+
+    # Conectando ao banco de dados
+    conexao = mysql.connector.connect(**config)
+
+    # Criando um cursor para interagir com o banco de dados
+    cursor = conexao.cursor()
+
+    # Exemplo de execução de uma consulta SELECT
+    cursor.execute(f"SELECT permissao FROM usuarios_cadastrados WHERE id_usuario_telegram = {id_usuario}")
+
+
+    # Recuperando os resultados da consulta
+    resultados = cursor.fetchall()
+
+    # Imprimindo os resultados
+    for resultado in resultados:
+        
+        permissao = list(resultado)[0]
+        
+    # Fechando o cursor e a conexão
+    cursor.close()
+    conexao.close()
+    
+    return permissao
+    
+
+    
+
 
 
 
@@ -199,6 +238,73 @@ def timeout(id_usuario):
     else:
         return 'ok'
         
+
+
+
+def valida_senha(id_usuario):
+    config = {
+        'user': 'root',
+        'password': 'Str12345!@',
+        'host': 'localhost',
+        'database': 'dados_usuarios',
+    }
+
+    # Conectando ao banco de dados
+    conexao = mysql.connector.connect(**config)
+
+    # Criando um cursor para interagir com o banco de dados
+    cursor = conexao.cursor()
+
+    # Exemplo de execução de uma consulta SELECT
+    cursor.execute(f"SELECT senha FROM usuarios_cadastrados WHERE id_usuario_telegram = {id_usuario}")
+
+    # Recuperando os resultados da consulta
+    resultados = cursor.fetchall()
+
+    data_hora_atual = datetime.now()
+    data_e_hora_atual = data_hora_atual.strftime("%d/%m/%Y %H:%M:%S")
+
+    # Imprimindo os resultados
+    for resultado in resultados:
+
+        senha_cadastrada = list(resultado)[0]
+        
+    # Fechando o cursor e a conexão
+    cursor.close()
+    conexao.close()
+    
+    return senha_cadastrada
+
+
+
+
+def atualiza_timeout(id_usuario):
+    config = {
+        'user': 'root',
+        'password': 'Str12345!@',
+        'host': 'localhost',
+        'database': 'dados_usuarios',
+    }
+
+    # Conectando ao banco de dados
+    conexao = mysql.connector.connect(**config)
+
+    # Criando um cursor para interagir com o banco de dados
+    cursor = conexao.cursor()
+
+    data_hora_atual = datetime.now()
+    data_e_hora_atual = data_hora_atual.strftime("%d/%m/%Y %H:%M:%S")
+
+    # Exemplo de execução de uma consulta UPDATE
+    cursor.execute(f"UPDATE `usuarios_cadastrados` SET `ultimo_login` = '{data_e_hora_atual}' WHERE `id_usuario_telegram` = '{id_usuario}'")
+
+    # Confirmando a transação (importante para efetivar as mudanças no banco)
+    conexao.commit()
+    print('timeout atualizado com sucesso')
+
+    # Fechando o cursor
+    cursor.close()
+
 
 
 
