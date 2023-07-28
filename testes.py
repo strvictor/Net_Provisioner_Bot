@@ -76,19 +76,39 @@
 
 
 
-import telebot
+# import telebot
 
-# Crie uma instância do bot com o token do seu bot
-bot = telebot.TeleBot('5935745695:AAHcP4dAquoEEg0pv9YOlj0HHLiofldVMY4')
+# # Crie uma instância do bot com o token do seu bot
+# bot = telebot.TeleBot('5935745695:AAHcP4dAquoEEg0pv9YOlj0HHLiofldVMY4')
 
-# ID do chat para o qual você deseja enviar o adesivo
-chat_id = '5138023764'
+# # ID do chat para o qual você deseja enviar o adesivo
+# chat_id = '5138023764'
 
-# Caminho para o arquivo do adesivo (sticker) que você deseja enviar
-caminho_adesivo = r'C:\Users\victor.silva\Downloads\sticker.png'
+# # Caminho para o arquivo do adesivo (sticker) que você deseja enviar
+# caminho_adesivo = r'C:\Users\victor.silva\Downloads\sticker.png'
 
-# Envie o adesivo
+# # Envie o adesivo
 
 
-# Inicie o bot
-bot.polling()
+# # Inicie o bot
+# bot.polling()
+
+
+
+from loguru import logger
+
+# Configuração básica para imprimir logs no console
+logger.add(
+    "file.log",
+    level="DEBUG",
+    format="{time:DD-MM-YYYY HH:mm:ss} ; {level} ; {message}",
+    rotation="10 MB"
+)
+
+# Exemplos de logs
+debug = logger.debug("teste")
+info = logger.info("usuario cadastrado")
+warning = logger.warning("não provisionado")
+error = logger.error("olt off")
+
+
