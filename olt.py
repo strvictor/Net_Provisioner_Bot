@@ -76,6 +76,7 @@ def busca_onu_na_pon(ponto_de_acesso, pon):
         
     except Exception as e:
         print('erro na consulta:', str(e))
+        return str(e)
 
 
 def formata_retorno(linhas, pon, ponto_de_acesso):

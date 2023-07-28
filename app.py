@@ -29,7 +29,7 @@ class Provisionamento():
             self.apresentacao_inicial(chat_id, username)
             
         else:
-            self.bot.send_message(chat_id, 'Parece que ja tem um cadastro vinculado a esse dispositivo', parse_mode="Markdown")
+            self.bot.send_message(chat_id, '⚠ Ja possui um cadastro *vinculado a esse dispositivo* ⚠', parse_mode="Markdown")
             self.verifica_time_out(chat_id)
             
     
@@ -66,21 +66,21 @@ class Provisionamento():
         senha_bd = valida_senha(id_usuario)
         print('SENHA BANCO: ', senha_bd)
         
-        self.bot.send_message(id_usuario, '*Informe sua senha de acesso para continuar!*', parse_mode="Markdown")
+        self.bot.send_message(id_usuario, '🔑 *Informe sua senha de acesso para continuar!* 🔑', parse_mode="Markdown")
         
         @self.bot.message_handler(func=lambda message: True)
         def valida_senha_usuario(mensagem):
             senha_informada = mensagem.text
             
             if senha_informada == senha_bd:
-                self.bot.send_message(id_usuario, '*Logado novamente!*', parse_mode="Markdown")
+                self.bot.send_message(id_usuario, '*🥳✅ Login efetuado com sucesso!* ✅🥳', parse_mode="Markdown")
                 
                 #atualiza o time-out
                 atualiza_timeout(id_usuario)
                 self.menu_principal(id_usuario)
                 
             else:
-                self.bot.send_message(id_usuario, '*Senha incorreta!*', parse_mode="Markdown")
+                self.bot.send_message(id_usuario, '❌ *Senha incorreta!*', parse_mode="Markdown")
                 self.verifica_senha(id_usuario)
                 
         self.bot.register_next_step_handler_by_chat_id(chat_id, valida_senha_usuario)
@@ -89,7 +89,7 @@ class Provisionamento():
     def criarconta(self, chat_id):
         id_usuario = chat_id
         
-        self.bot.send_message(id_usuario, 'Qual o seu *nome completo?*', parse_mode="Markdown")
+        self.bot.send_message(id_usuario, '🙎‍♂️ Qual o seu *NOME COMPLETO?*', parse_mode="Markdown")
         
         @self.bot.message_handler(func=lambda message: True)
         def captura_nome(mensagem):
@@ -98,39 +98,39 @@ class Provisionamento():
             resp_nome = verifica_nome(nome_informado)
             
             if resp_nome == 'nome não encontrado':
-                self.bot.send_message(id_usuario, 'Nome informado não existe em nossa base', parse_mode="Markdown")
+                self.bot.send_message(id_usuario, '😥 Nome informado não existe em nossa base de dados', parse_mode="Markdown")
                 self.criarconta(id_usuario)
                 
             else:
                 nome, usuario, email, permissao = resp_nome
                 print(nome, usuario, email, permissao, sep='\n')
                 
-                self.bot.send_message(id_usuario, 'Qual o seu *usuario de login* do erp voalle?', parse_mode="Markdown")
+                self.bot.send_message(id_usuario, '📌 Qual o seu *USUÁRIO DE LOGIN* do erp voalle?', parse_mode="Markdown")
                 
                 @self.bot.message_handler(func=lambda message: True)
                 def captura_usuario(mensagem):
                     usuario_informado = str(mensagem.text).lower()
                     
                     if usuario_informado == usuario:
-                        self.bot.send_message(id_usuario, 'Usuario correto!', parse_mode="Markdown")
+                        #self.bot.send_message(id_usuario, 'Usuario correto!', parse_mode="Markdown")
                         
-                        self.bot.send_message(id_usuario, 'Qual o seu *email cadastrado* no erp voalle?', parse_mode="Markdown")
+                        self.bot.send_message(id_usuario, '✉ Qual o seu *EMAIL CADASTRADO* no erp voalle?', parse_mode="Markdown")
                         
                         @self.bot.message_handler(func=lambda message: True)
                         def captura_email(mensagem):
                             email_informado = mensagem.text
                         
                             if email_informado == email:
-                                self.bot.send_message(id_usuario, 'Email correto!', parse_mode="Markdown")
+                                #self.bot.send_message(id_usuario, 'Email correto!', parse_mode="Markdown")
                                 
-                                self.bot.send_message(id_usuario, 'Crie uma senha de acesso ao bot, por favor\ntamnaho min: *6 caracteres*', parse_mode="Markdown")
+                                self.bot.send_message(id_usuario, '📝 Crie uma *SENHA DE ACESSO AO BOT*\ntamanho min: _6 caracteres_', parse_mode="Markdown")
                                 
                                 @self.bot.message_handler(func=lambda message: True)
                                 def captura_senha1(mensagem):
                                     senha1 = mensagem.text
                                     
                                     if len(senha1) >= 6:
-                                        self.bot.send_message(id_usuario, '*Senha armazenada!*\nconfirme novamente a senha.', parse_mode="Markdown")
+                                        self.bot.send_message(id_usuario, '💻 *Senha armazenada!*\nconfirme novamente a senha.', parse_mode="Markdown")
                                         
                                         @self.bot.message_handler(func=lambda message: True)
                                         def captura_senha2(mensagem):
@@ -144,25 +144,29 @@ class Provisionamento():
                                                 self.menu_principal(id_usuario)
                                                 
                                             else:
-                                                self.bot.send_message(id_usuario, '*Senhas não conferem!*', parse_mode="Markdown")
+                                                self.bot.send_message(id_usuario, '❌ *Senhas não conferem!*', parse_mode="Markdown")
+                                                time.sleep(1)
                                                 self.criarconta(id_usuario)
                                             
                                         self.bot.register_next_step_handler_by_chat_id(chat_id, captura_senha2)
                                     
                                     else:
-                                        self.bot.send_message(id_usuario, '*Senha muito curta!*', parse_mode="Markdown")
+                                        self.bot.send_message(id_usuario, '❌ *Senha muito curta!*', parse_mode="Markdown")
+                                        time.sleep(1)
                                         self.criarconta(id_usuario)                                 
                                                                                
                                 self.bot.register_next_step_handler_by_chat_id(chat_id, captura_senha1)
 
                             else:
-                                self.bot.send_message(id_usuario, 'Email incorreto!', parse_mode="Markdown")
+                                self.bot.send_message(id_usuario, '❌ Email incorreto!', parse_mode="Markdown")
+                                time.sleep(1)
                                 self.criarconta(id_usuario)
                                 
                         self.bot.register_next_step_handler_by_chat_id(chat_id, captura_email)
                                                
                     else:
-                        self.bot.send_message(id_usuario, 'Usuario incorreto!', parse_mode="Markdown")
+                        self.bot.send_message(id_usuario, '❌ Usuario incorreto!', parse_mode="Markdown")
+                        time.sleep(1)
                         self.criarconta(id_usuario)
             
                 self.bot.register_next_step_handler_by_chat_id(chat_id, captura_usuario)
@@ -300,7 +304,9 @@ class Provisionamento():
             self.bot.register_next_step_handler_by_chat_id(chat_id, captura_contrato)
             
         else:
-            self.bot.send_message(chat_id, 'Você não tem permissão pra ultilizar essa funcionalidade 😕')
+            self.bot.send_message(chat_id, '😕 Você não tem *permissão* pra ultilizar essa funcionalidade 😕', parse_mode="Markdown")
+            with open('sticker.png', 'rb') as adesivo:
+                self.bot.send_sticker(chat_id, adesivo)
 
 
     def solicita_cto(self, chat_id):
@@ -405,7 +411,7 @@ class Provisionamento():
     def consulta_olt(self, chat_id, ponto_de_acesso, pon):
         id_usuario = chat_id
         self.bot.send_message(id_usuario, f"Buscando na OLT...\nPON = {pon}")
-
+        self.bot.send_chat_action(id_usuario, 'typing')
         try:
             print('chamei a função busca onu na pon')
             retorno = busca_onu_na_pon(ponto_de_acesso, pon)
@@ -582,6 +588,7 @@ class Provisionamento():
             mensagem = mensagem.text
             
             self.bot.send_message(id_usuario, "Buscando ONU...\nPor favor, aguarde!", parse_mode="Markdown")
+            self.bot.send_chat_action(id_usuario, 'typing')
             
             retorno = consulta_gpon(mensagem, ponto_de_acesso) 
             
@@ -637,7 +644,9 @@ class Provisionamento():
             self.bot.register_next_step_handler_by_chat_id(chat_id, captura_localidade2)
             
         else:
-            self.bot.send_message(chat_id, 'Você não tem permissão pra ultilizar essa funcionalidade 😕')
+            self.bot.send_message(chat_id, '😕 Você não tem *permissão* pra ultilizar essa funcionalidade 😕', parse_mode="Markdown")
+            with open('sticker.png', 'rb') as adesivo:
+                self.bot.send_sticker(chat_id, adesivo)
 
 
     def consulta2(self, chat_id, ponto_de_acesso):
@@ -649,6 +658,7 @@ class Provisionamento():
             mensagem = mensagem.text
             
             self.bot.send_message(id_usuario, "Buscando ONU...\nPor favor, aguarde!", parse_mode="Markdown")
+            self.bot.send_chat_action(id_usuario, 'typing')
             
             retorno = desprovisiona_gpon(mensagem, ponto_de_acesso) 
             
