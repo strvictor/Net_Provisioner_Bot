@@ -76,7 +76,6 @@ def busca_onu_na_pon(ponto_de_acesso, pon):
         
     except Exception as e:
         print('erro na consulta:', str(e))
-        return str(e)
 
 
 def formata_retorno(linhas, pon, ponto_de_acesso):
@@ -198,7 +197,12 @@ def provisiona(gpon, vaga_onu, gpon_sn, modelo, pppoe, ponto_de_acesso):
         time.sleep(1)  # Aguardar um segundo após enviar a senha
 
     comando1 = f'onu set gpon {gpon} onu {vaga_onu} serial-number {gpon_sn} meprof {modelo}'
-    comando2 = f'bridge add gpon {gpon} onu {vaga_onu} downlink vlan 501 tagged eth 1'
+    
+    if modelo == 'intelbras-121ac':
+        comando2 = f'bridge add gpon {gpon} onu {vaga_onu} downlink vlan 501 tagged router'
+    else:
+        comando2 = f'bridge add gpon {gpon} onu {vaga_onu} downlink vlan 501 tagged eth 1'
+        
     comando3 = f'onu description add gpon {gpon} onu {vaga_onu} text {pppoe}'
 
     tn.write(f"{comando1}\n".encode('ascii'))

@@ -520,7 +520,7 @@ class Provisionamento():
                      
             if achei is False:
                 
-                self.bot.send_message(id_usuario, 'Não encontrei esse gpon, verifique novamente, por favor')
+                self.bot.send_message(id_usuario, '😥 *Não encontrei esse GPON-SN*, verifique novamente, por favor', parse_mode="Markdown")
             
                 self.trata_mais_de_uma_onu(onus_discando, posicao_na_pon, pon_atual, ponto_acesso, chat_id)
             
