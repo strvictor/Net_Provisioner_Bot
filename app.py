@@ -564,9 +564,12 @@ class Provisionamento():
         @self.bot.message_handler(func=lambda message: True)
         def captura_localidade(mensagem): 
             mensagem = mensagem.text.lower()
-            permitidos = ['alca', 'jamic', 'bujaru']
+            permitidos = ['alca', 'jamic', 'bujaru', '1', '2', '3']
             
-            if mensagem in permitidos:
+            if mensagem == '/sair':
+                self.menu_principal(id_usuario)
+            
+            elif mensagem in permitidos:
                 self.bot.send_message(id_usuario, f"✅ Ponto de acesso *{mensagem}* permitido!", parse_mode="Markdown")
                 time.sleep(0.7)
                 self.consulta(id_usuario, mensagem)
@@ -587,27 +590,32 @@ class Provisionamento():
         def captura_gpon_consulta(mensagem): 
             mensagem = mensagem.text
             
-            self.bot.send_message(id_usuario, "Buscando ONU...\nPor favor, aguarde!", parse_mode="Markdown")
-            self.bot.send_chat_action(id_usuario, 'typing')
-            
-            retorno = consulta_gpon(mensagem, ponto_de_acesso) 
-            
-            if retorno == 'tamanho inválido':
-                self.bot.send_message(id_usuario, "Tamanho inválido 😕\nO serial gpon contém 8 caracteres alfanuméricos", parse_mode="Markdown")
-                time.sleep(1)
-                self.consulta(id_usuario, ponto_de_acesso)
-                
-            elif retorno == 'alfanumericos false':
-                self.bot.send_message(id_usuario, "Caracteres inválidos 😕\nDigite somente letras e números", parse_mode="Markdown")
-                time.sleep(1)
-                self.consulta(id_usuario, ponto_de_acesso)
+            if mensagem == '/sair':
+                self.menu_principal(id_usuario)
             
             else:
-                self.bot.send_message(id_usuario, retorno, parse_mode="Markdown")
-                #time.sleep(0.7)
-                #self.bot.send_message(id_usuario, '✅ *Consulta finalizada* ✅', parse_mode="Markdown")
-                time.sleep(1)
-                self.menu_principal(id_usuario)
+                
+                self.bot.send_message(id_usuario, "Buscando ONU...\nPor favor, aguarde!", parse_mode="Markdown")
+                self.bot.send_chat_action(id_usuario, 'typing')
+            
+                retorno = consulta_gpon(mensagem, ponto_de_acesso)
+            
+                if retorno == 'tamanho inválido':
+                    self.bot.send_message(id_usuario, "Tamanho inválido 😕\nO serial gpon contém 8 caracteres alfanuméricos", parse_mode="Markdown")
+                    time.sleep(1)
+                    self.consulta(id_usuario, ponto_de_acesso)
+                    
+                elif retorno == 'alfanumericos false':
+                    self.bot.send_message(id_usuario, "Caracteres inválidos 😕\nDigite somente letras e números", parse_mode="Markdown")
+                    time.sleep(1)
+                    self.consulta(id_usuario, ponto_de_acesso)
+                
+                else:
+                    self.bot.send_message(id_usuario, retorno, parse_mode="Markdown")
+                    #time.sleep(0.7)
+                    #self.bot.send_message(id_usuario, '✅ *Consulta finalizada* ✅', parse_mode="Markdown")
+                    time.sleep(1)
+                    self.menu_principal(id_usuario)
                 
         self.bot.register_next_step_handler_by_chat_id(chat_id, captura_gpon_consulta)
 
@@ -629,7 +637,7 @@ class Provisionamento():
             @self.bot.message_handler(func=lambda message: True)
             def captura_localidade2(mensagem): 
                 mensagem = mensagem.text.lower()
-                permitidos = ['alca', 'jamic', 'bujaru']
+                permitidos = ['alca', 'jamic', 'bujaru', '1', '2', '3']
 
                 if mensagem in permitidos:
                     self.bot.send_message(id_usuario, f"✅ Ponto de acesso *{mensagem}* permitido!", parse_mode="Markdown")

@@ -25,11 +25,11 @@ opcoes_velocidade = {
 
 def busca_onu_na_pon(ponto_de_acesso, pon):
     try:
-        if ponto_de_acesso == 'alca':
+        if ponto_de_acesso == 'alca' or ponto_de_acesso == '1':
             ip = '172.31.0.21'
-        elif ponto_de_acesso == 'jamic':
+        elif ponto_de_acesso == 'jamic' or ponto_de_acesso == '2':
             ip = '10.9.250.6'
-        elif ponto_de_acesso == 'bujaru':
+        elif ponto_de_acesso == 'bujaru' or ponto_de_acesso == '3':
             ip = '10.7.250.10'
         elif ponto_de_acesso == 'local':
             ip = '10.9.250.10'
@@ -169,13 +169,13 @@ def exibe_info(onus_discando, posicao, pon, ponto_de_acesso):
 
 
 def provisiona(gpon, vaga_onu, gpon_sn, modelo, pppoe, ponto_de_acesso):
-    if ponto_de_acesso == 'alca':
+    if ponto_de_acesso == 'alca' or ponto_de_acesso == '1':
         ip = '172.31.0.21'
         vlan = '501'
-    elif ponto_de_acesso == 'jamic':
+    elif ponto_de_acesso == 'jamic' or ponto_de_acesso == '2':
         ip = '10.9.250.6'
         vlan = '2015'
-    elif ponto_de_acesso == 'bujaru':
+    elif ponto_de_acesso == 'bujaru' or ponto_de_acesso == '3':
         ip = '10.7.250.10'
         vlan = '1000'
     elif ponto_de_acesso == 'local':
@@ -302,11 +302,11 @@ def consulta_gpon(gpon, ponto_de_acesso):
         return 'alfanumericos false'
     
     else:
-        if ponto_de_acesso == 'alca':
+        if ponto_de_acesso == 'alca' or ponto_de_acesso == '1':
             ip = '172.31.0.21'
-        elif ponto_de_acesso == 'jamic':
+        elif ponto_de_acesso == 'jamic' or ponto_de_acesso == '2':
             ip = '10.9.250.6'
-        elif ponto_de_acesso == 'bujaru':
+        elif ponto_de_acesso == 'bujaru' or ponto_de_acesso == '3':
             ip = '10.7.250.10'
             
         HOST = str(ip)  # Endereço do dispositivo Telnet
@@ -484,11 +484,11 @@ def desprovisiona_gpon(gpon, ponto_de_acesso):
         return 'alfanumericos false'
     
     else:
-        if ponto_de_acesso == 'alca':
+        if ponto_de_acesso == 'alca' or ponto_de_acesso == '1':
             ip = '172.31.0.21'
-        elif ponto_de_acesso == 'jamic':
+        elif ponto_de_acesso == 'jamic' or ponto_de_acesso == '2':
             ip = '10.9.250.6'
-        elif ponto_de_acesso == 'bujaru':
+        elif ponto_de_acesso == 'bujaru' or ponto_de_acesso == '3':
             ip = '10.7.250.10'
             
         HOST = str(ip)  # Endereço do dispositivo Telnet
@@ -534,11 +534,11 @@ def desprovisiona_gpon(gpon, ponto_de_acesso):
         
         
 def desprovisiona_efetivo(pon, onu, ponto_de_acesso):
-    if ponto_de_acesso == 'alca':
+    if ponto_de_acesso == 'alca' or ponto_de_acesso == '1':
         ip = '172.31.0.21'
-    elif ponto_de_acesso == 'jamic':
+    elif ponto_de_acesso == 'jamic' or ponto_de_acesso == '2':
         ip = '10.9.250.6'
-    elif ponto_de_acesso == 'bujaru':
+    elif ponto_de_acesso == 'bujaru' or ponto_de_acesso == '3':
         ip = '10.7.250.10'
         
     HOST = str(ip)  # Endereço do dispositivo Telnet
