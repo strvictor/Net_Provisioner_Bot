@@ -171,10 +171,13 @@ def exibe_info(onus_discando, posicao, pon, ponto_de_acesso):
 def provisiona(gpon, vaga_onu, gpon_sn, modelo, pppoe, ponto_de_acesso):
     if ponto_de_acesso == 'alca':
         ip = '172.31.0.21'
+        vlan = '501'
     elif ponto_de_acesso == 'jamic':
         ip = '10.9.250.6'
+        vlan = '2015'
     elif ponto_de_acesso == 'bujaru':
         ip = '10.7.250.10'
+        vlan = '1000'
     elif ponto_de_acesso == 'local':
         ip = '10.9.250.10'
 
@@ -199,9 +202,9 @@ def provisiona(gpon, vaga_onu, gpon_sn, modelo, pppoe, ponto_de_acesso):
     comando1 = f'onu set gpon {gpon} onu {vaga_onu} serial-number {gpon_sn} meprof {modelo}'
     
     if modelo == 'intelbras-121ac':
-        comando2 = f'bridge add gpon {gpon} onu {vaga_onu} downlink vlan 501 tagged router'
+        comando2 = f'bridge add gpon {gpon} onu {vaga_onu} downlink vlan {vlan} tagged router'
     else:
-        comando2 = f'bridge add gpon {gpon} onu {vaga_onu} downlink vlan 501 tagged eth 1'
+        comando2 = f'bridge add gpon {gpon} onu {vaga_onu} downlink vlan {vlan} tagged eth 1'
         
     comando3 = f'onu description add gpon {gpon} onu {vaga_onu} text {pppoe}'
 
