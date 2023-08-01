@@ -101,7 +101,7 @@ from loguru import logger
 logger.add(
     "file.log",
     level="DEBUG",
-    format="{time:DD-MM-YYYY HH:mm:ss} ; {level} ; {message}",
+    format="{time:DD-MM-YYYY HH:mm:ss} {level} {message}",
     rotation="10 MB"
 )
 

@@ -15,6 +15,7 @@ class Provisionamento():
         self.desprovisiona_parametros = list()
         self.permissoes = ['tecnico', 'adm']
 
+
     def apresentacao_inicial(self, chat_id, username=None):
         id_usuario = chat_id
         msg = apresentacao(username)

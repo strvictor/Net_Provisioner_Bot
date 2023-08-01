@@ -1,52 +1,8 @@
-28-07-2023 17:00:15 DEBUG teste
-28-07-2023 17:00:15 INFO usuario cadastrado
-28-07-2023 17:00:15 WARNING não provisionado
-28-07-2023 17:00:15 ERROR olt off
-28-07-2023 17:01:54 DEBUG      teste
-28-07-2023 17:01:54 INFO      usuario cadastrado
-28-07-2023 17:01:54 WARNING      não provisionado
-28-07-2023 17:01:54 ERROR      olt off
-28-07-2023 17:02:16 | DEBUG | teste
-28-07-2023 17:02:16 | INFO | usuario cadastrado
-28-07-2023 17:02:16 | WARNING | não provisionado
-28-07-2023 17:02:16 | ERROR | olt off
-28-07-2023 17:02:44 ; DEBUG ; teste
-28-07-2023 17:02:44 ; INFO ; usuario cadastrado
-28-07-2023 17:02:44 ; WARNING ; não provisionado
-28-07-2023 17:02:44 ; ERROR ; olt off
-28-07-2023 17:02:44 ; DEBUG ; teste
-28-07-2023 17:02:44 ; INFO ; usuario cadastrado
-28-07-2023 17:02:44 ; WARNING ; não provisionado
-28-07-2023 17:02:44 ; ERROR ; olt off
-28-07-2023 17:02:45 ; DEBUG ; teste
-28-07-2023 17:02:45 ; INFO ; usuario cadastrado
-28-07-2023 17:02:45 ; WARNING ; não provisionado
-28-07-2023 17:02:45 ; ERROR ; olt off
-28-07-2023 17:02:45 ; DEBUG ; teste
-28-07-2023 17:02:45 ; INFO ; usuario cadastrado
-28-07-2023 17:02:45 ; WARNING ; não provisionado
-28-07-2023 17:02:45 ; ERROR ; olt off
-28-07-2023 17:02:45 ; DEBUG ; teste
-28-07-2023 17:02:45 ; INFO ; usuario cadastrado
-28-07-2023 17:02:45 ; WARNING ; não provisionado
-28-07-2023 17:02:45 ; ERROR ; olt off
-28-07-2023 17:02:46 ; DEBUG ; teste
-28-07-2023 17:02:46 ; INFO ; usuario cadastrado
-28-07-2023 17:02:46 ; WARNING ; não provisionado
-28-07-2023 17:02:46 ; ERROR ; olt off
-28-07-2023 17:02:46 ; DEBUG ; teste
-28-07-2023 17:02:46 ; INFO ; usuario cadastrado
-28-07-2023 17:02:46 ; WARNING ; não provisionado
-28-07-2023 17:02:46 ; ERROR ; olt off
-28-07-2023 17:02:46 ; DEBUG ; teste
-28-07-2023 17:02:46 ; INFO ; usuario cadastrado
-28-07-2023 17:02:46 ; WARNING ; não provisionado
-28-07-2023 17:02:46 ; ERROR ; olt off
-28-07-2023 17:02:47 ; DEBUG ; teste
-28-07-2023 17:02:47 ; INFO ; usuario cadastrado
-28-07-2023 17:02:47 ; WARNING ; não provisionado
-28-07-2023 17:02:47 ; ERROR ; olt off
-2023-07-28 17:04:50,458 - DEBUG - This is a debug message
-2023-07-28 17:04:50,459 - INFO - This is an info message
-2023-07-28 17:04:50,459 - WARNING - This is a warning message
-2023-07-28 17:04:50,459 - ERROR - This is an error message
+31-07-2023 11:43:07 ; DEBUG ; teste
+31-07-2023 11:43:07 ; INFO ; usuario cadastrado
+31-07-2023 11:43:07 ; WARNING ; não provisionado
+31-07-2023 11:43:07 ; ERROR ; olt off
+31-07-2023 11:43:18 DEBUG teste
+31-07-2023 11:43:18 INFO usuario cadastrado
+31-07-2023 11:43:18 WARNING não provisionado
+31-07-2023 11:43:18 ERROR olt off

@@ -67,5 +67,3 @@ def pon_cto(cto):
     #slot = ord(cto[1]) - 65 # se deixar 65 a letra 'A' fica 0
     #pon = ord(cto[2]) - 65
     #print(f'slot: {slot}\npon: {pon}')
-
-
