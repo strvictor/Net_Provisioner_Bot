@@ -1,4 +1,4 @@
-import telebot, time
+import telebot, time, log
 from telebot import types
 from voalle import validacontrato
 from cto import valida_cto, valida_porta, pon_cto
@@ -65,7 +65,6 @@ class Provisionamento():
         
         #faz a consulta ao banco pra pegar a senha cadastrada conforme o id do usuario
         senha_bd = valida_senha(id_usuario)
-        print('SENHA BANCO: ', senha_bd)
         
         self.bot.send_message(id_usuario, '🔑 *Informe sua senha de acesso para continuar!* 🔑', parse_mode="Markdown")
         
@@ -797,7 +796,7 @@ class Provisionamento():
                 self.verifica_se_ja_tem_cadastro(id_usuario, username)
             
             else:
-                print('verificando timeout...')
+                log.info('verificando timeout')
                 self.verifica_time_out(id_usuario)
             
         @self.bot.callback_query_handler(func=lambda call: True)

@@ -1,24 +1,5 @@
-31-07-2023 11:43:07 ; DEBUG ; teste
-31-07-2023 11:43:07 ; INFO ; usuario cadastrado
-31-07-2023 11:43:07 ; WARNING ; não provisionado
-31-07-2023 11:43:07 ; ERROR ; olt off
-31-07-2023 11:43:18 DEBUG teste
-31-07-2023 11:43:18 INFO usuario cadastrado
-31-07-2023 11:43:18 WARNING não provisionado
-31-07-2023 11:43:18 ERROR olt off
-08-08-2023 15:20:08 DEBUG teste
-08-08-2023 15:20:08 INFO usuario cadastrado
-08-08-2023 15:20:08 WARNING não provisionado
-08-08-2023 15:20:08 ERROR olt off
-08-08-2023 15:20:14 DEBUG teste
-08-08-2023 15:20:14 INFO usuario cadastrado
-08-08-2023 15:20:14 WARNING não provisionado
-08-08-2023 15:20:14 ERROR olt off
-08-08-2023 15:20:23 DEBUG teste
-08-08-2023 15:20:23 INFO usuario cadastrado
-08-08-2023 15:20:23 WARNING não provisionado
-08-08-2023 15:20:23 ERROR olt off
-08-08-2023 15:20:28 DEBUG teste
-08-08-2023 15:20:28 INFO usuario cadastrado
-08-08-2023 15:20:28 WARNING não provisionado
-08-08-2023 15:20:28 ERROR olt off
+08-08-2023 16:10:32 INFO verificando timeout
+08-08-2023 16:10:43 INFO verificando timeout
+08-08-2023 18:06:10 INFO verificando timeout
+08-08-2023 18:06:16 INFO verificando timeout
+08-08-2023 18:06:30 INFO verificando timeout
