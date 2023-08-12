@@ -91,24 +91,48 @@
 
 
 # # Inicie o bot
-# bot.polling()
+# bot.polling(
+    
+    
+    
+import paramiko, time
 
+# Defina as informações de conexão
+host = "10.8.250.6"
+port = 22  # A porta padrão para conexões SSH
+username = "bruno.pompeu"
+password = "gbsnet@nv2"
 
+# Crie um objeto SSHClient
+client = paramiko.SSHClient()
 
-from loguru import logger
+# Carregue as chaves do sistema
+client.load_system_host_keys()
+client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
-# Configuração básica para imprimir logs no console
-logger.add(
-    "file.log",
-    level="DEBUG",
-    format="{time:DD-MM-YYYY HH:mm:ss} {level} {message}",
-    rotation="10 MB"
-)
+# Conecte-se ao host
+client.connect(host, port=port, username=username, password=password)
 
-# Exemplos de logs
-debug = logger.debug("teste")
-info = logger.info("usuario cadastrado")
-warning = logger.warning("não provisionado")
-error = logger.error("olt off")
+# Crie uma sessão interativa
+ssh_session = client.invoke_shell()
 
+# Envie comandos consecutivos
+comandos = [
+    "enable\n",
+    "display ont autofind all\n"
+    # Adicione mais comandos conforme necessário
+]
 
+saida_completa = ""
+for comando in comandos:
+    ssh_session.send(comando + "\n")
+    time.sleep(1)  # Aguarde um momento para a resposta
+    saida = ssh_session.recv(65535).decode("utf-8")
+    saida_completa += f"Saída do comando '{comando}':\n{saida}\n{'-'*40}\n"
+
+# Feche a sessão SSH
+ssh_session.close()
+
+# Imprima a saída completa
+linhas = saida_completa.splitlines()
+print(linhas)
