@@ -10,7 +10,7 @@
 ### Autor
 ---
 
- <img style="border-radius: 50%;" src="https://i.ibb.co/fMBXfFy/foto.jpg" width="50px;" alt="minha foto"/>
+ <img style= "border-radius: 50%"; src="https://i.ibb.co/fMBXfFy/foto.jpg" width="100px;" alt="minha foto"/>
  <sub><b>Paulo Victor</b></sub></a> 🚀</a>
 
 
