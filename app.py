@@ -797,7 +797,7 @@ class Provisionamento():
                 self.verifica_se_ja_tem_cadastro(id_usuario, username)
             
             else:
-                log.info('verificando timeout')
+                #log.info('verificando timeout')
                 self.verifica_time_out(id_usuario)
             
         @self.bot.callback_query_handler(func=lambda call: True)
