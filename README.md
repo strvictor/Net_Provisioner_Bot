@@ -4,4 +4,4 @@
 
 - Ultilizei Python para cria-lo, estamos na versão *beta* de desenvolvimento
 
-<p align="center">🚀</p>
+<p align="center">🚀 Em construção...  🚧</p>
