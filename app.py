@@ -790,7 +790,8 @@ class Provisionamento():
             username = mensagem.chat.username
             retorno_usuario = mensagem.text
 
-            print('ID USUARIO', id_usuario, '>', retorno_usuario)
+            #print('ID USUARIO', id_usuario, '>', retorno_usuario)
+            log.info(f'Usuario {id_usuario}/{username} enviou > {retorno_usuario}')
 
             if retorno_usuario == '/start':
                 self.verifica_se_ja_tem_cadastro(id_usuario, username)
