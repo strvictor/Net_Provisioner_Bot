@@ -4,4 +4,4 @@
 
 - Ultilizei Python para cria-lo, estamos na versão *beta* de desenvolvimento
 
-<p align="center">🚀 Benefícios</p>
+<p align="center">🚀</p>
