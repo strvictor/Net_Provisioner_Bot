@@ -11,7 +11,6 @@
 ---
 
  <img style="border-radius: 50%;" src="https://i.ibb.co/fMBXfFy/foto.jpg" width="100px;" alt="minha foto"/>
- <br />
  <sub><b>Paulo Victor</b></sub></a> 🚀</a>
 
 
