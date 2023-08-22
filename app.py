@@ -36,7 +36,7 @@ class Provisionamento():
     
     def verifica_time_out(self, chat_id):
         time_out = timeout(chat_id)
-        print('TIMEOUT: ', time_out)
+        #print('TIMEOUT: ', time_out)
         if time_out == 'timeout':
             # solicitar novamente a senha
             self.verifica_senha(chat_id)
