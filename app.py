@@ -13,7 +13,7 @@ class Provisionamento():
         self.ponto_de_acesso = list()
         self.pppoe_cliente = list()
         self.desprovisiona_parametros = list()
-        self.permissoes = ['tecnico', 'adm']
+        self.permissoes = ['tecnico', 'admin']
 
 
     def apresentacao_inicial(self, chat_id, username=None):
