@@ -15,6 +15,7 @@ Atenciosamente,
 A equipe do bot de provisionamento, desprovisionamento e consulta na OLT.
 
 -mensagem de apresentação gerada aleatoria
+bla bla bla
 '''
     return msg_apresentacao
 
