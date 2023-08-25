@@ -1,6 +1,7 @@
 import psycopg2
 import mysql.connector
 from datetime import datetime
+import log
 
 
 def apresentacao(usuario):
@@ -277,7 +278,9 @@ def atualiza_timeout(id_usuario):
 
     # Confirmando a transação (importante para efetivar as mudanças no banco)
     conexao.commit()
-    print('timeout atualizado com sucesso')
+    #print('timeout atualizado com sucesso')
+    log.info(f'timeout atualizado com sucesso para o user {id_usuario}')
+    
 
     # Fechando o cursor
     cursor.close()
