@@ -556,7 +556,7 @@ class Provisionamento():
 *Pontos de Acesso permitidos:*
 1º  `alca`
 2º  `jamic`
-3º  `bujaru`
+3º  `bujaru` (vilas)
 '''
         self.bot.send_message(id_usuario, "Digite o *Ponto de Acesso* que queres fazer a consulta", parse_mode="Markdown")
         self.bot.send_message(id_usuario, msg_informativa, parse_mode="Markdown")
@@ -629,7 +629,7 @@ class Provisionamento():
 *Pontos de Acesso permitidos:*
 1º  `alca`
 2º  `jamic`
-3º  `bujaru`
+3º  `bujaru` (vilas)
 '''
             self.bot.send_message(id_usuario, "Digite o *Ponto de Acesso* para buscar ONU", parse_mode="Markdown")
             self.bot.send_message(id_usuario, msg_informativa, parse_mode="Markdown")
