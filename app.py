@@ -1,9 +1,20 @@
-import telebot, time, log
+import telebot, time, threading, log, atualiza_token
 from telebot import types
 from voalle import validacontrato
 from cto import valida_cto, valida_porta, pon_cto
 from olt import busca_onu_na_pon, provisiona, consulta_gpon, desprovisiona_gpon, desprovisiona_efetivo
 from autenticacao import apresentacao, verifica_nome, cadastro_no_Mysql, consulta_id, timeout, valida_senha, atualiza_timeout, consulta_permissao
+
+
+# fica no loop atualizando o token 
+def Atualiza_Token():
+    while True:
+        atualiza_token.Atualiza_Token()
+        time.sleep(30) #3500
+
+thread = threading.Thread(target=Atualiza_Token)
+thread.start()
+
 
 class Provisionamento():
     def __init__(self):
@@ -805,6 +816,7 @@ class Provisionamento():
             self.tratativa_dos_botoes(call)
 
         self.bot.infinity_polling()
+
 
 # Uso da classe Provisionamento
 provisionamento1 = Provisionamento()
