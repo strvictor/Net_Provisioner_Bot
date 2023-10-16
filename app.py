@@ -10,7 +10,7 @@ from autenticacao import apresentacao, verifica_nome, cadastro_no_Mysql, consult
 def Atualiza_Token():
     while True:
         atualiza_token.Atualiza_Token()
-        time.sleep(30) #3500
+        time.sleep(3500)
 
 thread = threading.Thread(target=Atualiza_Token)
 thread.start()
