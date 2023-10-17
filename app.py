@@ -303,11 +303,13 @@ class Provisionamento():
 
                 else:
                     # se cair aqui significa que achou um contrato valido
-                    self.bot.send_message(id_usuario, mensagem_validacao)
-                    
-                    self.ponto_de_acesso.append(mensagem_validacao.split('\n')[5].split(':')[1].strip())
-
+                    self.bot.send_message(id_usuario, mensagem_validacao, parse_mode="Markdown")
+                    self.ponto_de_acesso.clear()
+                    self.ponto_de_acesso.append(mensagem_validacao.split('\n')[4].split(':')[1].strip())
+                    print(self.ponto_de_acesso)
+                    self.pppoe_cliente.clear()
                     self.pppoe_cliente.append(mensagem_validacao.split('\n')[9].split(':')[1].strip())
+                    print(self.pppoe_cliente)
 
                     time.sleep(1)
                     self.menu_confirmacao(id_usuario)
@@ -400,6 +402,7 @@ class Provisionamento():
 
                 # pegando qual é a pon da cto informada
                 pon_consulta = pon_cto(self.cto_validada[0])
+                print(pon_consulta)
 
                 # verifica se tem algum ponto de acesso na agulha
                 if len(self.ponto_de_acesso) == 0:

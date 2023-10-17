@@ -4,7 +4,7 @@ import json
 
 def Busca_info_contrato(contrato):
     
-    #atualiza_token.Atualiza_Token()
+    # verifica se o contrato tem somente numeros
     valida_numero = str(contrato).isdigit()
     if valida_numero is False:
         return 'Digite apenas numeros, por favor'
