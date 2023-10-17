@@ -55,18 +55,18 @@ def validacontrato(num_contrato):
                 senha_pppoe = 112233
 
                 return f"""
-*ℹ️  DADOS DO CLIENTE ℹ️*           
+ℹ️  DADOS DO CLIENTE ℹ️          
             
-📄 *CONTRATO:* {contrato_cliente}               
-👤 *NOME:* {nome_cliente}   
-🆔 *CPF:* {cpf_cliente}      
-🌐 *PONTO DE ACESSO:* {ponto_de_acesso}       
-🏙️ *CIDADE:* {cidade}
-🏡 *BAIRRO:* {bairro}
-🛣️ *RUA:* {rua}
-🏠 *NUMERO:* {numero_casa}
-💻 *PPPOE:* {pppoe}                   
-🔐 *SENHA: {senha_pppoe} 
+📄 CONTRATO:{contrato_cliente}               
+👤 NOME: {nome_cliente}   
+🆔 CPF: {cpf_cliente}      
+🌐 PONTO DE ACESSO: {ponto_de_acesso}       
+🏙️ CIDADE: {cidade}
+🏡 BAIRRO: {bairro}
+🛣️ RUA: {rua}
+🏠 NUMERO: {numero_casa}
+💻 PPPOE: {pppoe}                   
+🔐 SENHA: {senha_pppoe} 
 """
         
         

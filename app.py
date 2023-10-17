@@ -303,12 +303,12 @@ class Provisionamento():
 
                 else:
                     # se cair aqui significa que achou um contrato valido
-                    self.bot.send_message(id_usuario, mensagem_validacao, parse_mode="Markdown")
+                    self.bot.send_message(id_usuario, mensagem_validacao)
                     self.ponto_de_acesso.clear()
-                    self.ponto_de_acesso.append(mensagem_validacao.split('\n')[4].split(':')[1].strip())
+                    self.ponto_de_acesso.append(mensagem_validacao.split('\n')[6].split(':')[1].strip())
                     print(self.ponto_de_acesso)
                     self.pppoe_cliente.clear()
-                    self.pppoe_cliente.append(mensagem_validacao.split('\n')[9].split(':')[1].strip())
+                    self.pppoe_cliente.append(mensagem_validacao.split('\n')[11].split(':')[1].strip())
                     print(self.pppoe_cliente)
 
                     time.sleep(1)
