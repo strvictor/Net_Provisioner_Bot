@@ -569,7 +569,7 @@ class Provisionamento():
         msg_informativa = '''
 *Pontos de Acesso permitidos:*
 1º  `alca`
-2º  `jamic`
+2º  `vila jamic olt ftth`
 3º  `bujaru` (vilas)
 '''
         self.bot.send_message(id_usuario, "Digite o *Ponto de Acesso* que queres fazer a consulta", parse_mode="Markdown")
@@ -578,7 +578,7 @@ class Provisionamento():
         @self.bot.message_handler(func=lambda message: True)
         def captura_localidade(mensagem): 
             mensagem = mensagem.text.lower()
-            permitidos = ['alca', 'jamic', 'bujaru', '1', '2', '3']
+            permitidos = ['alca', 'vila jamic olt ftth', 'bujaru', '1', '2', '3']
             
             if mensagem == '/sair':
                 self.menu_principal(id_usuario)
@@ -642,7 +642,7 @@ class Provisionamento():
             msg_informativa = '''
 *Pontos de Acesso permitidos:*
 1º  `alca`
-2º  `jamic`
+2º  `vila jamic olt ftth`
 3º  `bujaru` (vilas)
 '''
             self.bot.send_message(id_usuario, "Digite o *Ponto de Acesso* para buscar ONU", parse_mode="Markdown")
@@ -651,7 +651,7 @@ class Provisionamento():
             @self.bot.message_handler(func=lambda message: True)
             def captura_localidade2(mensagem): 
                 mensagem = mensagem.text.lower()
-                permitidos = ['alca', 'jamic', 'bujaru', '1', '2', '3']
+                permitidos = ['alca', 'vila jamic olt ftth', 'bujaru', '1', '2', '3']
 
                 if mensagem in permitidos:
                     self.bot.send_message(id_usuario, f"✅ Ponto de acesso *{mensagem}* permitido!", parse_mode="Markdown")
