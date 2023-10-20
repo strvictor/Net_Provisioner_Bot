@@ -70,7 +70,7 @@ def portas_livres(item_rede, porta_informarda, contrato, pppoe):
                         return atende_cliente
                     
         if encontrou is False:
-            return f'porta {porta_informarda} ocupada ou indisponivel para uso'
+            return f'⚠ Porta {porta_informarda} ocupada ou indisponivel para uso ⚠'
             
         
     else:
