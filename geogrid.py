@@ -1,5 +1,6 @@
 import requests
 import json
+import random
 
 
 def portas_livres(item_rede, porta_informarda, contrato, pppoe):
@@ -34,6 +35,8 @@ def portas_livres(item_rede, porta_informarda, contrato, pppoe):
             
             id_porta = dados['id']
             porta = dados['porta']
+            integrador = random.randint(1000, 2000)
+            print(integrador)
             
             if disponibilidade:
                 lista_portas.append(porta)
@@ -43,22 +46,31 @@ def portas_livres(item_rede, porta_informarda, contrato, pppoe):
                     
                     print(f"Id da porta: {id_porta}\nPorta disponível: {porta}\nDisponibilidade: {disponibilidade}\n")
                     # realizando o cadastro
-                    resposta = Cadastro_Cliente(contrato, pppoe)
+                    resposta = Cadastro_Cliente(contrato, pppoe, integrador)
                     print(resposta)
                     
                     if resposta == 'Código de integração já está cadastrado':
-                        resposta = Cadastro_Cliente(1 + contrato, pppoe)
+                        resposta = Cadastro_Cliente(contrato, pppoe, integrador)
                         print(resposta)
                         atende_cliente = Atende_Cliente(id_porta, resposta, item_rede)
+                        
+                        if len(atende_cliente) == 2:
+                            # cliente castrado no geogrid com sucesso
+                            return 'cliente vinculado no geogrid com sucesso'
+                        
                         return atende_cliente
                         
                     else:
                         # upando o cliente para o geogrid
                         atende_cliente = Atende_Cliente(id_porta, resposta, item_rede)
+                        if len(atende_cliente) == 2:
+                            # cliente castrado no geogrid com sucesso
+                            return 'cliente vinculado no geogrid com sucesso'
+                        
                         return atende_cliente
                     
         if encontrou is False:
-            return f'porta {porta} indisponivel para uso'
+            return f'porta {porta_informarda} ocupada ou indisponivel para uso'
             
         
     else:
@@ -66,7 +78,7 @@ def portas_livres(item_rede, porta_informarda, contrato, pppoe):
 
 
 
-def Cadastro_Cliente(contrato, pppoe):
+def Cadastro_Cliente(contrato, pppoe, integracao):
     usuario = str(contrato) + '.' + str(pppoe)
 
     url = "https://ares.geogridmaps.com.br/norte/api/v3/clientes"
@@ -94,7 +106,7 @@ def Cadastro_Cliente(contrato, pppoe):
         "nascimento": "2010-05-23",
         "nomeFantasia": usuario,
         "inscricaoEstadual": "",
-        "codigoIntegracao": usuario
+        "codigoIntegracao": integracao
     }
     }
 
@@ -152,18 +164,6 @@ def Atende_Cliente(id_porta, id_cliente, item_rede):
 
 
 
+# retorno = portas_livres(54136, 5, 42813, 'csc.clinica')
 
-
-
-
-
-
-
-
-
-
-
-
-retorno = portas_livres(54136, 1, 42813, 'csc.clinica')
-
-print(retorno)
+# print(retorno)

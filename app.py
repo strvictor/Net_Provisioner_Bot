@@ -4,6 +4,7 @@ from voalle import validacontrato
 from cto import valida_cto, valida_porta, pon_cto
 from olt import busca_onu_na_pon, provisiona, consulta_gpon, desprovisiona_gpon, desprovisiona_efetivo
 from autenticacao import apresentacao, verifica_nome, cadastro_no_Mysql, consulta_id, timeout, valida_senha, atualiza_timeout, consulta_permissao
+from geogrid import portas_livres
 
 
 # fica no loop atualizando o token 
@@ -24,6 +25,9 @@ class Provisionamento():
         self.ponto_de_acesso = list()
         self.pppoe_cliente = list()
         self.desprovisiona_parametros = list()
+        self.contrato_cliente = list()
+        self.item_de_rede = list()
+        self.porta_cliente = list()
         self.permissoes = ['tecnico', 'admin']
 
 
@@ -290,7 +294,10 @@ class Provisionamento():
             @self.bot.message_handler(func=lambda message: True)
             def captura_contrato(mensagem): 
                 contrato = mensagem.text
-
+                
+                self.contrato_cliente.clear()
+                self.contrato_cliente.append(contrato)
+                
                 mensagem_validacao = validacontrato(contrato)
 
                 if mensagem_validacao is False:
@@ -332,43 +339,52 @@ class Provisionamento():
             cto = cto.text
 
             cto_validacao = valida_cto(cto)
-
-            if cto_validacao == 'inicial_invalida':
-                self.bot.send_message(id_usuario, "CTO inválida!\n> Localidade não encontrada ")
+            
+            if cto_validacao == 'cto não encontrada':
+                self.bot.send_message(id_usuario, "CTO não encontrada!\n> Tente novamente ")
                 time.sleep(1)
                 self.solicita_cto(id_usuario)
+                
+            # if cto_validacao == 'inicial_invalida':
+            #     self.bot.send_message(id_usuario, "CTO inválida!\n> Localidade não encontrada ")
+            #     time.sleep(1)
+            #     self.solicita_cto(id_usuario)
 
-            elif cto_validacao == 'tamanho_invalido':
-                self.bot.send_message(id_usuario, "CTO inválida!\n> CTO informada ta em tamanho fora do esperado")
-                time.sleep(1)
-                self.solicita_cto(id_usuario)
+            # elif cto_validacao == 'tamanho_invalido':
+            #     self.bot.send_message(id_usuario, "CTO inválida!\n> CTO informada ta em tamanho fora do esperado")
+            #     time.sleep(1)
+            #     self.solicita_cto(id_usuario)
 
-            elif cto_validacao == 'letras_invalidas':
-                self.bot.send_message(id_usuario, "CTO inválida!\n> Caracteres não permitidos")
-                time.sleep(1)
-                self.solicita_cto(id_usuario)
+            # elif cto_validacao == 'letras_invalidas':
+            #     self.bot.send_message(id_usuario, "CTO inválida!\n> Caracteres não permitidos")
+            #     time.sleep(1)
+            #     self.solicita_cto(id_usuario)
 
-            elif cto_validacao == 'numero1_invalido':
-                self.bot.send_message(id_usuario, "CTO inválida!\n> Numero fora do range")
-                time.sleep(1)
-                self.solicita_cto(id_usuario)
+            # elif cto_validacao == 'numero1_invalido':
+            #     self.bot.send_message(id_usuario, "CTO inválida!\n> Numero fora do range")
+            #     time.sleep(1)
+            #     self.solicita_cto(id_usuario)
 
-            elif cto_validacao == 'hifen_invalido':
-                self.bot.send_message(id_usuario, "CTO inválida!\n> Hífen não localizado")
-                time.sleep(1)
-                self.solicita_cto(id_usuario)
+            # elif cto_validacao == 'hifen_invalido':
+            #     self.bot.send_message(id_usuario, "CTO inválida!\n> Hífen não localizado")
+            #     time.sleep(1)
+            #     self.solicita_cto(id_usuario)
 
-            elif cto_validacao == 'numero2_invalido':
-                self.bot.send_message(id_usuario, "CTO inválida!\n> Numero fora do range")
-                time.sleep(1)
-                self.solicita_cto(id_usuario)
+            # elif cto_validacao == 'numero2_invalido':
+            #     self.bot.send_message(id_usuario, "CTO inválida!\n> Numero fora do range")
+            #     time.sleep(1)
+            #     self.solicita_cto(id_usuario)
 
             else:
                 # se a cto for valida ele cai aqui
-                self.bot.send_message(id_usuario, f'CTO VÁLIDA {cto_validacao}')
+                self.bot.send_message(id_usuario, f'CTO VÁLIDA {cto_validacao[0]}')
+
+                # separa o item de rede da cto
+                self.item_de_rede.clear()
+                self.item_de_rede.append(cto_validacao[1])
 
                 #adiciona cto validada na lista
-                self.cto_validada.append(cto_validacao)
+                self.cto_validada.append(cto_validacao[0])
                 time.sleep(1)
                 self.solicita_porta_cto(id_usuario)
 
@@ -398,6 +414,8 @@ class Provisionamento():
 
             else:
                 self.bot.send_message(id_usuario, f"PORTA VÁLIDA {porta_cto}")
+                self.porta_cliente.clear()
+                self.porta_cliente.append(porta_cto)
                 time.sleep(1)
 
                 # pegando qual é a pon da cto informada
@@ -555,14 +573,24 @@ class Provisionamento():
         resultado = provisiona(gpon, posi_disponivel, gpon_sn, modelo_profile, usuario_pppoe, pontode_acesso)
 
         self.bot.send_message(id_usuario, resultado, parse_mode="Markdown")
-
+        
+        # chama a função pra add no geogrid
+        self.add_geogrid(self.item_de_rede[0], self.porta_cliente[0], self.contrato_cliente[0], self.pppoe_cliente[0], chat_id)
+        
         self.pppoe_cliente.clear()
 
         print(self.pppoe_cliente, self.ponto_de_acesso, self.cto_validada)
         time.sleep(2)
         self.menu_principal(id_usuario)
         
-
+        
+    # atualiza no geogrid
+    def add_geogrid(self, item_rede, porta_cliente, contrato, usuario_pppoe, id_usuario):
+        
+        atualiza = portas_livres(item_rede, porta_cliente, contrato, usuario_pppoe)
+        self.bot.send_message(id_usuario, atualiza, parse_mode="Markdown")
+        
+        
     # pra consultar a onu
     def pega_ponto_de_acesso(self, chat_id):
         id_usuario = chat_id
