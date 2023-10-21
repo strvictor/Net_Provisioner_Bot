@@ -70,7 +70,7 @@ def portas_livres(item_rede, porta_informarda, contrato, pppoe):
                         return atende_cliente
                     
         if encontrou is False:
-            return f'⚠ Porta {porta_informarda} ocupada ou indisponivel para uso ⚠'
+            return f'porta ocupada para uso'
             
         
     else:
@@ -162,8 +162,5 @@ def Atende_Cliente(id_porta, id_cliente, item_rede):
     return  response.text
 
 
-
-
-# retorno = portas_livres(54136, 5, 42813, 'csc.clinica')
-
-# print(retorno)
+def Forca_Integracao(item_de_rede, porta_informada):
+    pass

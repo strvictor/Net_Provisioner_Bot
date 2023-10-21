@@ -279,6 +279,20 @@ class Provisionamento():
         teclado_inline.add(confirma, tentar_novamente, menu)
         
         mensagem = "Deseja desprovisionar essa ONU?"
+        self.bot.send_message(id_usuario, mensagem, reply_markup=teclado_inline) 
+        
+           
+    def menu_porta_ocupada(self, porta, chat_id):
+        id_usuario = chat_id
+        
+        teclado_inline = types.InlineKeyboardMarkup(row_width=1)
+        
+        sim = types.InlineKeyboardButton("Sim!", callback_data='adiciona-cliente')
+        não = types.InlineKeyboardButton("Não!", callback_data='nao-adiciona-cliente')
+        
+        teclado_inline.add(sim, não)
+        
+        mensagem = f"A porta {porta} já está ocupada por outro cliente\nDeseja sobrescrever para o seu cliente?"
         self.bot.send_message(id_usuario, mensagem, reply_markup=teclado_inline)    
 
 
@@ -574,9 +588,6 @@ class Provisionamento():
 
         self.bot.send_message(id_usuario, resultado, parse_mode="Markdown")
         
-        # chama a função pra add no geogrid
-        self.add_geogrid(self.item_de_rede[0], self.porta_cliente[0], self.contrato_cliente[0], self.pppoe_cliente[0], chat_id)
-        
         self.pppoe_cliente.clear()
 
         print(self.pppoe_cliente, self.ponto_de_acesso, self.cto_validada)
@@ -588,6 +599,13 @@ class Provisionamento():
     def add_geogrid(self, item_rede, porta_cliente, contrato, usuario_pppoe, id_usuario):
         
         atualiza = portas_livres(item_rede, porta_cliente, contrato, usuario_pppoe)
+        
+        if atualiza == 'porta ocupada para uso':
+            self.menu_porta_ocupada(self.porta_cliente[0], id_usuario)
+            
+        else:
+            pass
+            
         self.bot.send_message(id_usuario, atualiza, parse_mode="Markdown")
         
         
@@ -804,7 +822,10 @@ class Provisionamento():
             
         elif call.data == 'tudo_certo_olt':
             print('botão tudo certo olt chamado')
-            self.verifica_time_out_botoes(id_usuario, self.provisiona_onu, self.itbs, self.serial, self.modelo_permtido, self.posicao_na_pon, self.pon_atual, self.ponto_acesso, self.pppoe_cliente[0], id_usuario)
+            
+            # chama a função pra add no geogrid
+        #self.add_geogrid(self.item_de_rede[0], self.porta_cliente[0], self.contrato_cliente[0], self.pppoe_cliente[0], chat_id)
+            self.verifica_time_out_botoes(id_usuario, self.add_geogrid, self.item_de_rede[0], self.porta_cliente[0], self.contrato_cliente[0], self.pppoe_cliente[0], id_usuario)
 
         elif call.data == 'tentar_novamente_cto':
             print('botão tentar novamente cto chamado')
@@ -822,6 +843,14 @@ class Provisionamento():
         elif call.data == 'tenta-novamente-consulta':
             print('botão tenta novamente desprovi. chamado')
             self.desprovisiona_parametros.clear()
+            self.verifica_time_out_botoes(id_usuario, self.pega_ponto_de_acesso2, id_usuario)
+            
+        elif call.data == 'adiciona-cliente':
+            print('botão adiciona cliente no geogrid chamado')
+            self.verifica_time_out_botoes(id_usuario, self.provisiona_onu, self.itbs, self.serial, self.modelo_permtido, self.posicao_na_pon, self.pon_atual, self.ponto_acesso, self.pppoe_cliente[0], id_usuario)
+            
+        elif call.data == 'nao-adiciona-cliente':
+            print('botão não adiciona cliente no geogrid chamado')
             self.verifica_time_out_botoes(id_usuario, self.pega_ponto_de_acesso2, id_usuario)
             
             
