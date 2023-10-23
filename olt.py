@@ -286,7 +286,7 @@ O usuário *{pppoe}* foi provisionado com sucesso.
 
 🎉 Parabéns! Seu usuário foi ativado com sucesso! 👍
 '''
-    return f'{retorno_final}\n\n{encontrado1}\n{encontrado2}\n{encontrado3}'
+    return f'{retorno_final}'
   
   
 def consulta_gpon(gpon, ponto_de_acesso):

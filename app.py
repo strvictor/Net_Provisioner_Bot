@@ -4,7 +4,7 @@ from voalle import validacontrato
 from cto import valida_cto, valida_porta, pon_cto
 from olt import busca_onu_na_pon, provisiona, consulta_gpon, desprovisiona_gpon, desprovisiona_efetivo
 from autenticacao import apresentacao, verifica_nome, cadastro_no_Mysql, consulta_id, timeout, valida_senha, atualiza_timeout, consulta_permissao
-from geogrid import portas_livres
+from geogrid import portas_livres, Forca_Integracao
 
 
 # fica no loop atualizando o token 
@@ -292,7 +292,7 @@ class Provisionamento():
         
         teclado_inline.add(sim, não)
         
-        mensagem = f"A porta {porta} já está ocupada por outro cliente\nDeseja sobrescrever para o seu cliente?"
+        mensagem = f"Verifiqui que a porta {porta} já está ocupada por outro cliente\nDeseja sobrescrever para o seu cliente?"
         self.bot.send_message(id_usuario, mensagem, reply_markup=teclado_inline)    
 
 
@@ -604,9 +604,19 @@ class Provisionamento():
             self.menu_porta_ocupada(self.porta_cliente[0], id_usuario)
             
         else:
-            pass
+            self.bot.send_message(id_usuario, atualiza, parse_mode="Markdown")
             
-        self.bot.send_message(id_usuario, atualiza, parse_mode="Markdown")
+            self.provisiona_onu(self.itbs, self.serial, self.modelo_permtido, self.posicao_na_pon, self.pon_atual, self.ponto_acesso, self.pppoe_cliente[0], id_usuario)
+            
+            
+    def add_geogrid_forcando(self, item_rede, porta_cliente, contrato, usuario_pppoe, id_usuario):
+    
+        forca_integração = Forca_Integracao(item_rede, porta_cliente, contrato, usuario_pppoe)
+    
+        self.bot.send_message(id_usuario, forca_integração, parse_mode="Markdown")
+        
+        self.provisiona_onu(self.itbs, self.serial, self.modelo_permtido, self.posicao_na_pon, self.pon_atual, self.ponto_acesso, self.pppoe_cliente[0], id_usuario)
+    
         
         
     # pra consultar a onu
@@ -847,11 +857,11 @@ class Provisionamento():
             
         elif call.data == 'adiciona-cliente':
             print('botão adiciona cliente no geogrid chamado')
-            self.verifica_time_out_botoes(id_usuario, self.provisiona_onu, self.itbs, self.serial, self.modelo_permtido, self.posicao_na_pon, self.pon_atual, self.ponto_acesso, self.pppoe_cliente[0], id_usuario)
+            self.verifica_time_out_botoes(id_usuario, self.add_geogrid_forcando, self.item_de_rede[0], self.porta_cliente[0], self.contrato_cliente[0], self.pppoe_cliente[0], id_usuario)
             
         elif call.data == 'nao-adiciona-cliente':
             print('botão não adiciona cliente no geogrid chamado')
-            self.verifica_time_out_botoes(id_usuario, self.pega_ponto_de_acesso2, id_usuario)
+            self.verifica_time_out_botoes(id_usuario, self.provisiona_onu, self.itbs, self.serial, self.modelo_permtido, self.posicao_na_pon, self.pon_atual, self.ponto_acesso, self.pppoe_cliente[0], id_usuario)
             
             
     def inicia_bot(self):

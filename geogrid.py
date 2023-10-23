@@ -4,6 +4,7 @@ import random
 
 
 def portas_livres(item_rede, porta_informarda, contrato, pppoe):
+    
     encontrou = False
     url = f"https://ares.geogridmaps.com.br/norte/api/v3/viabilidade/{item_rede}/portas"
     headers = {
@@ -21,8 +22,8 @@ def portas_livres(item_rede, porta_informarda, contrato, pppoe):
     }
 
     response = requests.get(url, headers=headers, params=params)
-
     lista_portas = []
+    lista_portas.clear()
 
     if response.status_code == 200:
         data = response.json()
@@ -69,10 +70,10 @@ def portas_livres(item_rede, porta_informarda, contrato, pppoe):
                         
                         return atende_cliente
                     
+                    
         if encontrou is False:
-            return f'porta ocupada para uso'
+            return 'porta ocupada para uso'
             
-        
     else:
         return "Erro na requisição:", response.status_code
 
@@ -129,8 +130,6 @@ def Cadastro_Cliente(contrato, pppoe, integracao):
         
 
 
-
-
 def Atende_Cliente(id_porta, id_cliente, item_rede):
 
     url = "https://ares.geogridmaps.com.br/norte/api/v3/integracao/atender"
@@ -159,8 +158,84 @@ def Atende_Cliente(id_porta, id_cliente, item_rede):
 
     response = requests.post(url, headers=headers, json=data)
 
-    return  response.text
+    return response.text
 
 
-def Forca_Integracao(item_de_rede, porta_informada):
-    pass
+
+def Forca_Integracao(item_rede, porta_informada, contrato, pppoe):
+
+    url = f"https://ares.geogridmaps.com.br/norte/api/v3/equipamentos/itemRede/{item_rede}/portas"
+
+    params = {
+        'atendimento[]': 'S',
+        'modoProjeto[]': ['S', 'N'],
+        'tipo[]': ['S', 'E'],
+        'disponivel': 'N'
+    }
+
+    headers = {
+        'Accept': 'application/json',
+        'api-key': '2de9624bb1745bebf8bf12759543cd6ac3d2de36'
+    }
+
+    response = requests.get(url, params=params, headers=headers)
+
+    if response.status_code == 200:
+        dados = response.json()
+    
+        registros = dados['registros'][0]['portas']
+
+        for i, dado in enumerate(registros):
+            if i == 0:
+                pass
+            
+            else:
+                try:
+                    id_porta = dado['dados']['id']
+                    porta = dado['dados']['porta']
+                    id_cliente = dado['cliente']['id']
+                    nome_cliente = dado['cliente']['nome']
+                    print(id_porta, porta, id_cliente, nome_cliente)
+                    
+                    if int(porta_informada) == int(porta):
+                        remove = Remove_Cliente(id_porta, id_cliente)
+                        
+                        # adiciona o cliente
+                        if len(remove) == 2:
+                            atualiza = portas_livres(item_rede, porta_informada, contrato, pppoe)
+                            return atualiza
+                        
+                        return remove
+
+                except:
+                    continue
+    else:
+        return f"Erro na requisição. Código de status: {response.status_code} {response.text}"
+        
+
+def Remove_Cliente(id_porta, id_cliente):
+    url = f"https://ares.geogridmaps.com.br/norte/api/v3/integracao/atender/{id_porta}/{id_cliente}"
+
+    headers = {
+        'Accept': 'application/json',
+        'api-key': '2de9624bb1745bebf8bf12759543cd6ac3d2de36'
+    }
+
+    response = requests.delete(url, headers=headers)
+
+    if response.status_code == 200:
+        print(f'remove cliente sucesso {response.text}')
+        return response.text
+    else:
+        retorno = json.loads(response.text)
+        print(f'remove cliente falha {retorno}')
+        
+        if retorno['portaReservada'] == 'A porta está reservada':
+            return '😕 Infelizmente a porta está *reservada*, dessa forma não consegui remover o usuario antigo'
+        return retorno
+
+
+
+# teste = Forca_Integracao(51247, 9, 112233, 'cliente-teste-integração')
+
+# print(teste)

@@ -32,7 +32,7 @@ def validacontrato(num_contrato):
 
         # Realizar a requisição POST
         dados = requests.post(url, headers=headers, data=dados_json)
-
+        
         # Imprimir a resposta
         dados_corrigidos = json.loads(dados.text)
 
