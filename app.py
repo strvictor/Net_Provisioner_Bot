@@ -188,7 +188,7 @@ class Provisionamento():
             
         self.bot.register_next_step_handler_by_chat_id(chat_id, captura_nome)
         
-
+        
     def menu_principal(self, chat_id):
         mensagem = 'Escolha uma opção:'
         id_usuario = chat_id
