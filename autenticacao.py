@@ -208,13 +208,13 @@ def timeout(id_usuario):
         data1 = datetime.strptime(ultimo_login, '%d/%m/%Y %H:%M:%S')
         data2 = datetime.strptime(data_e_hora_atual, '%d/%m/%Y %H:%M:%S')
         
-        timeout = (data2 - data1).days
+        timeout = (data2 - data1).total_seconds()
         
     # Fechando o cursor e a conexão
     cursor.close()
     conexao.close()
         
-    if timeout >= 1:
+    if timeout >= 43200.0:
         return 'timeout'
     
     else:
