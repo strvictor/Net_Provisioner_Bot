@@ -30,8 +30,25 @@ def validacontrato(num_contrato):
             'Content-Type': 'application/json'
         }
 
-        # Realizar a requisição POST
-        dados = requests.post(url, headers=headers, data=dados_json)
+        #bloqueei a requisição de momento
+        #dados = requests.post(url, headers=headers, data=dados_json)
+        
+        # remover esse bloco de baixo
+        return f"""
+ℹ️  DADOS DO CLIENTE ℹ️          
+            
+📄 CONTRATO:44671               
+👤 NOME: teste   
+🆔 CPF: teste      
+🌐 PONTO DE ACESSO: BLM Laguna OLT FTTH       
+🏙️ CIDADE: alca
+🏡 BAIRRO: alca
+🛣️ RUA: alca
+🏠 NUMERO: 0
+💻 PPPOE: antoniel.oliveira.44671                   
+🔐 SENHA: 112233
+"""
+        
         
         # Imprimir a resposta
         dados_corrigidos = json.loads(dados.text)
@@ -54,20 +71,20 @@ def validacontrato(num_contrato):
                 pppoe = dados['user']
                 senha_pppoe = 112233
 
-                return f"""
-ℹ️  DADOS DO CLIENTE ℹ️          
+#                 return f"""
+# ℹ️  DADOS DO CLIENTE ℹ️          
             
-📄 CONTRATO:{contrato_cliente}               
-👤 NOME: {nome_cliente}   
-🆔 CPF: {cpf_cliente}      
-🌐 PONTO DE ACESSO: {ponto_de_acesso}       
-🏙️ CIDADE: {cidade}
-🏡 BAIRRO: {bairro}
-🛣️ RUA: {rua}
-🏠 NUMERO: {numero_casa}
-💻 PPPOE: {pppoe}                   
-🔐 SENHA: {senha_pppoe} 
-"""
+# 📄 CONTRATO:{contrato_cliente}               
+# 👤 NOME: {nome_cliente}   
+# 🆔 CPF: {cpf_cliente}      
+# 🌐 PONTO DE ACESSO: {ponto_de_acesso}       
+# 🏙️ CIDADE: {cidade}
+# 🏡 BAIRRO: {bairro}
+# 🛣️ RUA: {rua}
+# 🏠 NUMERO: {numero_casa}
+# 💻 PPPOE: {pppoe}                   
+# 🔐 SENHA: {senha_pppoe} 
+# """
         
         
         

@@ -13,8 +13,8 @@ def Atualiza_Token():
         atualiza_token.Atualiza_Token()
         time.sleep(3500)
 
-thread = threading.Thread(target=Atualiza_Token)
-thread.start()
+#thread = threading.Thread(target=Atualiza_Token)
+#thread.start()
 
 
 class Provisionamento():
