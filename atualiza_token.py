@@ -10,7 +10,7 @@ def Atualiza_Token():
         'client_id': 'synauth',
         'client_secret': 'df956154024a425eb80f1a2fc12fef0c',
         'username': 'gewerton',  
-        'password': '0c1f99a81796bcf36874a72f1fb53c1f55690a5c',   
+        'password': '3890328eb03aff62b0a36cdff5a4e61aacb1a3f2',   
         'syndata': 'TWpNMU9EYzVaakk1T0dSaU1USmxaalprWldFd00ySTFZV1JsTTJRMFptUT06WlhsS1ZHVlhOVWxpTTA0d1NXcHZhVnBZU25kTVdFNHdXVmRrY0dKdFkzVmFNa3A2WW1rMWFtSXlNSFZaYmtscFRFTktWR1ZYTlVWWmFVazJTVzFTYVZwWE1YZE5SRUV4VGtST1ptTXpVbWhhTW14MVdubEpjMGxyVW1sV1NHeDNXbE5KTmtsdVFuWmpNMUp1WTIxV2VrbHVNRDA9OlpUaGtNak0xWWprMFl6bGlORE5tWkRnM01EbGtNalkyWXpBeE1HTTNNR1U9'
     }
 
