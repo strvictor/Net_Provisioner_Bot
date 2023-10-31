@@ -19,7 +19,7 @@ def Atualiza_Token():
 
 class Provisionamento():
     def __init__(self):
-        self.token = '5935745695:AAHcP4dAquoEEg0pv9YOlj0HHLiofldVMY4'
+        self.token = '6472203862:AAHU4w7KoQXst1lnNbRulypcMVVGURtKr4o'
         self.bot = telebot.TeleBot(self.token)
         self.cto_validada = list()
         self.ponto_de_acesso = list()
