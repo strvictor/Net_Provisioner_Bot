@@ -1,7 +1,7 @@
 import requests
 
 def Atualiza_Token():
-    url = "https://erp-staging.gbsn.com.br:45700/connect/token"
+    url = "https://erp.gbsn.com.br:45700/connect/token"
 
     # Os dados de autenticação são fornecidos como um dicionário
     payload = {
@@ -11,7 +11,7 @@ def Atualiza_Token():
         'client_secret': 'df956154024a425eb80f1a2fc12fef0c',
         'username': 'gewerton',  
         'password': '3890328eb03aff62b0a36cdff5a4e61aacb1a3f2',   
-        'syndata': 'TWpNMU9EYzVaakk1T0dSaU1USmxaalprWldFd00ySTFZV1JsTTJRMFptUT06WlhsS1ZHVlhOVWxpTTA0d1NXcHZhVnBZU25kTVdFNHdXVmRrY0dKdFkzVmFNa3A2WW1rMWFtSXlNSFZaYmtscFRFTktWR1ZYTlVWWmFVazJTVzFTYVZwWE1YZE5SRUV4VGtST1ptTXpVbWhhTW14MVdubEpjMGxyVW1sV1NHeDNXbE5KTmtsdVFuWmpNMUp1WTIxV2VrbHVNRDA9OlpUaGtNak0xWWprMFl6bGlORE5tWkRnM01EbGtNalkyWXpBeE1HTTNNR1U9'
+        'syndata': 'TWpNMU9EYzVaakk1T0dSaU1USmxaalprWldFd00ySTFZV1JsTTJRMFptUT06WlhsS1ZHVlhOVWxpTTA0d1NXcHZhVTFVWXpOTWFrVjNUa00wZVU1VVRYVk5hazE1U1dsM2FWVXpiSFZTUjBscFQybEthMWx0Vm5SalJFRjNUbFJSZWtscGQybFNSMHBWWlZoQ2JFbHFiMmxqUnpsNlpFZGtlVnBZVFdsbVVUMDk6WlRoa01qTTFZamswWXpsaU5ETm1aRGczTURsa01qWTJZekF4TUdNM01HVT0='
     }
 
     headers = {
