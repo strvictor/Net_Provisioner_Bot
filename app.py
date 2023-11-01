@@ -10,7 +10,7 @@ from geogrid import portas_livres, Forca_Integracao
 # fica no loop atualizando o token 
 def Atualiza_Token():
     while True:
-        atualiza_token.Atualiza_Token()
+        atualiza_token.Atualiza_Token_Mapas2()
         time.sleep(3500)
 
 thread = threading.Thread(target=Atualiza_Token)

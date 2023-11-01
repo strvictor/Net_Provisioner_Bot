@@ -7,10 +7,10 @@ def validacontrato(num_contrato):
     # verifica se o contrato tem somente numeros
     valida_numero = str(num_contrato).isnumeric()
     if valida_numero:
-        url = "https://erp-staging.gbsn.com.br:45701/api/v1/isp/connection/integration/by/userdata"
+        url = "https://erp.gbsn.com.br:45701/api/v1/isp/connection/integration/by/userdata"
 
         # pega o token atualizado
-        with open('token.txt', 'r') as arquivo:
+        with open('token-api-mapas-2.txt', 'r') as arquivo:
             token = arquivo.readline()
             arquivo.close()
             
@@ -59,6 +59,7 @@ def validacontrato(num_contrato):
         else:
             
             for dados in dados_corrigidos['response']:
+                print(dados_corrigidos['response'])
                 
                 contrato_cliente = num_contrato
                 nome_cliente = dados['client']['name'].title()
@@ -76,7 +77,7 @@ def validacontrato(num_contrato):
             
 📄 CONTRATO: {contrato_cliente}               
 👤 NOME: {nome_cliente}   
-🆔 CPF: {cpf_cliente}      
+🆔 CPF/CNPJ: {cpf_cliente}      
 🌐 PONTO DE ACESSO: {ponto_de_acesso}       
 🏙️ CIDADE: {cidade}
 🏡 BAIRRO: {bairro}
