@@ -19,7 +19,7 @@ def Atualiza_Token():
     }
 
     response = requests.post(url, headers=headers, data=payload)
-    print(response.text)
+    #print(response.text)
     # Verifica se a solicitação foi bem-sucedida (código de status 200)
     if response.status_code == 200:
         # Conteúdo da resposta (dados retornados pela API)

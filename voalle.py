@@ -74,7 +74,7 @@ def validacontrato(num_contrato):
                 return f"""
 ℹ️  DADOS DO CLIENTE ℹ️          
             
-📄 CONTRATO:{contrato_cliente}               
+📄 CONTRATO: {contrato_cliente}               
 👤 NOME: {nome_cliente}   
 🆔 CPF: {cpf_cliente}      
 🌐 PONTO DE ACESSO: {ponto_de_acesso}       
