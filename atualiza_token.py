@@ -56,11 +56,7 @@ def Atualiza_Token_External():
          # gravando o token no .txt
         with open('token-api-external.txt', 'w') as arquivo:
             arquivo.write(token)
-            print(token)
             arquivo.close()
     else:
         print(f"{response.text} - ERRO AO RENOVAR O TOKEN, FUNÇÃO: Atualiza_Token_External")
 
-
-
-Atualiza_Token_External()

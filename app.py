@@ -7,15 +7,22 @@ from autenticacao import apresentacao, verifica_nome, cadastro_no_Mysql, consult
 from geogrid import portas_livres, Forca_Integracao
 
 
-# fica no loop atualizando o token 
-def Atualiza_Token():
+# fica no loop atualizando os tokens 
+def Atualiza_Token_External():
     while True:
         atualiza_token.Atualiza_Token_Mapas2()
         time.sleep(3500)
 
-thread = threading.Thread(target=Atualiza_Token)
+thread = threading.Thread(target=Atualiza_Token_External)
 thread.start()
 
+def Atualiza_Token_External():
+    while True:
+        atualiza_token.Atualiza_Token_External()
+        time.sleep(3500)
+
+thread2 = threading.Thread(target=Atualiza_Token_External)
+thread2.start()
 
 class Provisionamento():
     def __init__(self):
