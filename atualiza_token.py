@@ -1,5 +1,7 @@
 import requests
 
+# OBS: AS FUNÇÕES "Atualiza_Token_Mapas2" E "Atualiza_Token_External" NÃO POSSUEM UM METODO DE RENOVAÇÃO DE TOKEN, ENTÃO BASICAMENTE SE MUDAR A SENHA DE ACESSO AO ERP AS FUNÇÕES PARAM DE EXECUTAR
+
 def Atualiza_Token_Mapas2():
     url = "https://erp.gbsn.com.br:45700/connect/token"
 

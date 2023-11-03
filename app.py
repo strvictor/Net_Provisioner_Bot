@@ -95,7 +95,7 @@ class Provisionamento():
             senha_informada = mensagem.text
             
             if senha_informada == senha_bd:
-                self.bot.send_message(id_usuario, '*🥳✅ Login efetuado com sucesso!* ✅🥳', parse_mode="Markdown")
+                #self.bot.send_message(id_usuario, '*🥳✅ Login efetuado com sucesso!* ✅🥳', parse_mode="Markdown")
                 
                 #atualiza o time-out
                 atualiza_timeout(id_usuario)
