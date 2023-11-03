@@ -8,7 +8,7 @@ def Busca_info_contrato(contrato):
     valida_numero = str(contrato).isdigit()
     if valida_numero is False:
         return 'Digite apenas numeros, por favor'
-    
+    print('to aqui')
     url = "https://erp-staging.gbsn.com.br:45701/api/v1/isp/connection/integration/by/userdata"
 
     # pega o token atualizado

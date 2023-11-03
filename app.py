@@ -319,7 +319,7 @@ class Provisionamento():
                 self.contrato_cliente.clear()
                 self.contrato_cliente.append(contrato)
                 
-                mensagem_validacao = validacontrato(contrato)
+                mensagem_validacao, id_cliente_voalle = validacontrato(contrato)
 
                 if mensagem_validacao is False:
                     mensagem = 'Opa, não aceitamos caracteres por aqui 😊\nDigite apenas números, por favor!'
@@ -338,7 +338,10 @@ class Provisionamento():
                     self.pppoe_cliente.clear()
                     self.pppoe_cliente.append(mensagem_validacao.split('\n')[11].split(':')[1].strip())
                     print(self.pppoe_cliente)
-
+                    
+                    print('id do cliente no voalle é:', id_cliente_voalle)
+                    
+                    
                     time.sleep(1)
                     self.menu_confirmacao(id_usuario)
 
@@ -612,6 +615,8 @@ class Provisionamento():
             
         else:
             self.bot.send_message(id_usuario, atualiza, parse_mode="Markdown")
+            
+            # chamar pra atualizar no voalle aqui
             
             self.provisiona_onu(self.itbs, self.serial, self.modelo_permtido, self.posicao_na_pon, self.pon_atual, self.ponto_acesso, self.pppoe_cliente[0], id_usuario)
             
