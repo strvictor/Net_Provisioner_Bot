@@ -1,6 +1,6 @@
 import json
 import requests
-verifica = []
+
 
 def validacontrato(num_contrato):
     id_do_cliente = None # esse id é oq vai me permitir fazer alterações em sua conexão no voalle
@@ -73,3 +73,57 @@ def validacontrato(num_contrato):
     else:
         # retorna falso, pra validar no arquivo app.py e chamar novamente a função
         return False, id_do_cliente
+    
+
+
+def Atualiza_Conexao(id_cliente, id_olt, serial_gpon, id_cto, porta_cto):
+    
+    url = f"https://erp.gbsn.com.br:45715/external/integrations/thirdparty/updateconnection/{id_cliente}"
+
+    # pega o token atualizado
+    with open('token-api-external.txt', 'r') as arquivo:
+        token = arquivo.readline()
+        arquivo.close()
+
+    payload = {
+        "id": id_cliente,
+        "fiberMac": " ",
+        "mac": " ",
+        "password": "112233",
+        "equipmentType": 5, # Huawei
+        "oltId": id_olt,
+        "slotOlt": 0,
+        "portOlt": 0,
+        "equipmentSerialNumber": serial_gpon,
+        "ipType": 1, # ip fixo
+        "equipmentUser": " ",
+        "equipmentPassword": "GbsNet9009",
+        "authenticationSplitterId": id_cto, # CTO
+        "port": porta_cto, # PORTA
+        "wifiName": " ",
+        "wifiPassword": " ",
+        "technologyType": None, #  Conforme Ponto de Acesso
+        "authenticationAccessPointId": 0,
+        "updateConnectionParameter": True,
+        "shouldMacUpdate": True,
+        "user": "", # teste.update.conexao
+        "complement": "descrição add via api",
+        "isIPoE": False
+    }
+
+    headers = {
+        'Authorization': f'Bearer {token}',
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.put(url, headers=headers, data=json.dumps(payload))
+
+    if response.status_code == 200:
+        mensagem = json.loads(response.text)
+        mensagem = mensagem['dataResponseType']
+        print(mensagem)
+    else:
+        print(response.status_code, response.text)
+        
+        
+Atualiza_Conexao(24553, 10, 'serial gpon', 1221, 4)
