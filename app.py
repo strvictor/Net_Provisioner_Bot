@@ -369,36 +369,6 @@ class Provisionamento():
                 time.sleep(1)
                 self.solicita_cto(id_usuario)
                 
-            # if cto_validacao == 'inicial_invalida':
-            #     self.bot.send_message(id_usuario, "CTO inválida!\n> Localidade não encontrada ")
-            #     time.sleep(1)
-            #     self.solicita_cto(id_usuario)
-
-            # elif cto_validacao == 'tamanho_invalido':
-            #     self.bot.send_message(id_usuario, "CTO inválida!\n> CTO informada ta em tamanho fora do esperado")
-            #     time.sleep(1)
-            #     self.solicita_cto(id_usuario)
-
-            # elif cto_validacao == 'letras_invalidas':
-            #     self.bot.send_message(id_usuario, "CTO inválida!\n> Caracteres não permitidos")
-            #     time.sleep(1)
-            #     self.solicita_cto(id_usuario)
-
-            # elif cto_validacao == 'numero1_invalido':
-            #     self.bot.send_message(id_usuario, "CTO inválida!\n> Numero fora do range")
-            #     time.sleep(1)
-            #     self.solicita_cto(id_usuario)
-
-            # elif cto_validacao == 'hifen_invalido':
-            #     self.bot.send_message(id_usuario, "CTO inválida!\n> Hífen não localizado")
-            #     time.sleep(1)
-            #     self.solicita_cto(id_usuario)
-
-            # elif cto_validacao == 'numero2_invalido':
-            #     self.bot.send_message(id_usuario, "CTO inválida!\n> Numero fora do range")
-            #     time.sleep(1)
-            #     self.solicita_cto(id_usuario)
-
             else:
                 # se a cto for valida ele cai aqui
                 self.bot.send_message(id_usuario, f'CTO VÁLIDA {cto_validacao[0]}')
@@ -844,9 +814,6 @@ class Provisionamento():
             
         elif call.data == 'tudo_certo_olt':
             print('botão tudo certo olt chamado')
-            
-            # chama a função pra add no geogrid
-        #self.add_geogrid(self.item_de_rede[0], self.porta_cliente[0], self.contrato_cliente[0], self.pppoe_cliente[0], chat_id)
             self.verifica_time_out_botoes(id_usuario, self.add_geogrid, self.item_de_rede[0], self.porta_cliente[0], self.contrato_cliente[0], self.pppoe_cliente[0], id_usuario)
 
         elif call.data == 'tentar_novamente_cto':
