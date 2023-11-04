@@ -607,7 +607,9 @@ class Provisionamento():
             if len(self.id_cto_atualiza_voalle) >= 1:
                 
                 # chamar pra atualizar no voalle aqui
-                atualiza_no_voalle = Atualiza_Conexao(self.id_cliente_voalle[0], 10, 'serial_gpon', self.id_cto_atualiza_voalle[0], 5)
+                serial_gpon_voalle = self.itbs + self.serial
+                
+                atualiza_no_voalle = Atualiza_Conexao(self.id_cliente_voalle[0], self.posicao_na_pon, serial_gpon_voalle, self.id_cto_atualiza_voalle[0], porta_cliente)
                 
                 
                 
@@ -630,7 +632,9 @@ class Provisionamento():
         if len(self.id_cto_atualiza_voalle) >= 1:
             
             # chamar pra atualizar no voalle aqui
-            atualiza_no_voalle = Atualiza_Conexao(self.id_cliente_voalle[0], 10, 'serial_gpon', self.id_cto_atualiza_voalle[0], 5)
+            serial_gpon_voalle = self.itbs + self.serial
+            
+            atualiza_no_voalle = Atualiza_Conexao(self.id_cliente_voalle[0], self.posicao_na_pon, serial_gpon_voalle, self.id_cto_atualiza_voalle[0], porta_cliente)
             
             
             
