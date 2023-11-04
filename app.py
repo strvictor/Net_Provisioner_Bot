@@ -1,6 +1,6 @@
 import telebot, time, threading, log, atualiza_token
 from telebot import types
-from voalle import validacontrato
+from voalle import validacontrato, Atualiza_Conexao, Captura_Id_Cto
 from cto import valida_cto, valida_porta, pon_cto
 from olt import busca_onu_na_pon, provisiona, consulta_gpon, desprovisiona_gpon, desprovisiona_efetivo
 from autenticacao import apresentacao, verifica_nome, cadastro_no_Mysql, consulta_id, timeout, valida_senha, atualiza_timeout, consulta_permissao
@@ -35,6 +35,8 @@ class Provisionamento():
         self.contrato_cliente = list()
         self.item_de_rede = list()
         self.porta_cliente = list()
+        self.id_cto_atualiza_voalle = list()
+        self.id_cliente_voalle = list()
         self.permissoes = ['tecnico', 'admin']
 
 
@@ -340,6 +342,8 @@ class Provisionamento():
                     print(self.pppoe_cliente)
                     
                     print('id do cliente no voalle é:', id_cliente_voalle)
+                    self.id_cliente_voalle.clear()
+                    self.id_cliente_voalle.append(id_cliente_voalle)
                     
                     
                     time.sleep(1)
@@ -379,6 +383,19 @@ class Provisionamento():
 
                 #adiciona cto validada na lista
                 self.cto_validada.append(cto_validacao[0])
+                
+                #captura o id da cto pra atualizar no voalle
+                id_cto_voalle = Captura_Id_Cto(cto_validacao[0])
+                
+                if id_cto_voalle == 'id da cto não localizado':
+                    self.bot.send_message(id_usuario, f'id da cto não localizado {cto_validacao[0]}')
+                    
+                else:
+                    # se cair aqui é pq achou o id da cto correspondente no voalle
+                    self.id_cto_atualiza_voalle.clear()
+                    self.id_cto_atualiza_voalle.append(id_cto_voalle)
+                    
+                    
                 time.sleep(1)
                 self.solicita_porta_cto(id_usuario)
 
@@ -586,8 +603,20 @@ class Provisionamento():
         else:
             self.bot.send_message(id_usuario, atualiza, parse_mode="Markdown")
             
-            # chamar pra atualizar no voalle aqui
-            
+            # valida se caturou o id da cto no voalle
+            if len(self.id_cto_atualiza_voalle) >= 1:
+                
+                # chamar pra atualizar no voalle aqui
+                atualiza_no_voalle = Atualiza_Conexao(self.id_cliente_voalle[0], 10, 'serial_gpon', self.id_cto_atualiza_voalle[0], 5)
+                
+                
+                
+                
+                self.bot.send_message(id_usuario, atualiza_no_voalle, parse_mode="Markdown")
+
+
+
+
             self.provisiona_onu(self.itbs, self.serial, self.modelo_permtido, self.posicao_na_pon, self.pon_atual, self.ponto_acesso, self.pppoe_cliente[0], id_usuario)
             
             
@@ -596,6 +625,18 @@ class Provisionamento():
         forca_integração = Forca_Integracao(item_rede, porta_cliente, contrato, usuario_pppoe)
     
         self.bot.send_message(id_usuario, forca_integração, parse_mode="Markdown")
+        
+        # valida se caturou o id da cto no voalle
+        if len(self.id_cto_atualiza_voalle) >= 1:
+            
+            # chamar pra atualizar no voalle aqui
+            atualiza_no_voalle = Atualiza_Conexao(self.id_cliente_voalle[0], 10, 'serial_gpon', self.id_cto_atualiza_voalle[0], 5)
+            
+            
+            
+            
+            self.bot.send_message(id_usuario, atualiza_no_voalle, parse_mode="Markdown")
+
         
         self.provisiona_onu(self.itbs, self.serial, self.modelo_permtido, self.posicao_na_pon, self.pon_atual, self.ponto_acesso, self.pppoe_cliente[0], id_usuario)
     
@@ -840,7 +881,13 @@ class Provisionamento():
             
         elif call.data == 'nao-adiciona-cliente':
             print('botão não adiciona cliente no geogrid chamado')
-            self.verifica_time_out_botoes(id_usuario, self.provisiona_onu, self.itbs, self.serial, self.modelo_permtido, self.posicao_na_pon, self.pon_atual, self.ponto_acesso, self.pppoe_cliente[0], id_usuario)
+            
+            self.bot.send_message(id_usuario, '*Operação Cancelada, solicite suporte time interno*', parse_mode="Markdown")
+            
+            self.verifica_time_out_botoes(id_usuario, self.menu_principal, id_usuario)
+            
+            
+            #self.verifica_time_out_botoes(id_usuario, self.provisiona_onu, self.itbs, self.serial, self.modelo_permtido, self.posicao_na_pon, self.pon_atual, self.ponto_acesso, self.pppoe_cliente[0], id_usuario)
             
             
     def inicia_bot(self):

@@ -121,9 +121,27 @@ def Atualiza_Conexao(id_cliente, id_olt, serial_gpon, id_cto, porta_cto):
     if response.status_code == 200:
         mensagem = json.loads(response.text)
         mensagem = mensagem['dataResponseType']
-        print(mensagem)
+        return mensagem
     else:
-        print(response.status_code, response.text)
+        return f'{response.status_code}, {response.text}'
         
         
-Atualiza_Conexao(24553, 10, 'serial gpon', 1221, 4)
+#Atualiza_Conexao(24553, 10, 'serial gpon', 1221, 4)
+
+def Captura_Id_Cto(cto_informada):
+    # esse id é o responsavel por escrever no voalle a cto correspondente
+
+    with open('splitters.txt', 'r') as arquivo:
+        base = arquivo.read()
+        base_atualizada = json.loads(base)
+        
+        for cto_dados in base_atualizada['response']:
+            id_cto_voalle = cto_dados['id']
+            cto_ = cto_dados['title']
+            
+            if cto_informada in cto_:
+                return id_cto_voalle
+            
+        arquivo.close()
+        return 'id da cto não localizado'
+

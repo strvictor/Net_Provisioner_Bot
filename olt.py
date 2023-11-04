@@ -25,7 +25,7 @@ opcoes_velocidade = {
 
 def busca_onu_na_pon(ponto_de_acesso, pon):
     try:
-        if ponto_de_acesso == 'BLM Laguna OLT FTTH' or ponto_de_acesso == '1':
+        if ponto_de_acesso == 'Rod Alca OLT FTTH' or ponto_de_acesso == '1':
             ip = '172.31.0.21'
         elif ponto_de_acesso == 'vila jamic olt ftth' or ponto_de_acesso == '2':
             ip = '10.9.250.6'
@@ -169,7 +169,7 @@ def exibe_info(onus_discando, posicao, pon, ponto_de_acesso):
 
 
 def provisiona(gpon, vaga_onu, gpon_sn, modelo, pppoe, ponto_de_acesso):
-    if ponto_de_acesso == 'BLM Laguna OLT FTTH' or ponto_de_acesso == '1':
+    if ponto_de_acesso == 'Rod Alca OLT FTTH' or ponto_de_acesso == '1':
         ip = '172.31.0.21'
         vlan = '501'
     elif ponto_de_acesso == 'vila jamic olt ftth' or ponto_de_acesso == '2':
@@ -302,7 +302,7 @@ def consulta_gpon(gpon, ponto_de_acesso):
         return 'alfanumericos false'
     
     else:
-        if ponto_de_acesso == 'alca' or ponto_de_acesso == '1':
+        if ponto_de_acesso == 'Rod Alca OLT FTTH' or ponto_de_acesso == '1':
             ip = '172.31.0.21'
         elif ponto_de_acesso == 'vila jamic olt ftth' or ponto_de_acesso == '2':
             ip = '10.9.250.6'
@@ -484,7 +484,7 @@ def desprovisiona_gpon(gpon, ponto_de_acesso):
         return 'alfanumericos false'
     
     else:
-        if ponto_de_acesso == 'alca' or ponto_de_acesso == '1':
+        if ponto_de_acesso == 'Rod Alca OLT FTTH' or ponto_de_acesso == '1':
             ip = '172.31.0.21'
         elif ponto_de_acesso == 'vila jamic olt ftth' or ponto_de_acesso == '2':
             ip = '10.9.250.6'
@@ -534,7 +534,7 @@ def desprovisiona_gpon(gpon, ponto_de_acesso):
         
         
 def desprovisiona_efetivo(pon, onu, ponto_de_acesso):
-    if ponto_de_acesso == 'alca' or ponto_de_acesso == '1':
+    if ponto_de_acesso == 'Rod Alca OLT FTTH' or ponto_de_acesso == '1':
         ip = '172.31.0.21'
     elif ponto_de_acesso == 'vila jamic olt ftth' or ponto_de_acesso == '2':
         ip = '10.9.250.6'

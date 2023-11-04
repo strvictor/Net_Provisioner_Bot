@@ -9,7 +9,7 @@ def portas_livres(item_rede, porta_informarda, contrato, pppoe):
     url = f"https://ares.geogridmaps.com.br/norte/api/v3/viabilidade/{item_rede}/portas"
     headers = {
         "Accept": "application/json",
-        "api-key": "9e782fbf03f7c6dec8c41ccae792a036e428f5ee"
+        "api-key": "2de9624bb1745bebf8bf12759543cd6ac3d2de36"
     }
 
     params = {
@@ -85,7 +85,7 @@ def Cadastro_Cliente(contrato, pppoe, integracao):
     url = "https://ares.geogridmaps.com.br/norte/api/v3/clientes"
     headers = {
         'Accept': 'application/json',
-        'api-key': '9e782fbf03f7c6dec8c41ccae792a036e428f5ee',
+        'api-key': '2de9624bb1745bebf8bf12759543cd6ac3d2de36',
         'Content-Type': 'application/json'
     }
 
@@ -135,7 +135,7 @@ def Atende_Cliente(id_porta, id_cliente, item_rede):
     url = "https://ares.geogridmaps.com.br/norte/api/v3/integracao/atender"
     headers = {
         'Accept': 'application/json',
-        'api-key': '9e782fbf03f7c6dec8c41ccae792a036e428f5ee',
+        'api-key': '2de9624bb1745bebf8bf12759543cd6ac3d2de36',
         'Content-Type': 'application/json'
     }
 
