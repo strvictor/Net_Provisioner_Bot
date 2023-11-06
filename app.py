@@ -301,7 +301,7 @@ class Provisionamento():
         
         teclado_inline.add(sim, não)
         
-        mensagem = f"Verifiqui que a porta {porta} já está ocupada por outro cliente\nDeseja sobrescrever para o seu cliente?"
+        mensagem = f"Verifiquei que a porta {porta} já está ocupada por outro cliente.\nDeseja sobrescrever para o seu cliente?"
         self.bot.send_message(id_usuario, mensagem, reply_markup=teclado_inline)    
 
 
@@ -375,7 +375,7 @@ class Provisionamento():
                 
             else:
                 # se a cto for valida ele cai aqui
-                self.bot.send_message(id_usuario, f'CTO VÁLIDA {cto_validacao[0]}')
+                #self.bot.send_message(id_usuario, f'CTO VÁLIDA {cto_validacao[0]}')
 
                 # separa o item de rede da cto
                 self.item_de_rede.clear()
@@ -424,7 +424,8 @@ class Provisionamento():
                 self.solicita_porta_cto(id_usuario)
 
             else:
-                self.bot.send_message(id_usuario, f"PORTA VÁLIDA {porta_cto}")
+                # porta válida
+                #self.bot.send_message(id_usuario, f"PORTA VÁLIDA {porta_cto}")
                 self.porta_cliente.clear()
                 self.porta_cliente.append(porta_cto)
                 time.sleep(1)
@@ -453,7 +454,7 @@ class Provisionamento():
 
     def consulta_olt(self, chat_id, ponto_de_acesso, pon):
         id_usuario = chat_id
-        self.bot.send_message(id_usuario, f"Buscando na OLT...\nPON = {pon}")
+        self.bot.send_message(id_usuario, "Buscando ONU...\nPor favor, aguarde!")
         self.bot.send_chat_action(id_usuario, 'typing')
         try:
             print('chamei a função busca onu na pon')
@@ -611,13 +612,10 @@ class Provisionamento():
                 
                 atualiza_no_voalle = Atualiza_Conexao(self.id_cliente_voalle[0], self.posicao_na_pon, serial_gpon_voalle, self.id_cto_atualiza_voalle[0], porta_cliente)
                 
+                self.bot.send_message(id_usuario, 'Voalle: ' + atualiza_no_voalle, parse_mode="Markdown")
+            else:
+                self.bot.send_message(id_usuario, '*Erro - Voalle* >> Não conseguir capturar o ID do cliente no sistema', parse_mode="Markdown")
                 
-                
-                
-                self.bot.send_message(id_usuario, atualiza_no_voalle, parse_mode="Markdown")
-
-
-
 
             self.provisiona_onu(self.itbs, self.serial, self.modelo_permtido, self.posicao_na_pon, self.pon_atual, self.ponto_acesso, self.pppoe_cliente[0], id_usuario)
             
@@ -636,10 +634,9 @@ class Provisionamento():
             
             atualiza_no_voalle = Atualiza_Conexao(self.id_cliente_voalle[0], self.posicao_na_pon, serial_gpon_voalle, self.id_cto_atualiza_voalle[0], porta_cliente)
             
-            
-            
-            
-            self.bot.send_message(id_usuario, atualiza_no_voalle, parse_mode="Markdown")
+            self.bot.send_message(id_usuario, 'Voalle: ' + atualiza_no_voalle, parse_mode="Markdown")
+        else:
+            self.bot.send_message(id_usuario, '*Erro - Voalle* >> Não conseguir capturar o ID do cliente no sistema', parse_mode="Markdown")
 
         
         self.provisiona_onu(self.itbs, self.serial, self.modelo_permtido, self.posicao_na_pon, self.pon_atual, self.ponto_acesso, self.pppoe_cliente[0], id_usuario)
@@ -651,8 +648,8 @@ class Provisionamento():
         id_usuario = chat_id
         msg_informativa = '''
 *Pontos de Acesso permitidos:*
-1º  `alca`
-2º  `vila jamic olt ftth`
+1º  `Rod Alca OLT FTTH`
+2º  `Vila Jamic OLT FTTH`
 3º  `bujaru` (vilas)
 '''
         self.bot.send_message(id_usuario, "Digite o *Ponto de Acesso* que queres fazer a consulta", parse_mode="Markdown")
@@ -660,14 +657,14 @@ class Provisionamento():
         
         @self.bot.message_handler(func=lambda message: True)
         def captura_localidade(mensagem): 
-            mensagem = mensagem.text.lower()
-            permitidos = ['alca', 'vila jamic olt ftth', 'bujaru', '1', '2', '3']
+            mensagem = mensagem.text
+            permitidos = ['Rod Alca OLT FTTH', 'vila jamic olt ftth', 'bujaru', '1', '2', '3']
             
             if mensagem == '/sair':
                 self.menu_principal(id_usuario)
             
             elif mensagem in permitidos:
-                self.bot.send_message(id_usuario, f"✅ Ponto de acesso *{mensagem}* permitido!", parse_mode="Markdown")
+                #self.bot.send_message(id_usuario, f"✅ Ponto de acesso *{mensagem}* permitido!", parse_mode="Markdown")
                 time.sleep(0.7)
                 self.consulta(id_usuario, mensagem)
                  
@@ -724,8 +721,8 @@ class Provisionamento():
         if permissao in self.permissoes:
             msg_informativa = '''
 *Pontos de Acesso permitidos:*
-1º  `alca`
-2º  `vila jamic olt ftth`
+1º  `Rod Alca OLT FTTH`
+2º  `Vila Jamic OLT FTTH`
 3º  `bujaru` (vilas)
 '''
             self.bot.send_message(id_usuario, "Digite o *Ponto de Acesso* para buscar ONU", parse_mode="Markdown")
@@ -733,11 +730,11 @@ class Provisionamento():
 
             @self.bot.message_handler(func=lambda message: True)
             def captura_localidade2(mensagem): 
-                mensagem = mensagem.text.lower()
-                permitidos = ['alca', 'vila jamic olt ftth', 'bujaru', '1', '2', '3']
+                mensagem = mensagem.text
+                permitidos = ['Rod Alca OLT FTTH', 'Vila Jamic OLT FTTH', 'bujaru', '1', '2', '3']
 
                 if mensagem in permitidos:
-                    self.bot.send_message(id_usuario, f"✅ Ponto de acesso *{mensagem}* permitido!", parse_mode="Markdown")
+                    #self.bot.send_message(id_usuario, f"✅ Ponto de acesso *{mensagem}* permitido!", parse_mode="Markdown")
                     time.sleep(0.7)
                     self.consulta2(id_usuario, mensagem)
                     
@@ -776,6 +773,11 @@ class Provisionamento():
                 self.bot.send_message(id_usuario, "Caracteres inválidos 😕\nDigite somente letras e números", parse_mode="Markdown")
                 time.sleep(1)
                 self.consulta2(id_usuario, ponto_de_acesso)
+                
+            elif retorno == 'erro na busca':
+                self.bot.send_message(id_usuario, "Ocorreu um erro em buscar a *ONU* 😕\nPor favor, tente novamente!", parse_mode="Markdown")
+                time.sleep(1)
+                self.pega_ponto_de_acesso2(id_usuario)
             
             else:
                 if type(retorno) is list:
@@ -886,7 +888,7 @@ class Provisionamento():
         elif call.data == 'nao-adiciona-cliente':
             print('botão não adiciona cliente no geogrid chamado')
             
-            self.bot.send_message(id_usuario, '*Operação Cancelada, solicite suporte time interno*', parse_mode="Markdown")
+            self.bot.send_message(id_usuario, '*⚠ Operação Cancelada, solicite suporte ao time INTERNO! ⚠*', parse_mode="Markdown")
             
             self.verifica_time_out_botoes(id_usuario, self.menu_principal, id_usuario)
             

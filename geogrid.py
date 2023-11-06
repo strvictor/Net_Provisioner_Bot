@@ -75,7 +75,7 @@ def portas_livres(item_rede, porta_informarda, contrato, pppoe):
             return 'porta ocupada para uso'
             
     else:
-        return "Erro na requisição:", response.status_code
+        return f"Erro na requisição: {response.status_code}, {response.text}"
 
 
 

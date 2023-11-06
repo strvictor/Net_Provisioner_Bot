@@ -27,7 +27,7 @@ def busca_onu_na_pon(ponto_de_acesso, pon):
     try:
         if ponto_de_acesso == 'Rod Alca OLT FTTH' or ponto_de_acesso == '1':
             ip = '172.31.0.21'
-        elif ponto_de_acesso == 'vila jamic olt ftth' or ponto_de_acesso == '2':
+        elif ponto_de_acesso == 'Vila Jamic OLT FTTH' or ponto_de_acesso == '2':
             ip = '10.9.250.6'
         elif ponto_de_acesso == 'bujaru' or ponto_de_acesso == '3':
             ip = '10.7.250.10'
@@ -172,7 +172,7 @@ def provisiona(gpon, vaga_onu, gpon_sn, modelo, pppoe, ponto_de_acesso):
     if ponto_de_acesso == 'Rod Alca OLT FTTH' or ponto_de_acesso == '1':
         ip = '172.31.0.21'
         vlan = '501'
-    elif ponto_de_acesso == 'vila jamic olt ftth' or ponto_de_acesso == '2':
+    elif ponto_de_acesso == 'Vila Jamic OLT FTTH' or ponto_de_acesso == '2':
         ip = '10.9.250.6'
         vlan = '2015'
     elif ponto_de_acesso == 'bujaru' or ponto_de_acesso == '3':
@@ -304,7 +304,7 @@ def consulta_gpon(gpon, ponto_de_acesso):
     else:
         if ponto_de_acesso == 'Rod Alca OLT FTTH' or ponto_de_acesso == '1':
             ip = '172.31.0.21'
-        elif ponto_de_acesso == 'vila jamic olt ftth' or ponto_de_acesso == '2':
+        elif ponto_de_acesso == 'Vila Jamic OLT FTTH' or ponto_de_acesso == '2':
             ip = '10.9.250.6'
         elif ponto_de_acesso == 'bujaru' or ponto_de_acesso == '3':
             ip = '10.7.250.10'
@@ -486,7 +486,7 @@ def desprovisiona_gpon(gpon, ponto_de_acesso):
     else:
         if ponto_de_acesso == 'Rod Alca OLT FTTH' or ponto_de_acesso == '1':
             ip = '172.31.0.21'
-        elif ponto_de_acesso == 'vila jamic olt ftth' or ponto_de_acesso == '2':
+        elif ponto_de_acesso == 'Vila Jamic OLT FTTH' or ponto_de_acesso == '2':
             ip = '10.9.250.6'
         elif ponto_de_acesso == 'bujaru' or ponto_de_acesso == '3':
             ip = '10.7.250.10'
@@ -523,20 +523,25 @@ def desprovisiona_gpon(gpon, ponto_de_acesso):
         print(linhas)
 
         tn.close()
-        #achou o serial
-        if 'gpon' in linhas[0]:
-            linhas.append(ponto_de_acesso)
-            return linhas
+        try:
+            #achou o serial
+            if 'gpon' in linhas[0]:
+                linhas.append(ponto_de_acesso)
+                return linhas
 
-        else:
-            tn.close()
-            return '*GPON-SN não encontrado* 😕'
-        
+            else:
+                tn.close()
+                return '*GPON-SN não encontrado* 😕'
+            
+        except IndexError:
+            print("NA FUNÇÃO 'desprovisiona_gpon' OCORREU UM ERRO  NA LISTA LINHAS, NÃO OBTIVE A QUANTIDADE DE PARÂMETROS ESPERADOS")
+            print(linhas)
+            return 'erro na busca'
         
 def desprovisiona_efetivo(pon, onu, ponto_de_acesso):
     if ponto_de_acesso == 'Rod Alca OLT FTTH' or ponto_de_acesso == '1':
         ip = '172.31.0.21'
-    elif ponto_de_acesso == 'vila jamic olt ftth' or ponto_de_acesso == '2':
+    elif ponto_de_acesso == 'Vila Jamic OLT FTTH' or ponto_de_acesso == '2':
         ip = '10.9.250.6'
     elif ponto_de_acesso == 'bujaru' or ponto_de_acesso == '3':
         ip = '10.7.250.10'

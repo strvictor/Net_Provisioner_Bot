@@ -55,7 +55,7 @@ def validacontrato(num_contrato):
                 pppoe = dados['user']
                 senha_pppoe = 112233
 
-                return f"""
+                mensagem_formatada = f'''
 ℹ️  DADOS DO CLIENTE ℹ️          
             
 📄 CONTRATO: {contrato_cliente}               
@@ -67,8 +67,9 @@ def validacontrato(num_contrato):
 🛣️ RUA: {rua}
 🏠 NUMERO: {numero_casa}
 💻 PPPOE: {pppoe}                   
-🔐 SENHA: {senha_pppoe} 
-""", id_do_cliente
+🔐 SENHA: {senha_pppoe}
+'''
+                return mensagem_formatada, id_do_cliente
         
     else:
         # retorna falso, pra validar no arquivo app.py e chamar novamente a função
@@ -107,7 +108,7 @@ def Atualiza_Conexao(id_cliente, id_olt, serial_gpon, id_cto, porta_cto):
         "updateConnectionParameter": True,
         "shouldMacUpdate": True,
         "user": "", # teste.update.conexao
-        "complement": "descrição add via api",
+        "complement": "", # descrição add via api
         "isIPoE": False
     }
 
@@ -125,8 +126,7 @@ def Atualiza_Conexao(id_cliente, id_olt, serial_gpon, id_cto, porta_cto):
     else:
         return f'{response.status_code}, {response.text}'
         
-        
-#Atualiza_Conexao(24553, 10, 'serial gpon', 1221, 4)
+
 
 def Captura_Id_Cto(cto_informada):
     # esse id é o responsavel por escrever no voalle a cto correspondente
@@ -144,4 +144,3 @@ def Captura_Id_Cto(cto_informada):
             
         arquivo.close()
         return 'id da cto não localizado'
-
