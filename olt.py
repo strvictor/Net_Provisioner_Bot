@@ -29,10 +29,10 @@ def busca_onu_na_pon(ponto_de_acesso, pon):
             ip = '172.31.0.21'
         elif ponto_de_acesso == 'Vila Jamic OLT FTTH' or ponto_de_acesso == '2':
             ip = '10.9.250.6'
-        elif ponto_de_acesso == 'bujaru' or ponto_de_acesso == '3':
+        elif ponto_de_acesso == 'BJR-KM29 OLT INTELBRAS' or ponto_de_acesso == '3':
             ip = '10.7.250.10'
-        elif ponto_de_acesso == 'local':
-            ip = '10.9.250.10'
+        elif ponto_de_acesso == 'Vila Nova OLT FTTH' or ponto_de_acesso == '4':
+            ip = '0.0.0.0'
 
         HOST = str(ip)  # Endereço do dispositivo Telnet
         PORT = 23  # Porta Telnet padrão
@@ -175,11 +175,12 @@ def provisiona(gpon, vaga_onu, gpon_sn, modelo, pppoe, ponto_de_acesso):
     elif ponto_de_acesso == 'Vila Jamic OLT FTTH' or ponto_de_acesso == '2':
         ip = '10.9.250.6'
         vlan = '2015'
-    elif ponto_de_acesso == 'bujaru' or ponto_de_acesso == '3':
+    elif ponto_de_acesso == 'BJR-KM29 OLT INTELBRAS' or ponto_de_acesso == '3':
         ip = '10.7.250.10'
         vlan = '1000'
-    elif ponto_de_acesso == 'local':
-        ip = '10.9.250.10'
+    elif ponto_de_acesso == 'Vila Nova OLT FTTH' or ponto_de_acesso == '4':
+        ip = '0.0.0.0'
+        vlan = '0000'
 
     HOST = str(ip)  # Endereço do dispositivo Telnet
     PORT = 23  # Porta Telnet padrão
@@ -306,8 +307,10 @@ def consulta_gpon(gpon, ponto_de_acesso):
             ip = '172.31.0.21'
         elif ponto_de_acesso == 'Vila Jamic OLT FTTH' or ponto_de_acesso == '2':
             ip = '10.9.250.6'
-        elif ponto_de_acesso == 'bujaru' or ponto_de_acesso == '3':
+        elif ponto_de_acesso == 'BJR-KM29 OLT INTELBRAS' or ponto_de_acesso == '3':
             ip = '10.7.250.10'
+        elif ponto_de_acesso == 'Vila Nova OLT FTTH' or ponto_de_acesso == '4':
+            ip = '0.0.0.0'
             
         HOST = str(ip)  # Endereço do dispositivo Telnet
         PORT = 23  # Porta Telnet padrão
@@ -493,8 +496,10 @@ def desprovisiona_gpon(gpon, ponto_de_acesso):
             ip = '172.31.0.21'
         elif ponto_de_acesso == 'Vila Jamic OLT FTTH' or ponto_de_acesso == '2':
             ip = '10.9.250.6'
-        elif ponto_de_acesso == 'bujaru' or ponto_de_acesso == '3':
+        elif ponto_de_acesso == 'BJR-KM29 OLT INTELBRAS' or ponto_de_acesso == '3':
             ip = '10.7.250.10'
+        elif ponto_de_acesso == 'Vila Nova OLT FTTH' or ponto_de_acesso == '4':
+            ip = '0.0.0.0'
             
         HOST = str(ip)  # Endereço do dispositivo Telnet
         PORT = 23  # Porta Telnet padrão
@@ -543,13 +548,16 @@ def desprovisiona_gpon(gpon, ponto_de_acesso):
             print(linhas)
             return 'erro na busca'
         
+        
 def desprovisiona_efetivo(pon, onu, ponto_de_acesso):
     if ponto_de_acesso == 'Rod Alca OLT FTTH' or ponto_de_acesso == '1':
         ip = '172.31.0.21'
     elif ponto_de_acesso == 'Vila Jamic OLT FTTH' or ponto_de_acesso == '2':
         ip = '10.9.250.6'
-    elif ponto_de_acesso == 'bujaru' or ponto_de_acesso == '3':
+    elif ponto_de_acesso == 'BJR-KM29 OLT INTELBRAS' or ponto_de_acesso == '3':
         ip = '10.7.250.10'
+    elif ponto_de_acesso == 'Vila Nova OLT FTTH' or ponto_de_acesso == '4':
+        ip = '0.0.0.0'
         
     HOST = str(ip)  # Endereço do dispositivo Telnet
     PORT = 23  # Porta Telnet padrão

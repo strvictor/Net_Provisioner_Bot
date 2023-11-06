@@ -650,7 +650,8 @@ class Provisionamento():
 *Pontos de Acesso permitidos:*
 1º  `Rod Alca OLT FTTH`
 2º  `Vila Jamic OLT FTTH`
-3º  `bujaru` (vilas)
+3º  `BJR-KM29 OLT INTELBRAS`
+4º  `Vila Nova OLT FTTH`
 '''
         self.bot.send_message(id_usuario, "Digite o *Ponto de Acesso* que queres fazer a consulta", parse_mode="Markdown")
         self.bot.send_message(id_usuario, msg_informativa, parse_mode="Markdown")
@@ -658,7 +659,7 @@ class Provisionamento():
         @self.bot.message_handler(func=lambda message: True)
         def captura_localidade(mensagem): 
             mensagem = mensagem.text
-            permitidos = ['Rod Alca OLT FTTH', 'Vila Jamic OLT FTTH', 'bujaru', '1', '2', '3']
+            permitidos = ['Rod Alca OLT FTTH', 'Vila Jamic OLT FTTH', 'BJR-KM29 OLT INTELBRAS', 'Vila Nova OLT FTTH', '1', '2', '3', '4']
             
             if mensagem == '/sair':
                 self.menu_principal(id_usuario)
@@ -728,7 +729,8 @@ class Provisionamento():
 *Pontos de Acesso permitidos:*
 1º  `Rod Alca OLT FTTH`
 2º  `Vila Jamic OLT FTTH`
-3º  `bujaru` (vilas)
+3º  `BJR-KM29 OLT INTELBRAS`
+4º  `Vila Nova OLT FTTH`
 '''
             self.bot.send_message(id_usuario, "Digite o *Ponto de Acesso* para buscar ONU", parse_mode="Markdown")
             self.bot.send_message(id_usuario, msg_informativa, parse_mode="Markdown")
@@ -736,7 +738,7 @@ class Provisionamento():
             @self.bot.message_handler(func=lambda message: True)
             def captura_localidade2(mensagem): 
                 mensagem = mensagem.text
-                permitidos = ['Rod Alca OLT FTTH', 'Vila Jamic OLT FTTH', 'bujaru', '1', '2', '3']
+                permitidos = ['Rod Alca OLT FTTH', 'Vila Jamic OLT FTTH', 'BJR-KM29 OLT INTELBRAS', 'Vila Nova OLT FTTH', '1', '2', '3', '4']
 
                 if mensagem in permitidos:
                     #self.bot.send_message(id_usuario, f"✅ Ponto de acesso *{mensagem}* permitido!", parse_mode="Markdown")
