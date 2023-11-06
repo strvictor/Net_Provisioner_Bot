@@ -341,56 +341,57 @@ def consulta_gpon(gpon, ponto_de_acesso):
         print(linhas)
         
         #achou o serial
-        if 'gpon' in linhas[0]:
-            slot = linhas[1]
-            onu = linhas[3]
-            modelo = linhas[-1]
-            
-            comando2 = f"onu status gpon {slot} onu {onu} details"
-
-            tn.write(f"{comando2}\n".encode('ascii'))
-        
-            resultado2 = tn.read_until(b"olt8820plus login:", timeout=5).decode('ascii')
-            linhas2 = resultado2.splitlines()[-2].split()
-            #onu ativada
-            if 'Active' in linhas2[2]:
-                tn.close()
-            
-                for item in linhas2:
-                    if item == 'dBm':
-                        linhas2.remove(item)
-                        
-                print(linhas2)
-                onu = linhas2[0]
-                serial_gpon = linhas2[1]
-                status = linhas2[2]
-                omci_config_status = linhas2[3]
-                rx_onu = linhas2[4]
-                tx_onu = linhas2[5]
-                rx_olt = linhas2[6]
-                tx_olt = linhas2[7]
-                distancia = float(linhas2[8])
-                up_time = linhas2[9].split(':')
-                temperatura = linhas2[-3]
-                status_porta_lan = linhas2[-2]
-                modulacao_porta_lan = linhas2[-1]
-
-                if status_porta_lan == '1':
-                    porta_lan = 'Ativa'
-                    
-                elif status_porta_lan == '2':
-                    porta_lan = 'Desativada'
-                    
-                else:
-                    porta_lan = '-'
-                    
-                if modulacao_porta_lan in opcoes_velocidade:
-                    modulacao = opcoes_velocidade[modulacao_porta_lan]
-                    
-                else:
-                    modulacao = '-'
+        try:
+            if 'gpon' in linhas[0]:
+                slot = linhas[1]
+                onu = linhas[3]
+                modelo = linhas[-1]
                 
-                formatado = f'''
+                comando2 = f"onu status gpon {slot} onu {onu} details"
+
+                tn.write(f"{comando2}\n".encode('ascii'))
+            
+                resultado2 = tn.read_until(b"olt8820plus login:", timeout=5).decode('ascii')
+                linhas2 = resultado2.splitlines()[-2].split()
+                #onu ativada
+                if 'Active' in linhas2[2]:
+                    tn.close()
+                
+                    for item in linhas2:
+                        if item == 'dBm':
+                            linhas2.remove(item)
+                            
+                    print(linhas2)
+                    onu = linhas2[0]
+                    serial_gpon = linhas2[1]
+                    status = linhas2[2]
+                    omci_config_status = linhas2[3]
+                    rx_onu = linhas2[4]
+                    tx_onu = linhas2[5]
+                    rx_olt = linhas2[6]
+                    tx_olt = linhas2[7]
+                    distancia = float(linhas2[8])
+                    up_time = linhas2[9].split(':')
+                    temperatura = linhas2[-3]
+                    status_porta_lan = linhas2[-2]
+                    modulacao_porta_lan = linhas2[-1]
+
+                    if status_porta_lan == '1':
+                        porta_lan = 'Ativa'
+                        
+                    elif status_porta_lan == '2':
+                        porta_lan = 'Desativada'
+                        
+                    else:
+                        porta_lan = '-'
+                        
+                    if modulacao_porta_lan in opcoes_velocidade:
+                        modulacao = opcoes_velocidade[modulacao_porta_lan]
+                        
+                    else:
+                        modulacao = '-'
+                    
+                    formatado = f'''
 ℹ️ INFORMAÇÕES DA ONU ℹ️
 
 ⚙ *Posição na OLT:* {slot}/{onu}
@@ -411,35 +412,35 @@ def consulta_gpon(gpon, ponto_de_acesso):
 🔌 *Porta LAN ONU:* {porta_lan}
 🔌 *Modulação Porta LAN:* {modulacao}
 '''
-                return formatado
-            
-            elif 'Inactive' in linhas2[2]:
-                tn.close()
+                    return formatado
                 
-                status_gpon = linhas2[9]
-                # verifica se teve o status da queda
-                if len(status_gpon) > 0 and status_gpon != '-':
-                    if 'LOSI' in status_gpon:
-                        descricao_alarme = "Recepção de Sinal Óptico Perdido."
-                        
-                    elif 'DGI' in status_gpon:
-                        descricao_alarme = "ONU possívelmente desligada."
+                elif 'Inactive' in linhas2[2]:
+                    tn.close()
                     
-                    elif 'DFI' in status_gpon:
-                        descricao_alarme = "Poblemas na ONU, possivel defeito de fábrica."
-                    
-                    elif 'LOAMI' in status_gpon:
-                        descricao_alarme = "Problemas na comunicação com a OLT"
+                    status_gpon = linhas2[9]
+                    # verifica se teve o status da queda
+                    if len(status_gpon) > 0 and status_gpon != '-':
+                        if 'LOSI' in status_gpon:
+                            descricao_alarme = "Recepção de Sinal Óptico Perdido."
+                            
+                        elif 'DGI' in status_gpon:
+                            descricao_alarme = "ONU possívelmente desligada."
                         
-                    elif 'LOFI' in status_gpon:
-                        descricao_alarme = "Perca de sincronia com a OLT"
+                        elif 'DFI' in status_gpon:
+                            descricao_alarme = "Poblemas na ONU, possivel defeito de fábrica."
                         
-                    else:
-                      descricao_alarme = ''
-                        
-                    serial_gpon = linhas2[1]
-                    status = linhas2[2]
-                    formatado = f'''
+                        elif 'LOAMI' in status_gpon:
+                            descricao_alarme = "Problemas na comunicação com a OLT"
+                            
+                        elif 'LOFI' in status_gpon:
+                            descricao_alarme = "Perca de sincronia com a OLT"
+                            
+                        else:
+                            descricao_alarme = ''
+                            
+                        serial_gpon = linhas2[1]
+                        status = linhas2[2]
+                        formatado = f'''
 ℹ️ INFORMAÇÕES DA ONU ℹ️
 
 🔒 *POSIÇÃO NA OLT:* {slot}/{onu}
@@ -449,12 +450,12 @@ def consulta_gpon(gpon, ponto_de_acesso):
 🔒 *CAUSA:* {status_gpon}
 🔒 *DESCRIÇÃO:* {descricao_alarme}
 '''
-                    return formatado
-                
-                else:
-                    serial_gpon = linhas2[1]
-                    status = linhas2[2]
-                    formatado = f'''
+                        return formatado
+                    
+                    else:
+                        serial_gpon = linhas2[1]
+                        status = linhas2[2]
+                        formatado = f'''
 ℹ️ INFORMAÇÕES DA ONU ℹ️
 
 🔒 *POSIÇÃO NA OLT:* {slot}/{onu}
@@ -462,14 +463,18 @@ def consulta_gpon(gpon, ponto_de_acesso):
 🔒 *MODELO:* {modelo}
 🔒 *STATUS:* {status}
 '''                
-                    return formatado
+                        return formatado
+                else:
+                    tn.close()
+                    return 'ONU bloqueada'
             else:
                 tn.close()
-                return 'ONU bloqueada'
-        else:
-            tn.close()
-            return f'Infelizmente não consegui localizar esse GPON-SN *{gpon}* na OLT *{ponto_de_acesso}* 😕'
-
+                return f'Infelizmente não consegui localizar esse GPON-SN *{gpon}* na OLT *{ponto_de_acesso}* 😕'
+            
+        except IndexError:
+            print("NA FUNÇÃO 'consulta_gpon' OCORREU UM ERRO NA LISTA LINHAS, NÃO OBTIVE A QUANTIDADE DE PARÂMETROS ESPERADOS")
+            print(linhas)
+            return 'erro na busca'
 
 def desprovisiona_gpon(gpon, ponto_de_acesso):
     print('consultando olt pra desprovisionar', gpon, ponto_de_acesso)

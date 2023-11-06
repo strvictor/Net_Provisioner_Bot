@@ -658,7 +658,7 @@ class Provisionamento():
         @self.bot.message_handler(func=lambda message: True)
         def captura_localidade(mensagem): 
             mensagem = mensagem.text
-            permitidos = ['Rod Alca OLT FTTH', 'vila jamic olt ftth', 'bujaru', '1', '2', '3']
+            permitidos = ['Rod Alca OLT FTTH', 'Vila Jamic OLT FTTH', 'bujaru', '1', '2', '3']
             
             if mensagem == '/sair':
                 self.menu_principal(id_usuario)
@@ -703,6 +703,11 @@ class Provisionamento():
                     self.bot.send_message(id_usuario, "Caracteres inválidos 😕\nDigite somente letras e números", parse_mode="Markdown")
                     time.sleep(1)
                     self.consulta(id_usuario, ponto_de_acesso)
+                    
+                elif retorno == 'erro na busca':
+                    self.bot.send_message(id_usuario, "Ocorreu um erro em buscar a *ONU* 😕\nPor favor, tente novamente!", parse_mode="Markdown")
+                    time.sleep(1)
+                    self.pega_ponto_de_acesso(id_usuario)
                 
                 else:
                     self.bot.send_message(id_usuario, retorno, parse_mode="Markdown")
