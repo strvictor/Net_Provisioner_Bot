@@ -602,7 +602,8 @@ class Provisionamento():
             self.menu_porta_ocupada(self.porta_cliente[0], id_usuario)
             
         else:
-            self.bot.send_message(id_usuario, atualiza, parse_mode="Markdown")
+            if atualiza != 'cliente vinculado no geogrid com sucesso':
+                self.bot.send_message(id_usuario, 'GeoGrid: ' + atualiza, parse_mode="Markdown")
             
             # valida se caturou o id da cto no voalle
             if len(self.id_cto_atualiza_voalle) >= 1:
@@ -612,7 +613,9 @@ class Provisionamento():
                 
                 atualiza_no_voalle = Atualiza_Conexao(self.id_cliente_voalle[0], self.posicao_na_pon, serial_gpon_voalle, self.id_cto_atualiza_voalle[0], porta_cliente)
                 
-                self.bot.send_message(id_usuario, 'Voalle: ' + atualiza_no_voalle, parse_mode="Markdown")
+                if atualiza_no_voalle != 'Conexão atualizada com sucesso.':
+                    self.bot.send_message(id_usuario, 'Voalle: ' + atualiza_no_voalle, parse_mode="Markdown")
+                    
             else:
                 self.bot.send_message(id_usuario, '*Erro - Voalle* >> Não conseguir capturar o ID do cliente no sistema', parse_mode="Markdown")
                 
@@ -623,8 +626,9 @@ class Provisionamento():
     def add_geogrid_forcando(self, item_rede, porta_cliente, contrato, usuario_pppoe, id_usuario):
     
         forca_integração = Forca_Integracao(item_rede, porta_cliente, contrato, usuario_pppoe)
-    
-        self.bot.send_message(id_usuario, forca_integração, parse_mode="Markdown")
+
+        if forca_integração != 'cliente vinculado no geogrid com sucesso':
+            self.bot.send_message(id_usuario, 'GeoGrid: ' + forca_integração, parse_mode="Markdown")
         
         # valida se caturou o id da cto no voalle
         if len(self.id_cto_atualiza_voalle) >= 1:
@@ -634,7 +638,9 @@ class Provisionamento():
             
             atualiza_no_voalle = Atualiza_Conexao(self.id_cliente_voalle[0], self.posicao_na_pon, serial_gpon_voalle, self.id_cto_atualiza_voalle[0], porta_cliente)
             
-            self.bot.send_message(id_usuario, 'Voalle: ' + atualiza_no_voalle, parse_mode="Markdown")
+            if atualiza_no_voalle != 'Conexão atualizada com sucesso.':
+                self.bot.send_message(id_usuario, 'Voalle: ' + atualiza_no_voalle, parse_mode="Markdown")
+                
         else:
             self.bot.send_message(id_usuario, '*Erro - Voalle* >> Não conseguir capturar o ID do cliente no sistema', parse_mode="Markdown")
 
