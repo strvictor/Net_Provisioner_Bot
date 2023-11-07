@@ -136,11 +136,19 @@ def Captura_Id_Cto(cto_informada):
         base_atualizada = json.loads(base)
         
         for cto_dados in base_atualizada['response']:
-            id_cto_voalle = cto_dados['id']
-            cto_ = cto_dados['title']
-            
-            if cto_informada in cto_:
+            id_cto_voalle = cto_dados['id'] 
+            cto_ = cto_dados['networkBox']['title']
+            tipo = cto_dados['type']['text']
+
+                        
+            if cto_informada in cto_ and tipo == 'Atendimento':
+                print(tipo, id_cto_voalle)
                 return id_cto_voalle
             
         arquivo.close()
         return 'id da cto não localizado'
+    
+    
+# retorno = Captura_Id_Cto('YAA2-1')
+
+# print(retorno)

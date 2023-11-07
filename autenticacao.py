@@ -8,9 +8,9 @@ def apresentacao(usuario):
     msg_apresentacao = f'''
 Olá {usuario},
 
--mensagem de apresentação gerada aleatoria
-...
-bla bla bla
+Seja bem vindo(a) ao *PRO-BETA-bot*
+
+Fase de Desenvolvimento: `Beta`
 '''
     return msg_apresentacao
 
