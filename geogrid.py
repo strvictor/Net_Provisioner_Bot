@@ -58,14 +58,8 @@ def portas_livres(item_rede, porta_informarda, contrato, pppoe):
                         
                         if len(atende_cliente) == 2:
                             # cliente castrado no geogrid com sucesso
-                            if dados_cliente_removido:
 
-                                resultado = 'cliente vinculado no geogrid com sucesso', dados_cliente_removido
-                                dados_cliente_removido.clear()
-                                
-                                return resultado
-                            else:
-                                return 'cliente vinculado no geogrid com sucesso'
+                            return 'cliente vinculado no geogrid com sucesso'
                         
                         return atende_cliente
                         
@@ -74,15 +68,8 @@ def portas_livres(item_rede, porta_informarda, contrato, pppoe):
                         atende_cliente = Atende_Cliente(id_porta, resposta, item_rede)
                         if len(atende_cliente) == 2:
                             # cliente castrado no geogrid com sucesso
-                            if dados_cliente_removido:
-                                
-                                resultado = 'cliente vinculado no geogrid com sucesso', dados_cliente_removido
-                                dados_cliente_removido.clear()
-                                
-                                return resultado
-                                
-                            else:
-                                return 'cliente vinculado no geogrid com sucesso'
+
+                            return 'cliente vinculado no geogrid com sucesso'
                         
                         return atende_cliente
                     
@@ -210,7 +197,7 @@ def Forca_Integracao(item_rede, porta_informada, contrato, pppoe):
                     nome_cliente = dado['cliente']['nome']
                     
                     if int(porta_informada) == int(porta):
-                        #print(f'Cliente removido: {nome_cliente}\nID Cliente removido: {id_cliente}\nPorta cedida: {porta}')
+                        print(f'Cliente removido: {nome_cliente}\nID Cliente removido: {id_cliente}\nPorta cedida: {porta}')
                         dados_cliente_removido.clear()
                         dados_cliente_removido.append(id_cliente)
                         dados_cliente_removido.append(nome_cliente)
