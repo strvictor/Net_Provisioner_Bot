@@ -2,6 +2,7 @@ import requests
 import json
 import random
 
+dados_cliente_removido = list()
 
 def portas_livres(item_rede, porta_informarda, contrato, pppoe):
     
@@ -57,7 +58,14 @@ def portas_livres(item_rede, porta_informarda, contrato, pppoe):
                         
                         if len(atende_cliente) == 2:
                             # cliente castrado no geogrid com sucesso
-                            return 'cliente vinculado no geogrid com sucesso'
+                            if dados_cliente_removido:
+
+                                resultado = 'cliente vinculado no geogrid com sucesso', dados_cliente_removido
+                                dados_cliente_removido.clear()
+                                
+                                return resultado
+                            else:
+                                return 'cliente vinculado no geogrid com sucesso'
                         
                         return atende_cliente
                         
@@ -66,7 +74,15 @@ def portas_livres(item_rede, porta_informarda, contrato, pppoe):
                         atende_cliente = Atende_Cliente(id_porta, resposta, item_rede)
                         if len(atende_cliente) == 2:
                             # cliente castrado no geogrid com sucesso
-                            return 'cliente vinculado no geogrid com sucesso'
+                            if dados_cliente_removido:
+                                
+                                resultado = 'cliente vinculado no geogrid com sucesso', dados_cliente_removido
+                                dados_cliente_removido.clear()
+                                
+                                return resultado
+                                
+                            else:
+                                return 'cliente vinculado no geogrid com sucesso'
                         
                         return atende_cliente
                     
@@ -76,7 +92,6 @@ def portas_livres(item_rede, porta_informarda, contrato, pppoe):
             
     else:
         return f"Erro na requisição: {response.status_code}, {response.text}"
-
 
 
 def Cadastro_Cliente(contrato, pppoe, integracao):
@@ -128,8 +143,7 @@ def Cadastro_Cliente(contrato, pppoe, integracao):
         except:
             pass
         
-
-
+        
 def Atende_Cliente(id_porta, id_cliente, item_rede):
 
     url = "https://ares.geogridmaps.com.br/norte/api/v3/integracao/atender"
@@ -159,7 +173,6 @@ def Atende_Cliente(id_porta, id_cliente, item_rede):
     response = requests.post(url, headers=headers, json=data)
 
     return response.text
-
 
 
 def Forca_Integracao(item_rede, porta_informada, contrato, pppoe):
@@ -195,10 +208,15 @@ def Forca_Integracao(item_rede, porta_informada, contrato, pppoe):
                     porta = dado['dados']['porta']
                     id_cliente = dado['cliente']['id']
                     nome_cliente = dado['cliente']['nome']
-                    print(id_porta, porta, id_cliente, nome_cliente)
                     
                     if int(porta_informada) == int(porta):
-                        remove = Remove_Cliente(id_porta, id_cliente)
+                        #print(f'Cliente removido: {nome_cliente}\nID Cliente removido: {id_cliente}\nPorta cedida: {porta}')
+                        dados_cliente_removido.clear()
+                        dados_cliente_removido.append(id_cliente)
+                        dados_cliente_removido.append(nome_cliente)
+                        dados_cliente_removido.append(porta)
+                        
+                        remove = Remove_Cliente(item_rede, id_porta, id_cliente)
                         
                         # adiciona o cliente
                         if len(remove) == 2:
@@ -213,7 +231,7 @@ def Forca_Integracao(item_rede, porta_informada, contrato, pppoe):
         return f"Erro na requisição. Código de status: {response.status_code} {response.text}"
         
 
-def Remove_Cliente(id_porta, id_cliente):
+def Remove_Cliente(item_rede, id_porta, id_cliente):
     url = f"https://ares.geogridmaps.com.br/norte/api/v3/integracao/atender/{id_porta}/{id_cliente}"
 
     headers = {
@@ -231,7 +249,16 @@ def Remove_Cliente(id_porta, id_cliente):
         print(f'remove cliente falha {retorno}')
         
         if retorno['portaReservada'] == 'A porta está reservada':
-            return '😕 Infelizmente a porta está *reservada*, dessa forma não consegui remover o usuario antigo'
+            
+            print('a porta esta reservada, mas irei atender pra remover depois')
+            atende_reservado = Atende_Cliente(id_porta, id_cliente, item_rede)
+            print('tentativa de atender o reservado: ', atende_reservado)
+            
+            remove_cliente_que_foi_atendido = Remove_Cliente(item_rede, id_porta, id_cliente)
+            
+            return remove_cliente_que_foi_atendido
+            
+            #return '😕 Infelizmente a porta está *reservada*, dessa forma não consegui remover o usuario antigo'
         return retorno
 
 

@@ -625,10 +625,17 @@ class Provisionamento():
             
     def add_geogrid_forcando(self, item_rede, porta_cliente, contrato, usuario_pppoe, id_usuario):
     
-        forca_integração = Forca_Integracao(item_rede, porta_cliente, contrato, usuario_pppoe)
+        forca_integração, dados_cliente_removido = Forca_Integracao(item_rede, porta_cliente, contrato, usuario_pppoe)
 
         if forca_integração != 'cliente vinculado no geogrid com sucesso':
             self.bot.send_message(id_usuario, 'GeoGrid: ' + forca_integração, parse_mode="Markdown")
+            
+        else:
+            # aqui tem que abrir a solicitação no voalle informando a porta que foi colocado o cliente
+            # id_cliente_removido = dados_cliente_removido[0]
+            # nome_cliente_removido = dados_cliente_removido[1]
+            # porta_que_foi_removido = dados_cliente_removido[2]
+            print('dados removidos ', dados_cliente_removido)
         
         # valida se caturou o id da cto no voalle
         if len(self.id_cto_atualiza_voalle) >= 1:

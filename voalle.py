@@ -40,9 +40,10 @@ def validacontrato(num_contrato):
         if len(dados_corrigidos['response']) == 0:
             return 'contrato não localizado', id_do_cliente
         else:
-            
+            print(dados_corrigidos)
             for dados in dados_corrigidos['response']:
                 
+                id_cliente_cria_solicitacao = dados['client']['id'] # tem que retornar pra o app.py
                 id_do_cliente = dados['id']
                 contrato_cliente = num_contrato
                 nome_cliente = dados['client']['name'].title()
