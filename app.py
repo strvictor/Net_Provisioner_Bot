@@ -303,7 +303,7 @@ class Provisionamento():
         
         teclado_inline.add(sim, não)
         
-        mensagem = f"Verifiquei que a porta {porta} já está ocupada por outro cliente.\nDeseja sobrescrever para o seu cliente?\nATENÇÂO: Qualquer ação mal executada prejudicará outro cliente."
+        mensagem = f"Verifiquei que a porta {porta} já está ocupada por outro cliente.\nDeseja sobrescrever para o seu cliente?"
         self.bot.send_message(id_usuario, mensagem, reply_markup=teclado_inline)    
 
 
@@ -911,13 +911,16 @@ class Provisionamento():
             
         elif call.data == 'adiciona-cliente':
             print('botão adiciona cliente no geogrid chamado')
+            
+            self.bot.answer_callback_query(call.id, text='ATENÇÂO: Qualquer ação mal executada prejudicará outro cliente.', show_alert=True)
+            time.sleep(2)
+            
             self.verifica_time_out_botoes(id_usuario, self.add_geogrid_forcando, self.item_de_rede[0], self.porta_cliente[0], self.contrato_cliente[0], self.pppoe_cliente[0], id_usuario)
             
         elif call.data == 'nao-adiciona-cliente':
             print('botão não adiciona cliente no geogrid chamado')
             
             self.bot.send_message(id_usuario, '*⚠ Operação Cancelada, solicite suporte ao time INTERNO! ⚠*', parse_mode="Markdown")
-            
             self.verifica_time_out_botoes(id_usuario, self.menu_principal, id_usuario)
             
             
