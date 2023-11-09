@@ -37,6 +37,8 @@ class Provisionamento():
         self.porta_cliente = list()
         self.id_cto_atualiza_voalle = list()
         self.id_cliente_voalle = list()
+        self.lista_id_cliente_cria_solicitacao = list()
+        self.cto_pra_informar_na_func_forca_remocao = list()
         self.permissoes = ['tecnico', 'admin']
 
 
@@ -321,7 +323,7 @@ class Provisionamento():
                 self.contrato_cliente.clear()
                 self.contrato_cliente.append(contrato)
                 
-                mensagem_validacao, id_cliente_voalle = validacontrato(contrato)
+                mensagem_validacao, id_cliente_voalle, id_cliente_cria_solicitacao = validacontrato(contrato)
 
                 if mensagem_validacao is False:
                     mensagem = 'Opa, não aceitamos caracteres por aqui 😊\nDigite apenas números, por favor!'
@@ -344,6 +346,10 @@ class Provisionamento():
                     print('id do cliente no voalle é:', id_cliente_voalle)
                     self.id_cliente_voalle.clear()
                     self.id_cliente_voalle.append(id_cliente_voalle)
+                    
+                    print('id do cliente no voalle que cria solicitação é:', id_cliente_cria_solicitacao)
+                    self.lista_id_cliente_cria_solicitacao.clear()
+                    self.lista_id_cliente_cria_solicitacao.append(id_cliente_cria_solicitacao)
                     
                     
                     time.sleep(1)
@@ -383,6 +389,7 @@ class Provisionamento():
 
                 #adiciona cto validada na lista
                 self.cto_validada.append(cto_validacao[0])
+                self.cto_pra_informar_na_func_forca_remocao.append(cto_validacao[0])
                 
                 #captura o id da cto pra atualizar no voalle
                 id_cto_voalle = Captura_Id_Cto(cto_validacao[0])
@@ -625,12 +632,16 @@ class Provisionamento():
             
     def add_geogrid_forcando(self, item_rede, porta_cliente, contrato, usuario_pppoe, id_usuario):
     
-        forca_integração = Forca_Integracao(item_rede, porta_cliente, contrato, usuario_pppoe)
+        forca_integração, usuario_cliente_removido, porta_cliente_removido = Forca_Integracao(item_rede, porta_cliente, contrato, usuario_pppoe)
 
         if forca_integração != 'cliente vinculado no geogrid com sucesso':
             self.bot.send_message(id_usuario, 'GeoGrid: ' + forca_integração, parse_mode="Markdown")
             
-        
+        else:
+            print(f'dados recebidos no app.py\nNome removido: {usuario_cliente_removido}\nPorta removida: {porta_cliente_removido}\nContrato: {contrato}\nID cria solicitação: {self.lista_id_cliente_cria_solicitacao[0]}\n CTO: {self.cto_pra_informar_na_func_forca_remocao[0]}\nPorta: {porta_cliente}')    
+            
+            self.cto_pra_informar_na_func_forca_remocao.clear()
+            
         # valida se caturou o id da cto no voalle
         if len(self.id_cto_atualiza_voalle) >= 1:
             

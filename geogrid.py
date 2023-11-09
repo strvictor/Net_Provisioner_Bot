@@ -58,8 +58,21 @@ def portas_livres(item_rede, porta_informarda, contrato, pppoe):
                         
                         if len(atende_cliente) == 2:
                             # cliente castrado no geogrid com sucesso
-
-                            return 'cliente vinculado no geogrid com sucesso'
+                            
+                            if len(dados_cliente_removido) > 1:
+                                
+                                copia_lista_temp = list(dados_cliente_removido)
+                                
+                                usuario_cliente_removido = copia_lista_temp[0]
+                                porta_cliente_removido = copia_lista_temp[1]
+                                mensagem_geogrid = 'cliente vinculado no geogrid com sucesso'
+                                
+                                dados_cliente_removido.clear()
+                                
+                                return mensagem_geogrid, usuario_cliente_removido, porta_cliente_removido
+                            
+                            else:
+                                return 'cliente vinculado no geogrid com sucesso'
                         
                         return atende_cliente
                         
@@ -69,7 +82,20 @@ def portas_livres(item_rede, porta_informarda, contrato, pppoe):
                         if len(atende_cliente) == 2:
                             # cliente castrado no geogrid com sucesso
 
-                            return 'cliente vinculado no geogrid com sucesso'
+                            if len(dados_cliente_removido) > 1:
+                                
+                                copia_lista_temp = list(dados_cliente_removido)
+                                
+                                usuario_cliente_removido = copia_lista_temp[0]
+                                porta_cliente_removido = copia_lista_temp[1]
+                                mensagem_geogrid = 'cliente vinculado no geogrid com sucesso'
+                                
+                                dados_cliente_removido.clear()
+                                
+                                return mensagem_geogrid, usuario_cliente_removido, porta_cliente_removido
+                            
+                            else:
+                                return 'cliente vinculado no geogrid com sucesso'
                         
                         return atende_cliente
                     
@@ -197,9 +223,8 @@ def Forca_Integracao(item_rede, porta_informada, contrato, pppoe):
                     nome_cliente = dado['cliente']['nome']
                     
                     if int(porta_informada) == int(porta):
-                        print(f'Cliente removido: {nome_cliente}\nID Cliente removido: {id_cliente}\nPorta cedida: {porta}')
+                        print(f'Cliente removido: {nome_cliente}\nPorta cedida: {porta}')
                         dados_cliente_removido.clear()
-                        dados_cliente_removido.append(id_cliente)
                         dados_cliente_removido.append(nome_cliente)
                         dados_cliente_removido.append(porta)
                         

@@ -1,5 +1,6 @@
 import json
 import requests
+import datetime
 
 
 def validacontrato(num_contrato):
@@ -70,13 +71,12 @@ def validacontrato(num_contrato):
 💻 PPPOE: {pppoe}                   
 🔐 SENHA: {senha_pppoe}
 '''
-                return mensagem_formatada, id_do_cliente
+                return mensagem_formatada, id_do_cliente, id_cliente_cria_solicitacao
         
     else:
         # retorna falso, pra validar no arquivo app.py e chamar novamente a função
         return False, id_do_cliente
     
-
 
 def Atualiza_Conexao(id_cliente, id_olt, serial_gpon, id_cto, porta_cto):
     
@@ -128,7 +128,6 @@ def Atualiza_Conexao(id_cliente, id_olt, serial_gpon, id_cto, porta_cto):
         return f'{response.status_code}, {response.text}'
         
 
-
 def Captura_Id_Cto(cto_informada):
     # esse id é o responsavel por escrever no voalle a cto correspondente
 
@@ -150,6 +149,75 @@ def Captura_Id_Cto(cto_informada):
         return 'id da cto não localizado'
     
     
-# retorno = Captura_Id_Cto('YAA2-1')
+def Cria_Solicitacao(id_tecnico, cto_em_destaque, cliente_antigo, cliente_novo, porta_da_cto, contrato, codigo_cliente):
+    # Obtenha a data e hora atuais
+    data_e_hora_atual = datetime.datetime.now()
 
-# print(retorno)
+    # Converta a data e hora em uma string formatada
+    data_e_hora_formatada = data_e_hora_atual.strftime("%d-%m-%Y %H:%M:%S")
+
+    mensagem = f'''
+REGISTRO DE ALTERAÇÃO DE PORTA (GeoGrid) - PRO-BETA-bot
+
+Foi realizado um provisionamento via bot, pelo técnico ID = {id_tecnico}
+
+Alterações¹:
+➖ Remoção de dados ➖
+
+CTO: {cto_em_destaque}
+Cliente: {cliente_antigo}
+Porta: {porta_da_cto}
+
+➖ Na CTO {cto_em_destaque}, o cliente {cliente_antigo} foi removido da porta {porta_da_cto} às {data_e_hora_formatada}.
+
+
+Alterações²:
+➕ Adição de dados ➕
+
+CTO: {cto_em_destaque}
+Cliente: {cliente_novo}
+Porta: {porta_da_cto}
+
+➕ Na CTO {cto_em_destaque}, o cliente {cliente_novo} foi adicionado à porta {porta_da_cto} às {data_e_hora_formatada}.
+'''
+    # pega o token atualizado
+    with open('token-api-external.txt', 'r') as arquivo:
+        token = arquivo.readline()
+        arquivo.close()
+    
+    url = "https://erp.gbsn.com.br:45715/external/integrations/thirdparty/opensolicitation"
+
+    payload = {
+        "description": '123',
+        "clientId": codigo_cliente,
+        "contractId": contrato,
+        "contractServiceTagId":'',
+        "close": True
+    }
+
+    headers = {
+        'Authorization': f'Bearer {token}',
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.post(url, headers=headers, data=json.dumps(payload))
+
+    if response.status_code == 200:
+        resposta = json.loads(response.text)
+
+        dados = resposta['response']
+        print(dados)
+
+        status = dados['status']
+        protocolo = dados['protocol']
+
+        if status == 'OK':
+            return f'Alteração realizada com sucesso protocolada no sistema com o Nº *{protocolo}*'
+        
+    else:
+        print(f'erro na requisição: {response.text}, status: {response.status_code}')
+        
+        
+teste = Cria_Solicitacao(123456, 'AAA1-1', '123.cliente_antigo', '321.cliente_novo', 3, 11745, 26726)
+
+print(teste)
