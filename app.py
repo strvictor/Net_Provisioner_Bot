@@ -1,6 +1,6 @@
 import telebot, time, threading, log, atualiza_token
 from telebot import types
-from voalle import validacontrato, Atualiza_Conexao, Captura_Id_Cto
+from voalle import validacontrato, Atualiza_Conexao, Captura_Id_Cto, Cria_Solicitacao
 from cto import valida_cto, valida_porta, pon_cto
 from olt import busca_onu_na_pon, provisiona, consulta_gpon, desprovisiona_gpon, desprovisiona_efetivo
 from autenticacao import apresentacao, verifica_nome, cadastro_no_Mysql, consulta_id, timeout, valida_senha, atualiza_timeout, consulta_permissao
@@ -638,8 +638,11 @@ class Provisionamento():
             self.bot.send_message(id_usuario, 'GeoGrid: ' + forca_integração, parse_mode="Markdown")
             
         else:
-            print(f'dados recebidos no app.py\nNome removido: {usuario_cliente_removido}\nPorta removida: {porta_cliente_removido}\nContrato: {contrato}\nID cria solicitação: {self.lista_id_cliente_cria_solicitacao[0]}\n CTO: {self.cto_pra_informar_na_func_forca_remocao[0]}\nPorta: {porta_cliente}')    
+            # cria a solicitacao no voalle (alteração de portas!)
+            cria_solicitacao = Cria_Solicitacao(id_usuario, self.cto_pra_informar_na_func_forca_remocao[0], usuario_cliente_removido, contrato + '.' + usuario_pppoe, porta_cliente_removido, contrato, self.lista_id_cliente_cria_solicitacao[0])
             
+            self.bot.send_message(id_usuario, cria_solicitacao, parse_mode="Markdown")
+
             self.cto_pra_informar_na_func_forca_remocao.clear()
             
         # valida se caturou o id da cto no voalle
