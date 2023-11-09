@@ -298,12 +298,12 @@ class Provisionamento():
         
         teclado_inline = types.InlineKeyboardMarkup(row_width=1)
         
-        sim = types.InlineKeyboardButton("Sim!", callback_data='adiciona-cliente')
-        não = types.InlineKeyboardButton("Não!", callback_data='nao-adiciona-cliente')
+        sim = types.InlineKeyboardButton("Sim, desejo prosseguir!", callback_data='adiciona-cliente')
+        não = types.InlineKeyboardButton("Não, irei verificar novamente!", callback_data='nao-adiciona-cliente')
         
         teclado_inline.add(sim, não)
         
-        mensagem = f"Verifiquei que a porta {porta} já está ocupada por outro cliente.\nDeseja sobrescrever para o seu cliente?"
+        mensagem = f"Verifiquei que a porta {porta} já está ocupada por outro cliente.\nDeseja sobrescrever para o seu cliente?\nATENÇÂO: Qualquer ação mal executada prejudicará outro cliente."
         self.bot.send_message(id_usuario, mensagem, reply_markup=teclado_inline)    
 
 
