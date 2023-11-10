@@ -154,6 +154,8 @@ class Provisionamento():
                                 @self.bot.message_handler(func=lambda message: True)
                                 def captura_senha1(mensagem):
                                     senha1 = mensagem.text
+                                    id_da_mensagem_senha1 = mensagem.message_id
+                                    
                                     
                                     if len(senha1) >= 6:
                                         self.bot.send_message(id_usuario, '💻 *Senha armazenada!*\nconfirme novamente a senha.', parse_mode="Markdown")
@@ -162,8 +164,26 @@ class Provisionamento():
                                         def captura_senha2(mensagem):
                                             senha2 = mensagem.text
                                             username = mensagem.chat.username
+                                            id_da_mensagem_senha2 = mensagem.message_id
 
                                             if senha1 == senha2:
+                                                popup_message = (
+                                                    "⚠️ *ATENÇÃO* ⚠️\n\n"
+                                                    "Por medida de segurança a senha informada será apagada do chat em alguns segundos.\n"
+                                                    "_Memorize ou armazene em um local seguro._"
+                                                )
+                                                    
+                                                self.bot.send_message(id_usuario, popup_message, parse_mode='Markdown')
+                                                time.sleep(5)
+                                                
+                                                def Apaga_Senha():
+                                                    time.sleep(12)
+                                                    self.bot.delete_message(chat_id=id_usuario, message_id=id_da_mensagem_senha1)
+                                                    self.bot.delete_message(chat_id=id_usuario, message_id=id_da_mensagem_senha2)
+                                                    
+                                                thread = threading.Thread(target=Apaga_Senha)
+                                                thread.start()
+                                                
                                                 cadastro = cadastro_no_Mysql(id_usuario, username, nome, usuario, email, senha1, permissao)
                                                 self.bot.send_message(id_usuario, cadastro, parse_mode="Markdown")
                                                 time.sleep(2)
