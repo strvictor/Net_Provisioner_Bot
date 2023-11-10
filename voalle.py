@@ -5,6 +5,7 @@ import datetime
 
 def validacontrato(num_contrato):
     id_do_cliente = None # esse id é oq vai me permitir fazer alterações em sua conexão no voalle
+    id_cliente_cria_solicitacao = None 
     
     # verifica se o contrato tem somente numeros
     valida_numero = str(num_contrato).isnumeric()
@@ -75,7 +76,7 @@ def validacontrato(num_contrato):
         
     else:
         # retorna falso, pra validar no arquivo app.py e chamar novamente a função
-        return False, id_do_cliente
+        return False, id_do_cliente, id_cliente_cria_solicitacao
     
 
 def Atualiza_Conexao(id_cliente, id_olt, serial_gpon, id_cto, porta_cto):

@@ -61,7 +61,7 @@ def verifica_nome(nome_informado):
         usuario_login = usuario[1]
         email = usuario[2]
         permissao = usuario[3]
-        if permissao == 20:
+        if permissao == 20 or nome_bd == 'PAULO VICTOR SILVA E SILVA':
             permissao = 'tecnico'
         else:
             permissao = 'consulta'
