@@ -932,7 +932,7 @@ class Provisionamento():
         elif call.data == 'adiciona-cliente':
             print('botão adiciona cliente no geogrid chamado')
             
-            self.bot.answer_callback_query(call.id, text='ATENÇÂO: Qualquer ação mal realizada afetará negativamente outro cliente.', show_alert=True)
+            self.bot.answer_callback_query(call.id, text='ATENÇÃO: Qualquer ação mal realizada afetará negativamente outro cliente.', show_alert=True)
             time.sleep(2)
             
             self.verifica_time_out_botoes(id_usuario, self.add_geogrid_forcando, self.item_de_rede[0], self.porta_cliente[0], self.contrato_cliente[0], self.pppoe_cliente[0], id_usuario)
