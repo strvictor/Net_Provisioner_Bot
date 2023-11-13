@@ -11,8 +11,8 @@ def Atualiza_Token_Mapas2():
         'scope': 'syngw',
         'client_id': 'synauth',
         'client_secret': 'df956154024a425eb80f1a2fc12fef0c',
-        'username': 'gewerton',  
-        'password': '3890328eb03aff62b0a36cdff5a4e61aacb1a3f2',   
+        'username': 'gbs.integracao',  # gewerton
+        'password': '50ae237b23b72667a79277a6308aeb0096cc9c7d',  # 3890328eb03aff62b0a36cdff5a4e61aacb1a3f2
         'syndata': 'TWpNMU9EYzVaakk1T0dSaU1USmxaalprWldFd00ySTFZV1JsTTJRMFptUT06WlhsS1ZHVlhOVWxpTTA0d1NXcHZhVTFVWXpOTWFrVjNUa00wZVU1VVRYVk5hazE1U1dsM2FWVXpiSFZTUjBscFQybEthMWx0Vm5SalJFRjNUbFJSZWtscGQybFNSMHBWWlZoQ2JFbHFiMmxqUnpsNlpFZGtlVnBZVFdsbVVUMDk6WlRoa01qTTFZamswWXpsaU5ETm1aRGczTURsa01qWTJZekF4TUdNM01HVT0='
     }
 
@@ -43,8 +43,8 @@ def Atualiza_Token_External():
     payload = {
         'grant_type': 'client_credentials',
         'scope': 'syngw',
-        'client_id': '5acd7279-2e79-2788-b030-24141c2a0e40',
-        'client_secret': '973ff5d6-a10a-0d23-62c2-5c2957986592',
+        'client_id': '5acd7279-2e79-2788-b030-24141c2a0e40', # 5acd7279-2e79-2788-b030-24141c2a0e40
+        'client_secret': '973ff5d6-a10a-0d23-62c2-5c2957986592', # 973ff5d6-a10a-0d23-62c2-5c2957986592
         'syndata': 'TWpNMU9EYzVaakk1T0dSaU1USmxaalprWldFd00ySTFZV1JsTTJRMFptUT06WlhsS1ZHVlhOVWxpTTA0d1NXcHZhVTFVWXpOTWFrVjNUa00wZVU1VVRYVk5hazE1U1dsM2FWVXpiSFZTUjBscFQybEthMWx0Vm5SalJFRjNUbFJSZWtscGQybFNSMHBWWlZoQ2JFbHFiMmxqUnpsNlpFZGtlVnBZVFdsbVVUMDk6WlRoa01qTTFZamswWXpsaU5ETm1aRGczTURsa01qWTJZekF4TUdNM01HVT0='
 
     }
