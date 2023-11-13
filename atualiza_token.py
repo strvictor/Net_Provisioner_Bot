@@ -11,8 +11,8 @@ def Atualiza_Token_Mapas2():
         'scope': 'syngw',
         'client_id': 'synauth',
         'client_secret': 'df956154024a425eb80f1a2fc12fef0c',
-        'username': 'gbs.integracao',  # gewerton
-        'password': '50ae237b23b72667a79277a6308aeb0096cc9c7d',  # 3890328eb03aff62b0a36cdff5a4e61aacb1a3f2
+        'username': 'gewerton',  # gewerton
+        'password': '3890328eb03aff62b0a36cdff5a4e61aacb1a3f2',  # 3890328eb03aff62b0a36cdff5a4e61aacb1a3f2
         'syndata': 'TWpNMU9EYzVaakk1T0dSaU1USmxaalprWldFd00ySTFZV1JsTTJRMFptUT06WlhsS1ZHVlhOVWxpTTA0d1NXcHZhVTFVWXpOTWFrVjNUa00wZVU1VVRYVk5hazE1U1dsM2FWVXpiSFZTUjBscFQybEthMWx0Vm5SalJFRjNUbFJSZWtscGQybFNSMHBWWlZoQ2JFbHFiMmxqUnpsNlpFZGtlVnBZVFdsbVVUMDk6WlRoa01qTTFZamswWXpsaU5ETm1aRGczTURsa01qWTJZekF4TUdNM01HVT0='
     }
 
