@@ -107,7 +107,7 @@ def cadastro_no_Mysql(id_usuario_telegram, usuario_telegram, nome_completo, usua
     cursor.close()
     conexao.close()
     
-    return f'✅ Usuário _{usuario_telegram}_ *Cadastrado com sucesso* ✅'
+    return f'✅ Usuário _{usuario}_ *Cadastrado com sucesso* ✅'
 
 
 def consulta_id(id_usuario):

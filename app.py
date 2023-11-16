@@ -80,7 +80,6 @@ class Provisionamento():
             # solicitar novamente a senha
             print('cai no timeout: ')
             self.verifica_senha(chat_id)
-
         else:
             # seguir com o fluxo
             funcao_redirecionamento(*args, **kwargs)         
