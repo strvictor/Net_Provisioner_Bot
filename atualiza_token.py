@@ -1,6 +1,20 @@
-import requests
+import requests, os
+from dotenv import load_dotenv
 
 # OBS: AS FUNÇÕES "Atualiza_Token_Mapas2" E "Atualiza_Token_External" NÃO POSSUEM UM METODO DE RENOVAÇÃO DE TOKEN, ENTÃO BASICAMENTE SE MUDAR A SENHA DE ACESSO AO ERP AS FUNÇÕES PARAM DE EXECUTAR
+
+# exportando as variaveis de ambiente
+load_dotenv(override=True)
+API_PASSWORD_MAPAS = os.getenv('API_KEY_PASSWORD_MAPAS_VOALLE')
+
+API_SYNDATA = os.getenv('API_KEY_SYNDATA_VOALLE')
+
+API_USUARIO = os.getenv('API_KEY_USUARIO_MAPAS_VOALLE')
+
+API_CLIENTE_ID = os.getenv('API_KEY_CLIENTE_ID_EXTERNAL_VOALLE')
+
+API_CLIENTE_SECRET = os.getenv('API_KEY_CLIENTE_SECRET_EXTERNAL_VOALLE')
+
 
 def Atualiza_Token_Mapas2():
     url = "https://erp.gbsn.com.br:45700/connect/token"
@@ -11,9 +25,9 @@ def Atualiza_Token_Mapas2():
         'scope': 'syngw',
         'client_id': 'synauth',
         'client_secret': 'df956154024a425eb80f1a2fc12fef0c',
-        'username': 'gewerton',  # gewerton
-        'password': '3890328eb03aff62b0a36cdff5a4e61aacb1a3f2',  # 3890328eb03aff62b0a36cdff5a4e61aacb1a3f2
-        'syndata': 'TWpNMU9EYzVaakk1T0dSaU1USmxaalprWldFd00ySTFZV1JsTTJRMFptUT06WlhsS1ZHVlhOVWxpTTA0d1NXcHZhVTFVWXpOTWFrVjNUa00wZVU1VVRYVk5hazE1U1dsM2FWVXpiSFZTUjBscFQybEthMWx0Vm5SalJFRjNUbFJSZWtscGQybFNSMHBWWlZoQ2JFbHFiMmxqUnpsNlpFZGtlVnBZVFdsbVVUMDk6WlRoa01qTTFZamswWXpsaU5ETm1aRGczTURsa01qWTJZekF4TUdNM01HVT0='
+        'username': API_USUARIO,
+        'password': API_PASSWORD_MAPAS,
+        'syndata': API_SYNDATA
     }
 
     headers = {
@@ -43,9 +57,9 @@ def Atualiza_Token_External():
     payload = {
         'grant_type': 'client_credentials',
         'scope': 'syngw',
-        'client_id': '5acd7279-2e79-2788-b030-24141c2a0e40', # 5acd7279-2e79-2788-b030-24141c2a0e40
-        'client_secret': '973ff5d6-a10a-0d23-62c2-5c2957986592', # 973ff5d6-a10a-0d23-62c2-5c2957986592
-        'syndata': 'TWpNMU9EYzVaakk1T0dSaU1USmxaalprWldFd00ySTFZV1JsTTJRMFptUT06WlhsS1ZHVlhOVWxpTTA0d1NXcHZhVTFVWXpOTWFrVjNUa00wZVU1VVRYVk5hazE1U1dsM2FWVXpiSFZTUjBscFQybEthMWx0Vm5SalJFRjNUbFJSZWtscGQybFNSMHBWWlZoQ2JFbHFiMmxqUnpsNlpFZGtlVnBZVFdsbVVUMDk6WlRoa01qTTFZamswWXpsaU5ETm1aRGczTURsa01qWTJZekF4TUdNM01HVT0='
+        'client_id': API_CLIENTE_ID,
+        'client_secret': API_CLIENTE_SECRET, 
+        'syndata': API_SYNDATA
 
     }
 
@@ -61,4 +75,3 @@ def Atualiza_Token_External():
             arquivo.close()
     else:
         print(f"{response.text} - ERRO AO RENOVAR O TOKEN, FUNÇÃO: Atualiza_Token_External")
-

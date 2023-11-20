@@ -1,9 +1,10 @@
-import requests
-import json
-import random
+import requests, random, os, json
+from dotenv import load_dotenv
+
+load_dotenv(override=True)
+API_GEOGRID = os.getenv('API_KEY_GEOGRID')
 
 dados_cliente_removido = list()
-TOKEN = 'f40a5197878642de43de65a8c1946abbd362ead2'
 
 def portas_livres(item_rede, porta_informarda, contrato, pppoe):
     
@@ -11,7 +12,7 @@ def portas_livres(item_rede, porta_informarda, contrato, pppoe):
     url = f"https://ares.geogridmaps.com.br/norte/api/v3/viabilidade/{item_rede}/portas"
     headers = {
         "Accept": "application/json",
-        "api-key": TOKEN
+        "api-key": API_GEOGRID
     }
 
     params = {
@@ -114,7 +115,7 @@ def Cadastro_Cliente(contrato, pppoe, integracao):
     url = "https://ares.geogridmaps.com.br/norte/api/v3/clientes"
     headers = {
         'Accept': 'application/json',
-        'api-key': TOKEN,
+        'api-key': API_GEOGRID,
         'Content-Type': 'application/json'
     }
 
@@ -163,7 +164,7 @@ def Atende_Cliente(id_porta, id_cliente, item_rede):
     url = "https://ares.geogridmaps.com.br/norte/api/v3/integracao/atender"
     headers = {
         'Accept': 'application/json',
-        'api-key': TOKEN,
+        'api-key': API_GEOGRID,
         'Content-Type': 'application/json'
     }
 
@@ -202,7 +203,7 @@ def Forca_Integracao(item_rede, porta_informada, contrato, pppoe):
 
     headers = {
         'Accept': 'application/json',
-        'api-key': TOKEN
+        'api-key': API_GEOGRID
     }
 
     response = requests.get(url, params=params, headers=headers)
@@ -249,7 +250,7 @@ def Remove_Cliente(item_rede, id_porta, id_cliente):
 
     headers = {
         'Accept': 'application/json',
-        'api-key': TOKEN
+        'api-key': API_GEOGRID
     }
 
     response = requests.delete(url, headers=headers)
