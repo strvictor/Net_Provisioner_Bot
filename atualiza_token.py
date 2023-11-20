@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 
 # OBS: AS FUNÇÕES "Atualiza_Token_Mapas2" E "Atualiza_Token_External" NÃO POSSUEM UM METODO DE RENOVAÇÃO DE TOKEN, ENTÃO BASICAMENTE SE MUDAR A SENHA DE ACESSO AO ERP AS FUNÇÕES PARAM DE EXECUTAR
 
-# exportando as variaveis de ambiente
+# importando as variaveis de ambiente
 load_dotenv(override=True)
 API_PASSWORD_MAPAS = os.getenv('API_KEY_PASSWORD_MAPAS_VOALLE')
 

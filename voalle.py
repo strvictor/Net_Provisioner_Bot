@@ -3,7 +3,7 @@ import requests
 import datetime
 
 
-def validacontrato(num_contrato):
+def Valida_Contrato(num_contrato):
     id_do_cliente = None # esse id é oq vai me permitir fazer alterações em sua conexão no voalle
     id_cliente_cria_solicitacao = None 
     

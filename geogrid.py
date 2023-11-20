@@ -1,12 +1,13 @@
 import requests, random, os, json
 from dotenv import load_dotenv
 
+
 load_dotenv(override=True)
 API_GEOGRID = os.getenv('API_KEY_GEOGRID')
 
 dados_cliente_removido = list()
 
-def portas_livres(item_rede, porta_informarda, contrato, pppoe):
+def Portas_Livres(item_rede, porta_informarda, contrato, pppoe):
     
     encontrou = False
     url = f"https://ares.geogridmaps.com.br/norte/api/v3/viabilidade/{item_rede}/portas"
@@ -234,7 +235,7 @@ def Forca_Integracao(item_rede, porta_informada, contrato, pppoe):
                         
                         # adiciona o cliente
                         if len(remove) == 2:
-                            atualiza = portas_livres(item_rede, porta_informada, contrato, pppoe)
+                            atualiza = Portas_Livres(item_rede, porta_informada, contrato, pppoe)
                             return atualiza
                         
                         return remove
@@ -274,9 +275,3 @@ def Remove_Cliente(item_rede, id_porta, id_cliente):
             
             #return '😕 Infelizmente a porta está *reservada*, dessa forma não consegui remover o usuario antigo'
         return retorno
-
-
-
-# teste = Forca_Integracao(51247, 9, 112233, 'cliente-teste-integração')
-
-# print(teste)

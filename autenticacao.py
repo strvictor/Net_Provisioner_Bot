@@ -4,7 +4,7 @@ from datetime import datetime
 import log
 
 
-def apresentacao(usuario):
+def Apresentacao(usuario):
     msg_apresentacao = f'''
 Olá {usuario},
 
@@ -14,7 +14,7 @@ Fase de Desenvolvimento: `Beta`
 '''
     return msg_apresentacao
 
-def verifica_nome(nome_informado):
+def Verifica_Nome(nome_informado):
     usuarios = []
     try:
         # Estabelece a conexão com o banco de dados PostgreSQL
@@ -75,7 +75,7 @@ def verifica_nome(nome_informado):
     return 'nome não encontrado'
 
 
-def cadastro_no_Mysql(id_usuario_telegram, usuario_telegram, nome_completo, usuario, email, senha, permissao,):
+def Cadastro_No_Mysql(id_usuario_telegram, usuario_telegram, nome_completo, usuario, email, senha, permissao,):
     # Conectando ao banco de dados
     conexao = mysql.connector.connect(
         host="localhost",
@@ -110,7 +110,7 @@ def cadastro_no_Mysql(id_usuario_telegram, usuario_telegram, nome_completo, usua
     return f'✅ Usuário _{usuario}_ *Cadastrado com sucesso* ✅'
 
 
-def consulta_id(id_usuario):
+def Consulta_Id(id_usuario):
     config = {
     'user': 'root',
     'password': 'Str12345!@',
@@ -143,7 +143,7 @@ def consulta_id(id_usuario):
     return 'usuario ainda não tem cadastro'
 
 
-def consulta_permissao(id_usuario):
+def Consulta_Permissao(id_usuario):
     
     config = {
     'user': 'root',
@@ -176,7 +176,7 @@ def consulta_permissao(id_usuario):
     return permissao
 
 
-def timeout(id_usuario):
+def Timeout(id_usuario):
     config = {
         'user': 'root',
         'password': 'Str12345!@',
@@ -221,7 +221,7 @@ def timeout(id_usuario):
         return 'ok'
         
 
-def valida_senha(id_usuario):
+def Valida_Senha(id_usuario):
     config = {
         'user': 'root',
         'password': 'Str12345!@',
@@ -256,7 +256,7 @@ def valida_senha(id_usuario):
     return senha_cadastrada
 
 
-def atualiza_timeout(id_usuario):
+def Atualiza_Timeout(id_usuario):
     config = {
         'user': 'root',
         'password': 'Str12345!@',

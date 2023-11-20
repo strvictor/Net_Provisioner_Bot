@@ -1,6 +1,13 @@
-import telnetlib
-import re
-import time
+import telnetlib, os, re, time
+from dotenv import load_dotenv
+
+
+load_dotenv(override=True)
+IP_ALCA = os.getenv('IP_OLT_ALCA')
+IP_JAMIC = os.getenv('IP_OLT_JAMIC')
+IP_BJR29 = os.getenv('IP_OLT_BJR_KM29')
+IP_VILA_NOVA = os.getenv('IP_OLT_VILA_NOVA')
+
 
 resultado_final = []
 modelos_de_ativacao = {
@@ -23,14 +30,14 @@ opcoes_velocidade = {
     "13": "1 Gbps Full-Duplex"
 }
 
-def busca_onu_na_pon(ponto_de_acesso, pon):
+def Busca_Onu_Na_Pon(ponto_de_acesso, pon):
     try:
         if ponto_de_acesso == 'Rod Alca OLT FTTH' or ponto_de_acesso == '1':
-            ip = '172.31.0.21'
+            ip = IP_ALCA
         elif ponto_de_acesso == 'Vila Jamic OLT FTTH' or ponto_de_acesso == '2':
-            ip = '10.9.250.6'
+            ip = IP_JAMIC
         elif ponto_de_acesso == 'BJR-KM29 OLT INTELBRAS' or ponto_de_acesso == '3':
-            ip = '10.7.250.10'
+            ip = IP_BJR29
         elif ponto_de_acesso == 'Vila Nova OLT FTTH' or ponto_de_acesso == '4':
             ip = '0.0.0.0'
 
@@ -68,17 +75,17 @@ def busca_onu_na_pon(ponto_de_acesso, pon):
         if f'intelbras-olt> {comando}' not in linhas:
             inicio_filtro = linhas.index(f'Free slots in GPON Link {pon}:')
             filtrado = linhas[inicio_filtro:]
-            return formata_retorno(filtrado, pon, ponto_de_acesso)
+            return Formata_Retorno(filtrado, pon, ponto_de_acesso)
         else:
             inicio_filtro2 = linhas.index(f'intelbras-olt> {comando}')
             filtrado2 = linhas[inicio_filtro2:]
-            return formata_retorno(filtrado2, pon, ponto_de_acesso)
+            return Formata_Retorno(filtrado2, pon, ponto_de_acesso)
         
     except Exception as e:
         print('erro na consulta:', str(e))
 
 
-def formata_retorno(linhas, pon, ponto_de_acesso):
+def Formata_Retorno(linhas, pon, ponto_de_acesso):
     onus_discando = []
     lista = []
     dicionario = {}
@@ -127,13 +134,13 @@ def formata_retorno(linhas, pon, ponto_de_acesso):
             temporario.append(posicao[0])
         else:
             #print('fui chamado')
-            return busca_onu_na_pon(ponto_de_acesso, pon)
+            return Busca_Onu_Na_Pon(ponto_de_acesso, pon)
 
     #print('exibe info chamada')
-    return exibe_info(onus_discando, temporario[0], pon, ponto_de_acesso)
+    return Exibe_Info(onus_discando, temporario[0], pon, ponto_de_acesso)
 
 
-def exibe_info(onus_discando, posicao, pon, ponto_de_acesso):
+def Exibe_Info(onus_discando, posicao, pon, ponto_de_acesso):
 
     if len(onus_discando) == 0:
         return False
@@ -168,15 +175,15 @@ def exibe_info(onus_discando, posicao, pon, ponto_de_acesso):
         return onus_discando, posicao, pon, ponto_de_acesso, len(onus_discando)
 
 
-def provisiona(gpon, vaga_onu, gpon_sn, modelo, pppoe, ponto_de_acesso):
+def Provisiona_Onu(gpon, vaga_onu, gpon_sn, modelo, pppoe, ponto_de_acesso):
     if ponto_de_acesso == 'Rod Alca OLT FTTH' or ponto_de_acesso == '1':
-        ip = '172.31.0.21'
+        ip = IP_ALCA
         vlan = '501'
     elif ponto_de_acesso == 'Vila Jamic OLT FTTH' or ponto_de_acesso == '2':
-        ip = '10.9.250.6'
+        ip = IP_JAMIC
         vlan = '2015'
     elif ponto_de_acesso == 'BJR-KM29 OLT INTELBRAS' or ponto_de_acesso == '3':
-        ip = '10.7.250.10'
+        ip = IP_BJR29
         vlan = '1000'
     elif ponto_de_acesso == 'Vila Nova OLT FTTH' or ponto_de_acesso == '4':
         ip = '0.0.0.0'
@@ -290,7 +297,7 @@ O usuário *{pppoe}* foi provisionado com sucesso.
     return f'{retorno_final}'
   
   
-def consulta_gpon(gpon, ponto_de_acesso):
+def Consulta_Onu(gpon, ponto_de_acesso):
     print('consultando olt', gpon, ponto_de_acesso)
     
     gpon = gpon.upper()
@@ -304,11 +311,11 @@ def consulta_gpon(gpon, ponto_de_acesso):
     
     else:
         if ponto_de_acesso == 'Rod Alca OLT FTTH' or ponto_de_acesso == '1':
-            ip = '172.31.0.21'
+            ip = IP_ALCA
         elif ponto_de_acesso == 'Vila Jamic OLT FTTH' or ponto_de_acesso == '2':
-            ip = '10.9.250.6'
+            ip = IP_JAMIC
         elif ponto_de_acesso == 'BJR-KM29 OLT INTELBRAS' or ponto_de_acesso == '3':
-            ip = '10.7.250.10'
+            ip = IP_BJR29
         elif ponto_de_acesso == 'Vila Nova OLT FTTH' or ponto_de_acesso == '4':
             ip = '0.0.0.0'
             
@@ -479,7 +486,7 @@ def consulta_gpon(gpon, ponto_de_acesso):
             print(linhas)
             return 'erro na busca'
 
-def desprovisiona_gpon(gpon, ponto_de_acesso):
+def Desprovisiona_Onu(gpon, ponto_de_acesso):
     print('consultando olt pra desprovisionar', gpon, ponto_de_acesso)
     
     gpon = gpon.upper()
@@ -493,11 +500,11 @@ def desprovisiona_gpon(gpon, ponto_de_acesso):
     
     else:
         if ponto_de_acesso == 'Rod Alca OLT FTTH' or ponto_de_acesso == '1':
-            ip = '172.31.0.21'
+            ip = IP_ALCA
         elif ponto_de_acesso == 'Vila Jamic OLT FTTH' or ponto_de_acesso == '2':
-            ip = '10.9.250.6'
+            ip = IP_JAMIC
         elif ponto_de_acesso == 'BJR-KM29 OLT INTELBRAS' or ponto_de_acesso == '3':
-            ip = '10.7.250.10'
+            ip = IP_BJR29
         elif ponto_de_acesso == 'Vila Nova OLT FTTH' or ponto_de_acesso == '4':
             ip = '0.0.0.0'
             
@@ -549,13 +556,13 @@ def desprovisiona_gpon(gpon, ponto_de_acesso):
             return 'erro na busca'
         
         
-def desprovisiona_efetivo(pon, onu, ponto_de_acesso):
+def Desprovisiona_Final(pon, onu, ponto_de_acesso):
     if ponto_de_acesso == 'Rod Alca OLT FTTH' or ponto_de_acesso == '1':
-        ip = '172.31.0.21'
+        ip = IP_ALCA
     elif ponto_de_acesso == 'Vila Jamic OLT FTTH' or ponto_de_acesso == '2':
-        ip = '10.9.250.6'
+        ip = IP_JAMIC
     elif ponto_de_acesso == 'BJR-KM29 OLT INTELBRAS' or ponto_de_acesso == '3':
-        ip = '10.7.250.10'
+        ip = IP_BJR29
     elif ponto_de_acesso == 'Vila Nova OLT FTTH' or ponto_de_acesso == '4':
         ip = '0.0.0.0'
         

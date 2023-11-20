@@ -1,11 +1,12 @@
 import telebot, os, time, threading, log, atualiza_token
 from dotenv import load_dotenv
 from telebot import types
-from voalle import validacontrato, Atualiza_Conexao, Captura_Id_Cto, Cria_Solicitacao
-from cto import valida_cto, valida_porta, pon_cto
-from olt import busca_onu_na_pon, provisiona, consulta_gpon, desprovisiona_gpon, desprovisiona_efetivo
-from autenticacao import apresentacao, verifica_nome, cadastro_no_Mysql, consulta_id, timeout, valida_senha, atualiza_timeout, consulta_permissao
-from geogrid import portas_livres, Forca_Integracao
+from voalle import Valida_Contrato, Atualiza_Conexao, Captura_Id_Cto, Cria_Solicitacao
+from cto import Valida_Cto, Valida_Porta, Pon_Cto
+from olt import Busca_Onu_Na_Pon, Provisiona_Onu, Consulta_Onu, Desprovisiona_Onu, Desprovisiona_Final
+from autenticacao import Apresentacao, Verifica_Nome, Cadastro_No_Mysql, Consulta_Id, Timeout, Valida_Senha, Atualiza_Timeout, Consulta_Permissao
+from geogrid import Portas_Livres, Forca_Integracao
+
 
 load_dotenv(override=True)
 API_BOT = os.getenv('API_KEY_BOT')
@@ -47,14 +48,14 @@ class Provisionamento():
 
     def apresentacao_inicial(self, chat_id, username=None):
         id_usuario = chat_id
-        msg = apresentacao(username)
+        msg = Apresentacao(username)
         self.bot.send_message(id_usuario, msg, parse_mode="Markdown")
         
         self.criarconta(id_usuario)
         
         
     def verifica_se_ja_tem_cadastro(self, chat_id, username):
-        consulta = consulta_id(chat_id)
+        consulta = Consulta_Id(chat_id)
         if consulta == 'usuario ainda não tem cadastro':
             self.apresentacao_inicial(chat_id, username)
             
@@ -64,7 +65,7 @@ class Provisionamento():
             
     
     def verifica_time_out(self, chat_id):
-        time_out = timeout(chat_id)
+        time_out = Timeout(chat_id)
         #print('TIMEOUT: ', time_out)
         if time_out == 'timeout':
             # solicitar novamente a senha
@@ -76,7 +77,7 @@ class Provisionamento():
             
 
     def verifica_time_out_botoes(self, chat_id, funcao_redirecionamento, *args, **kwargs):
-        time_out = timeout(chat_id)
+        time_out = Timeout(chat_id)
         print('TIMEOUT: ', time_out)
         
         if time_out == 'timeout':
@@ -92,7 +93,7 @@ class Provisionamento():
         id_usuario = chat_id
         
         #faz a consulta ao banco pra pegar a senha cadastrada conforme o id do usuario
-        senha_bd = valida_senha(id_usuario)
+        senha_bd = Valida_Senha(id_usuario)
         
         self.bot.send_message(id_usuario, '🔑 *Informe sua senha de acesso para continuar!* 🔑', parse_mode="Markdown")
         
@@ -104,7 +105,7 @@ class Provisionamento():
                 #self.bot.send_message(id_usuario, '*🥳✅ Login efetuado com sucesso!* ✅🥳', parse_mode="Markdown")
                 
                 #atualiza o time-out
-                atualiza_timeout(id_usuario)
+                Atualiza_Timeout(id_usuario)
                 self.menu_principal(id_usuario)
                 
             else:
@@ -123,7 +124,7 @@ class Provisionamento():
         def captura_nome(mensagem):
             nome_informado = str(mensagem.text).upper()
 
-            resp_nome = verifica_nome(nome_informado)
+            resp_nome = Verifica_Nome(nome_informado)
             
             if resp_nome == 'nome não encontrado':
                 self.bot.send_message(id_usuario, '😥 Nome informado não existe em nossa base de dados', parse_mode="Markdown")
@@ -186,7 +187,7 @@ class Provisionamento():
                                                 thread = threading.Thread(target=Apaga_Senha)
                                                 thread.start()
                                                 
-                                                cadastro = cadastro_no_Mysql(id_usuario, username, nome, usuario, email, senha1, permissao)
+                                                cadastro = Cadastro_No_Mysql(id_usuario, username, nome, usuario, email, senha1, permissao)
                                                 self.bot.send_message(id_usuario, cadastro, parse_mode="Markdown")
                                                 time.sleep(2)
                                                 self.menu_principal(id_usuario)
@@ -330,7 +331,7 @@ class Provisionamento():
 
 
     def provisionamento(self, chat_id):
-        permissao = consulta_permissao(chat_id)
+        permissao = Consulta_Permissao(chat_id)
         if permissao in self.permissoes:
             
             mensagem = '> Informe o número do contrato, por favor!'
@@ -345,7 +346,7 @@ class Provisionamento():
                 self.contrato_cliente.clear()
                 self.contrato_cliente.append(contrato)
                 
-                mensagem_validacao, id_cliente_voalle, id_cliente_cria_solicitacao = validacontrato(contrato)
+                mensagem_validacao, id_cliente_voalle, id_cliente_cria_solicitacao = Valida_Contrato(contrato)
 
                 if mensagem_validacao is False:
                     mensagem = 'Opa, não aceitamos caracteres por aqui 😊\nDigite apenas números, por favor!'
@@ -394,7 +395,7 @@ class Provisionamento():
         def captura_cto(cto):
             cto = cto.text
 
-            cto_validacao = valida_cto(cto)
+            cto_validacao = Valida_Cto(cto)
             
             if cto_validacao == 'cto não encontrada':
                 self.bot.send_message(id_usuario, "CTO não encontrada!\n> Tente novamente ")
@@ -440,7 +441,7 @@ class Provisionamento():
         def captura_porta(porta):
             porta = porta.text
 
-            porta_cto = valida_porta(porta)
+            porta_cto = Valida_Porta(porta)
 
             if porta_cto == 'não é numero':
                 self.bot.send_message(id_usuario, "Digite apenas numeros, por favor!")
@@ -460,7 +461,7 @@ class Provisionamento():
                 time.sleep(1)
 
                 # pegando qual é a pon da cto informada
-                pon_consulta = pon_cto(self.cto_validada[0])
+                pon_consulta = Pon_Cto(self.cto_validada[0])
                 print(pon_consulta)
 
                 # verifica se tem algum ponto de acesso na agulha
@@ -487,7 +488,7 @@ class Provisionamento():
         self.bot.send_chat_action(id_usuario, 'typing')
         try:
             print('chamei a função busca onu na pon')
-            retorno = busca_onu_na_pon(ponto_de_acesso, pon)
+            retorno = Busca_Onu_Na_Pon(ponto_de_acesso, pon)
             
             if retorno == False:
                 print('cai no false')
@@ -541,7 +542,7 @@ class Provisionamento():
 
         except:
             print('cai no except')
-            retorno_final = busca_onu_na_pon(ponto_de_acesso, pon)
+            retorno_final = Busca_Onu_Na_Pon(ponto_de_acesso, pon)
 
             if retorno_final == False:
                 time.sleep(1)
@@ -611,7 +612,7 @@ class Provisionamento():
 
         self.bot.send_message(id_usuario, '*INICIANDO O PROVISIONAMENTO...*', parse_mode="Markdown")
 
-        resultado = provisiona(gpon, posi_disponivel, gpon_sn, modelo_profile, usuario_pppoe, pontode_acesso)
+        resultado = Provisiona_Onu(gpon, posi_disponivel, gpon_sn, modelo_profile, usuario_pppoe, pontode_acesso)
 
         self.bot.send_message(id_usuario, resultado, parse_mode="Markdown")
         
@@ -625,7 +626,7 @@ class Provisionamento():
     # atualiza no geogrid
     def add_geogrid(self, item_rede, porta_cliente, contrato, usuario_pppoe, id_usuario):
         
-        atualiza = portas_livres(item_rede, porta_cliente, contrato, usuario_pppoe)
+        atualiza = Portas_Livres(item_rede, porta_cliente, contrato, usuario_pppoe)
         
         if atualiza == 'porta ocupada para uso':
             self.menu_porta_ocupada(self.porta_cliente[0], id_usuario)
@@ -736,7 +737,7 @@ class Provisionamento():
                 self.bot.send_message(id_usuario, "Buscando ONU...\nPor favor, aguarde!", parse_mode="Markdown")
                 self.bot.send_chat_action(id_usuario, 'typing')
             
-                retorno = consulta_gpon(mensagem, ponto_de_acesso)
+                retorno = Consulta_Onu(mensagem, ponto_de_acesso)
             
                 if retorno == 'tamanho inválido':
                     self.bot.send_message(id_usuario, "Tamanho inválido 😕\nO serial gpon contém 8 caracteres alfanuméricos", parse_mode="Markdown")
@@ -766,7 +767,7 @@ class Provisionamento():
     # pra desprovisionar a onu
     def pega_ponto_de_acesso2(self, chat_id):
         id_usuario = chat_id
-        permissao = consulta_permissao(id_usuario)
+        permissao = Consulta_Permissao(id_usuario)
         if permissao in self.permissoes:
             msg_informativa = '''
 *Pontos de Acesso permitidos:*
@@ -812,7 +813,7 @@ class Provisionamento():
             self.bot.send_message(id_usuario, "Buscando ONU...\nPor favor, aguarde!", parse_mode="Markdown")
             self.bot.send_chat_action(id_usuario, 'typing')
             
-            retorno = desprovisiona_gpon(mensagem, ponto_de_acesso) 
+            retorno = Desprovisiona_Onu(mensagem, ponto_de_acesso) 
             
             if retorno == 'tamanho inválido':
                 self.bot.send_message(id_usuario, "Tamanho inválido 😕\nO serial gpon contém 8 caracteres alfanuméricos", parse_mode="Markdown")
@@ -871,7 +872,7 @@ class Provisionamento():
         
         self.bot.send_message(id_usuario, '*INICIANDO O DESPROVISIONAMENTO...*', parse_mode="Markdown")
         
-        desprovisiona = desprovisiona_efetivo(pon, onu, ponto_de_acesso)
+        desprovisiona = Desprovisiona_Final(pon, onu, ponto_de_acesso)
         
         self.bot.send_message(id_usuario, desprovisiona, parse_mode="Markdown")
         time.sleep(1)
