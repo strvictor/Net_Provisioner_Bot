@@ -1,4 +1,5 @@
-import telebot, time, threading, log, atualiza_token
+import telebot, os, time, threading, log, atualiza_token
+from dotenv import load_dotenv
 from telebot import types
 from voalle import validacontrato, Atualiza_Conexao, Captura_Id_Cto, Cria_Solicitacao
 from cto import valida_cto, valida_porta, pon_cto
@@ -6,6 +7,8 @@ from olt import busca_onu_na_pon, provisiona, consulta_gpon, desprovisiona_gpon,
 from autenticacao import apresentacao, verifica_nome, cadastro_no_Mysql, consulta_id, timeout, valida_senha, atualiza_timeout, consulta_permissao
 from geogrid import portas_livres, Forca_Integracao
 
+load_dotenv(override=True)
+API_BOT = os.getenv('API_KEY_BOT')
 
 # fica no loop atualizando os tokens 
 def Atualiza_Token_External():
@@ -26,7 +29,7 @@ thread2.start()
 
 class Provisionamento():
     def __init__(self):
-        self.token = '6472203862:AAHU4w7KoQXst1lnNbRulypcMVVGURtKr4o'
+        self.token = API_BOT
         self.bot = telebot.TeleBot(self.token)
         self.cto_validada = list()
         self.ponto_de_acesso = list()
