@@ -1,7 +1,13 @@
-import psycopg2
-import mysql.connector
+import psycopg2, mysql.connector, log, os
 from datetime import datetime
-import log
+from dotenv import load_dotenv
+
+
+load_dotenv(override=True)
+NOME_BD = os.getenv('NOME_BD_POSTGRE')
+USUARIO_BD = os.getenv('USUARIO_BD_POSTGRE')
+SENHA_BD = os.getenv('SENHA_BD_POSTGRE')
+IP_BD = os.getenv('IP_BD_POSTGRE')
 
 
 def Apresentacao(usuario):
@@ -19,10 +25,10 @@ def Verifica_Nome(nome_informado):
     try:
         # Estabelece a conexão com o banco de dados PostgreSQL
         conn = psycopg2.connect(
-                dbname='dbemp00543',
-                user='cliente_s',
-                password='pRT0iWohci7#!3WT',
-                host='177.104.253.232',
+                dbname=NOME_BD,
+                user=USUARIO_BD,
+                password=SENHA_BD,
+                host=IP_BD,
                 port='5432'
             )
         print('Conexão bem-sucedida ao banco de dados PostgreSQL!')
