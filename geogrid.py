@@ -107,7 +107,9 @@ def Portas_Livres(item_rede, porta_informarda, contrato, pppoe):
             return 'porta ocupada para uso'
             
     else:
-        return f"Erro na requisição: {response.status_code}, {response.text}"
+        print(f"Erro na requisição: {response.status_code}, {response.text}")
+        # retornando o codigo http, pra verificar no app.py e seguir normal
+        return response.status_code
 
 
 def Cadastro_Cliente(contrato, pppoe, integracao):

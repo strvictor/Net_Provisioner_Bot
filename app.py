@@ -632,7 +632,11 @@ class Provisionamento():
             self.menu_porta_ocupada(self.porta_cliente[0], id_usuario)
             
         else:
-            if atualiza != 'cliente vinculado no geogrid com sucesso':
+            # pro algum motivo a api do geogrid está retornando http code 500, adicionado esse if pro codigo seguir normal
+            if atualiza == 500:
+                pass
+            
+            elif atualiza != 'cliente vinculado no geogrid com sucesso':
                 self.bot.send_message(id_usuario, 'GeoGrid: ' + atualiza, parse_mode="Markdown")
             
             # valida se caturou o id da cto no voalle
