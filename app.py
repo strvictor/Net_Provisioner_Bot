@@ -1,11 +1,11 @@
-import telebot, os, time, threading, log, atualiza_token
-from dotenv import load_dotenv
 from telebot import types
-from voalle import Valida_Contrato, Atualiza_Conexao, Captura_Id_Cto, Cria_Solicitacao
+from dotenv import load_dotenv
 from cto import Valida_Cto, Valida_Porta, Pon_Cto
+from geogrid import Portas_Livres, Forca_Integracao
+import telebot, os, time, threading, log, atualiza_token
+from voalle import Valida_Contrato, Atualiza_Conexao, Captura_Id_Cto, Cria_Solicitacao
 from olt import Busca_Onu_Na_Pon, Provisiona_Onu, Consulta_Onu, Desprovisiona_Onu, Desprovisiona_Final
 from autenticacao import Apresentacao, Verifica_Nome, Cadastro_No_Mysql, Consulta_Id, Timeout, Valida_Senha, Atualiza_Timeout, Consulta_Permissao
-from geogrid import Portas_Livres, Forca_Integracao
 
 
 load_dotenv(override=True)
