@@ -637,3 +637,24 @@
 30-11-2023 12:31:43 INFO Usuario 6739153236/None enviou > 120392
 30-11-2023 12:31:49 INFO timeout atualizado com sucesso para o user 6739153236
 30-11-2023 12:39:08 INFO Usuario 5138023764/strvictor enviou > o
+30-11-2023 15:35:51 INFO Usuario 5138023764/strvictor enviou > .
+30-11-2023 15:35:57 INFO Usuario 5138023764/strvictor enviou > pica
+30-11-2023 15:42:25 INFO Usuario 5138023764/strvictor enviou > def verifica_senha(self, chat_id):
+        id_usuario = chat_id
+        
+        #faz a consulta ao banco pra pegar a senha cadastrada conforme o id do usuario
+        senha_bd = Valida_Senha(id_usuario)
+        
+        self.bot.send_message(id_usuario, '🔑 *Informe sua senha de acesso para continuar!* 🔑', parse_mode="Markdown")
+01-12-2023 16:27:30 INFO timeout atualizado com sucesso para o user 1353740357
+01-12-2023 16:35:02 INFO Usuario 1353740357/ghosttav enviou > 55631
+01-12-2023 16:35:34 INFO Usuario 1353740357/ghosttav enviou > 41678
+01-12-2023 16:41:01 INFO Usuario 1353740357/ghosttav enviou > RAC2-1
+01-12-2023 16:41:01 INFO Usuario 1353740357/ghosttav enviou > RAC 2-1
+01-12-2023 16:41:02 INFO Usuario 1353740357/ghosttav enviou > RAC 2-1
+01-12-2023 16:41:02 INFO Usuario 1353740357/ghosttav enviou > JHFL
+01-12-2023 16:44:57 INFO Usuario 1353740357/ghosttav enviou > []
+01-12-2023 16:46:44 INFO Usuario 5138023764/strvictor enviou > .
+01-12-2023 16:46:47 INFO timeout atualizado com sucesso para o user 5138023764
+01-12-2023 16:55:06 INFO Usuario 1353740357/ghosttav enviou > 2
+01-12-2023 17:02:33 INFO Usuario 1353740357/ghosttav enviou > 41678
