@@ -28,7 +28,7 @@ def Atualiza_Token_External():
 thread2 = threading.Thread(target=Atualiza_Token_External)
 thread2.start()
 
-class Provisionamento():
+class Provisionamento:
     def __init__(self):
         self.token = API_BOT
         self.bot = telebot.TeleBot(self.token)
@@ -854,8 +854,6 @@ class Provisionamento():
                     self.desprovisiona_parametros.append(pon_desprovisiona)
                     self.desprovisiona_parametros.append(posicao_onu_desprovisiona)
                     self.desprovisiona_parametros.append(ponto_de_acesso_desprovisiona)
-                    
-                    print('listaaaaaaaaaa', self.desprovisiona_parametros)
                     
                     self.bot.send_message(id_usuario, mensagem_form, parse_mode="Markdown")
                     time.sleep(0.7)

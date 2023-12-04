@@ -486,6 +486,7 @@ def Consulta_Onu(gpon, ponto_de_acesso):
             print(linhas)
             return 'erro na busca'
 
+
 def Desprovisiona_Onu(gpon, ponto_de_acesso):
     print('consultando olt pra desprovisionar', gpon, ponto_de_acesso)
     
