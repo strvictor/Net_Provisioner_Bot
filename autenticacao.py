@@ -16,9 +16,14 @@ Olá {usuario},
 
 Seja bem vindo(a) ao *PRO-BETA-bot*
 
+Notei que sua conta do _telegram_ não está vinculada em nossa base de dados.
+
+*Realize seu cadastro para continuar...*
+
 Fase de Desenvolvimento: `Beta`
 '''
     return msg_apresentacao
+
 
 def Verifica_Nome(nome_informado):
     usuarios = []
